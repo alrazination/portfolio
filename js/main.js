@@ -25,7 +25,7 @@ const siteConfig = {
   email: "",           // e.g. "hello@razinabdullah.com"
   linkedin: "",        // e.g. "https://www.linkedin.com/in/razinabdullah"
   heroVideo: "assets/videos/hero.mp4",
-  heroPoster: "assets/images/hero-poster.svg",
+  heroPoster: "assets/images/hero-poster.webp",
   // Additional hero statements the role text rotates through as the
   // visitor scrolls past the hero. Keep these short.
   heroRoles: [

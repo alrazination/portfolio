@@ -25,7 +25,7 @@ const siteConfig = {
   email: "",           // e.g. "hello@razinabdullah.com"
   linkedin: "",        // e.g. "https://www.linkedin.com/in/razinabdullah"
   heroVideo: "assets/videos/hero.mp4",
-  heroPoster: "assets/images/hero-poster.webp",
+  heroPoster: "assets/images/hero-poster.svg",
   // Additional hero statements the role text rotates through as the
   // visitor scrolls past the hero. Keep these short.
   heroRoles: [
@@ -144,13 +144,44 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
   const heroContent = document.querySelector('.hero__content');
   const roleEl = document.getElementById('heroRole');
   const video = document.getElementById('heroVideo');
+  const videoSource = video ? video.querySelector('source') : null;
 
   if (!hero) return;
+
+  // siteConfig.heroVideo / heroPoster is the single source of truth.
+  // Apply it here so editing main.js is enough — you don't also need
+  // to touch the <video> tag in index.html.
+  if (videoSource && siteConfig.heroVideo) {
+    videoSource.src = siteConfig.heroVideo;
+  }
+  if (video && siteConfig.heroPoster) {
+    video.setAttribute('poster', siteConfig.heroPoster);
+  }
+  if (video) {
+    video.load(); // re-evaluate the source now that it may have changed
+    // Some browsers (especially when a page is opened via file:// instead
+    // of a local server) block autoplay until this is called explicitly.
+    const playPromise = video.play();
+    if (playPromise && playPromise.catch) {
+      playPromise.catch(() => {
+        // Autoplay was blocked — the poster image still shows, so the
+        // hero never looks broken. This is common when double-clicking
+        // index.html open directly rather than serving it (see README).
+      });
+    }
+  }
 
   // If the hero video fails to load (e.g. placeholder file missing),
   // hide it and let the animated gradient fallback underneath show
   // through instead of a broken video element.
   video.addEventListener('error', () => {
+    const err = video.error;
+    const codes = { 1: 'MEDIA_ERR_ABORTED', 2: 'MEDIA_ERR_NETWORK', 3: 'MEDIA_ERR_DECODE (often an unsupported codec)', 4: 'MEDIA_ERR_SRC_NOT_SUPPORTED (file missing, wrong path, or wrong format)' };
+    console.warn(
+      '[hero] Video failed to load:', siteConfig.heroVideo,
+      err ? `— ${codes[err.code] || 'unknown error'} (code ${err.code})` : '',
+      '\nCheck: 1) the file actually exists at that exact path/name, 2) it\'s a browser-playable H.264 .mp4, 3) you\'re viewing the site through a local server (see README) rather than double-clicking index.html.'
+    );
     video.style.display = 'none';
   });
 

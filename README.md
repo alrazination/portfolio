@@ -31,7 +31,7 @@ This design is inspired by Tyto's dark, saturated, game-world aesthetic (deep in
 
 ## What's placeholder right now
 
-- **Hero video** — there is no `assets/videos/hero.mp4` yet. Until one is added, the hero shows a looping animated gradient (`.hero__fallback` in `style.css`) so it's never a blank frame. The moment you drop in a real video, it plays automatically and the gradient sits behind it as a fallback if the video ever fails to load.
+- **Hero video** — `assets/videos/hero.mp4` currently ships with a short animated gradient loop (in the site's own colors) as a real, working placeholder — so the hero is never blank, but it's clearly meant to be replaced.
 - **Project & hero imagery** — the abstract colored illustrations (`hero-poster.svg`, `project-01/02/03.svg`) are original placeholder graphics in the same palette, standing in for real screenshots, photos, or footage. They're intentionally schematic so they read as "add your image here," not as finished art.
 - **Project links** — all three "Selected Work" cards currently link to placeholder pages in `/projects/` that say "coming soon."
 - **Email / LinkedIn** — intentionally blank until you provide them (see below). The site does not invent contact details.
@@ -39,17 +39,30 @@ This design is inspired by Tyto's dark, saturated, game-world aesthetic (deep in
 ## How to change the hero video
 
 1. Export a compressed, web-friendly `.mp4` (H.264, ideally under ~8–10MB for a ~15–20s loop).
-2. Save it as `assets/videos/hero.mp4`, replacing the existing filename exactly.
-3. Optionally generate a matching still frame and save it as `assets/images/hero-poster.webp`, then update this line in `js/main.js`:
+2. Save it as `assets/videos/hero.mp4`, replacing the existing placeholder file exactly (same name).
+3. That's it — `js/main.js` now controls the video path and poster centrally, so you only need to edit the file, not the HTML. If you do want a different filename, change this one line in `js/main.js`:
    ```js
-   heroPoster: "assets/images/hero-poster.webp",
+   heroVideo: "assets/videos/hero.mp4",
    ```
-   and this line in `index.html`:
-   ```html
-   poster="assets/images/hero-poster.webp"
+   and, optionally, the matching poster:
+   ```js
+   heroPoster: "assets/images/hero-poster.svg",
    ```
 
-**Large video files:** GitHub repositories aren't a great home for large video files. For anything beyond a small, well-compressed loop, host the video on a CDN or video platform (e.g. Cloudflare Stream, Mux, Vimeo's direct file URL, or an S3 bucket) and point `heroVideo` in `js/main.js` — and the `<source src="...">` in `index.html` — at that external URL instead.
+**If the video doesn't appear after replacing it**, check these in order:
+
+- **Open the browser console** (F12 → Console tab). If the video failed, you'll see a `[hero]` warning telling you exactly why — wrong path, unsupported codec, or a missing file.
+- **View the site through a local server, not by double-clicking `index.html`.** Some browsers restrict video/autoplay behavior on pages opened directly from disk (`file://...`). Run this from the project folder and open the printed address instead:
+  ```
+  python3 -m http.server 8000
+  ```
+  then visit `http://localhost:8000`. GitHub Pages serves the site the same correct way, so this is only a local-preview quirk.
+- **Check the codec.** Not all `.mp4` exports are browser-playable — some use H.265/HEVC, which most browsers reject. Re-export as H.264 (the default in most editors/compressors) if the console shows a decode error.
+- **Check the exact filename and folder.** It must be `assets/videos/hero.mp4` (or whatever path you set in `heroVideo`) — capitalization and extension matter.
+
+Until a real video is in place, the hero shows an animated gradient loop in the site's own colors, so it's never a blank frame.
+
+**Large video files:** GitHub repositories aren't a great home for large video files. For anything beyond a small, well-compressed loop, host the video on a CDN or video platform (e.g. Cloudflare Stream, Mux, Vimeo's direct file URL, or an S3 bucket) and point `heroVideo` in `js/main.js` at that external URL instead — no other file needs to change.
 
 ## How to add images
 

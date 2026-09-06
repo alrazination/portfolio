@@ -1,310 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Razin Abdullah — Learning Experience Designer</title>
-<meta name="description" content="Razin Abdullah designs learning experiences — simulations, eLearning and evaluation — that turn knowledge into action.">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-     
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Razin Abdullah — Learning Experience Designer</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Style Sheet -->
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-<!-- ============================================
-     NAVIGATION
-     ============================================ -->
-<header class="nav" id="nav">
-  <div class="nav__inner">
-    <a href="#top" class="nav__mark">Razin Abdullah</a>
-
-    <nav class="nav__links" aria-label="Primary">
+  <!-- Navigation -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__mark">Razin Abdullah</a>
+      <nav class="nav__links">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a href="#contact" class="nav__cta">Let's talk &rarr;</a>
+      <button class="nav__menu-btn" id="menuToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
       <a href="#work">Work</a>
       <a href="#services">Services</a>
       <a href="#process">Process</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
-    </nav>
-
-    <a href="#contact" class="nav__cta">Let's talk <span class="arrow">→</span></a>
-
-    <button class="nav__menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#work">Work</a>
-    <a href="#services">Services</a>
-    <a href="#process">Process</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </div>
-</header>
-
-<main id="top">
-
-  <!-- ============================================
-       HERO
-       ============================================ -->
-  <section class="hero" id="hero">
-    <div class="hero__media" id="heroMedia">
-      <video
-        id="heroVideo"
-        class="hero__video"
-        autoplay
-        muted
-        loop
-        playsinline
-        poster="assets/images/hero-poster.svg">
-        <source src="assets/videos/hero.mp4" type="video/mp4">
-      </video>
-      <div class="hero__overlay"></div>
     </div>
+  </header>
 
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
     <div class="hero__content">
-      <div class="hero__eyebrow-line" aria-hidden="true"></div>
+      <span class="hero__eyebrow-line"></span>
       <h1 class="hero__name">Razin Abdullah</h1>
-      <p class="hero__role" id="heroRole" data-index="0">Learning Experience Designer</p>
+      <h2 class="hero__role">Learning Experience Designer</h2>
       <p class="hero__statement">I design learning experiences that turn knowledge into action.</p>
     </div>
-
-    <div class="hero__scroll" aria-hidden="true">
+    <div class="hero__scroll">
+      <span class="hero__scroll-line"></span>
       <span>Scroll to explore</span>
-      <div class="hero__scroll-line"></div>
     </div>
   </section>
 
-  <!-- ============================================
-       DESIGN PHILOSOPHY
-       ============================================ -->
+  <!-- Philosophy -->
   <section class="philosophy" id="about">
     <div class="wrap">
-      <h2 class="philosophy__statement reveal">Every click should earn its place.</h2>
-      <p class="philosophy__support reveal">I design learning experiences where interaction isn't decoration. Every decision, click and piece of feedback has a learning purpose.</p>
-
+      <h2 class="philosophy__statement">Learning should be active, engaging, and measurable.</h2>
+      <p class="philosophy__support">My design philosophy focuses on creating interactive digital environments that empower learners and deliver clear business results.</p>
+      
       <div class="principles">
-        <div class="principle reveal">
+        <article class="principle reveal">
           <span class="principle__index">01</span>
-          <h3 class="principle__label">Concrete</h3>
-          <p class="principle__title">Make it real.</p>
-          <p class="principle__body">Learners understand why knowledge matters because they're using it in contexts that resemble their actual work.</p>
-        </div>
-        <div class="principle reveal">
+          <div class="principle__label">Core Principle</div>
+          <h3 class="principle__title">Purposeful Interaction</h3>
+          <p class="principle__body">Every interaction is designed with intention to support learning objectives and keep users deeply engaged.</p>
+        </article>
+
+        <article class="principle reveal">
           <span class="principle__index">02</span>
-          <h3 class="principle__label">Active</h3>
-          <p class="principle__title">Make them think.</p>
-          <p class="principle__body">Learning involves decisions, problem-solving and interaction — not passive scrolling through slides.</p>
-        </div>
-        <div class="principle reveal">
+          <div class="principle__label">Core Principle</div>
+          <h3 class="principle__title">Clarity First</h3>
+          <p class="principle__body">Complex concepts are broken down into intuitive, digestible pathways that build confidence step by step.</p>
+        </article>
+
+        <article class="principle reveal">
           <span class="principle__index">03</span>
-          <h3 class="principle__label">Intentional</h3>
-          <p class="principle__title">Make every interaction count.</p>
-          <p class="principle__body">Every click, animation and piece of feedback serves the learning goal, or it doesn't belong.</p>
-        </div>
+          <div class="principle__label">Core Principle</div>
+          <h3 class="principle__title">Data-Driven Impact</h3>
+          <p class="principle__body">Continuous testing and analytics ensure experiences don't just look great, but achieve measurable outcomes.</p>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       SERVICES
-       ============================================ -->
+  <!-- Services -->
   <section class="services" id="services">
     <div class="wrap">
       <div class="section-head">
-        <h2 class="reveal">What I design</h2>
-        <p class="reveal">From realistic simulations to scalable eLearning experiences, I design learning that is purposeful, practical and measurable.</p>
+        <h2>Services</h2>
+        <p>End-to-end learning design tailored for modern digital products and platforms.</p>
       </div>
 
-      <div class="service-list" id="serviceList">
-        <!-- populated by JS from siteConfig.services, but written statically for no-JS support -->
-        <a class="service reveal" href="services.html#simulation">
+      <div class="service-list">
+        <div class="service reveal">
           <span class="service__num">01</span>
-          <span class="service__name">Simulation Learning Design</span>
-          <span class="service__desc">Design realistic scenarios where learners make decisions, encounter constraints and experience consequences.</span>
-          <span class="service__cta">Explore <span class="arrow">→</span></span>
-        </a>
-        <a class="service reveal" href="services.html#ppt-to-elearning">
+          <h3 class="service__name">Instructional Design</h3>
+          <p class="service__desc">Curriculum planning, learning path structure, and outcome mapping for complex topics.</p>
+          <a href="#contact" class="service__cta">Learn more &rarr;</a>
+        </div>
+
+        <div class="service reveal">
           <span class="service__num">02</span>
-          <span class="service__name">PPT → eLearning</span>
-          <span class="service__desc">Transform static presentations into interactive learning experiences.</span>
-          <span class="service__cta">Transform it <span class="arrow">→</span></span>
-        </a>
-        <a class="service reveal" href="services.html#lms-integration">
+          <h3 class="service__name">Gamified LX Design</h3>
+          <p class="service__desc">Interactive mechanics, reward structures, and game loops designed to retain attention.</p>
+          <a href="#contact" class="service__cta">Learn more &rarr;</a>
+        </div>
+
+        <div class="service reveal">
           <span class="service__num">03</span>
-          <span class="service__name">LMS Integration</span>
-          <span class="service__desc">Connect learning experiences with the systems that deliver, track and manage them.</span>
-          <span class="service__cta">Explore <span class="arrow">→</span></span>
-        </a>
-        <a class="service reveal" href="services.html#fix-elearning">
-          <span class="service__num">04</span>
-          <span class="service__name">Fix eLearning Problems</span>
-          <span class="service__desc">Have a course that's boring, confusing or ineffective? I diagnose the problem and redesign the experience.</span>
-          <span class="service__cta">Fix it <span class="arrow">→</span></span>
-        </a>
-        <a class="service reveal" href="services.html#video-production">
-          <span class="service__num">05</span>
-          <span class="service__name">Learning Video Production</span>
-          <span class="service__desc">Turn complex concepts into clear, purposeful visual learning.</span>
-          <span class="service__cta">Explore <span class="arrow">→</span></span>
-        </a>
-        <a class="service reveal" href="services.html#evaluation">
-          <span class="service__num">06</span>
-          <span class="service__name">Learning Evaluation Integration</span>
-          <span class="service__desc">Build evaluation into the experience itself, rather than treating it as an afterthought.</span>
-          <span class="service__cta">Measure it <span class="arrow">→</span></span>
-        </a>
+          <h3 class="service__name">UX & Prototyping</h3>
+          <p class="service__desc">User interface design, wireframing, and interactive prototypes built for seamless usability.</p>
+          <a href="#contact" class="service__cta">Learn more &rarr;</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       SELECTED WORK
-       ============================================ -->
+  <!-- Selected Work -->
   <section class="work" id="work">
-    <div class="wrap wrap--work">
+    <div class="wrap">
       <div class="section-head">
-        <h2 class="reveal">Selected work</h2>
-        <p class="reveal">A selection of learning experiences, simulations and digital learning solutions.</p>
+        <h2>Selected Work</h2>
+        <p>A collection of recent interactive learning projects and product designs.</p>
       </div>
     </div>
 
-    <div class="work__track-wrap">
-      <button class="work__nav work__nav--prev" id="workPrev" aria-label="Previous project">←</button>
-      <div class="work__track" id="workTrack" tabindex="0" aria-label="Selected work, scroll horizontally"></div>
-      <button class="work__nav work__nav--next" id="workNext" aria-label="Next project">→</button>
+    <div class="work__track">
+      <!-- Project 1 -->
+      <article class="project-card reveal">
+        <div class="project-card__media">
+          <svg width="100%" height="100%" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="250" fill="#3B82F6"/>
+            <circle cx="200" cy="125" r="60" fill="#60A5FA"/>
+            <rect x="160" y="115" width="80" height="20" rx="10" fill="#FFFFFF"/>
+            <path d="M190 95 L220 125 L190 155" stroke="#1E3A8A" stroke-width="8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="project-card__category">Interactive Course</span>
+        <h3 class="project-card__title">Cybersecurity Fundamentals</h3>
+        <p class="project-card__desc">A gamified simulation module designed for corporate compliance training.</p>
+        <a href="projects/project-01.html" class="project-card__cta">View Case Study &rarr;</a>
+      </article>
+
+      <!-- Project 2 -->
+      <article class="project-card reveal">
+        <div class="project-card__media">
+          <svg width="100%" height="100%" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="250" fill="#10B981"/>
+            <rect x="80" y="50" width="240" height="150" rx="16" fill="#A7F3D0"/>
+            <circle cx="140" cy="125" r="30" fill="#047857"/>
+            <circle cx="260" cy="125" r="30" fill="#047857"/>
+          </svg>
+        </div>
+        <span class="project-card__category">Mobile Experience</span>
+        <h3 class="project-card__title">Math Explorers App</h3>
+        <p class="project-card__desc">An adaptive learning mobile app helping young students master mathematics.</p>
+        <a href="projects/project-02.html" class="project-card__cta">View Case Study &rarr;</a>
+      </article>
+
+      <!-- Project 3 -->
+      <article class="project-card reveal">
+        <div class="project-card__media">
+          <svg width="100%" height="100%" viewBox="0 0 400 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="400" height="250" fill="#F59E0B"/>
+            <polygon points="200,40 250,190 150,190" fill="#FDE68A"/>
+            <circle cx="200" cy="140" r="25" fill="#B45309"/>
+          </svg>
+        </div>
+        <span class="project-card__category">UX System</span>
+        <h3 class="project-card__title">LMS Design System</h3>
+        <p class="project-card__desc">A complete component library for scalable educational web applications.</p>
+        <a href="projects/project-03.html" class="project-card__cta">View Case Study &rarr;</a>
+      </article>
     </div>
   </section>
 
-  <!-- ============================================
-       WHY THIS APPROACH
-       ============================================ -->
+  <!-- Why This Approach -->
   <section class="benefits">
     <div class="wrap">
-      <h2 class="section-kicker reveal">Why this approach</h2>
+      <h2 class="section-kicker">Why this approach</h2>
 
       <div class="benefit reveal">
         <span class="benefit__num">01</span>
-        <h3>Every interaction has a purpose.</h3>
-        <p>No unnecessary clicks. No interaction for interaction's sake. Every action contributes to learning.</p>
+        <div>
+          <h3>Every interaction has a purpose.</h3>
+          <p>No unnecessary clicks. No interaction for interaction's sake. Every action directly contributes to deeper retention and learning success.</p>
+        </div>
       </div>
+
       <div class="benefit reveal">
         <span class="benefit__num">02</span>
-        <h3>Practice the real world.</h3>
-        <p>Learners face constraints, make decisions and experience consequences — before those decisions matter in reality.</p>
-      </div>
-      <div class="benefit reveal">
-        <span class="benefit__num">03</span>
-        <h3>Designed with evidence.</h3>
-        <p>Learning strategies are grounded in research, learning science and evaluation, rather than trends.</p>
+        <div>
+          <h3>Built for real-world engagement.</h3>
+          <p>Learners stay engaged through clear feedback loops, intuitive UI, and rewarding progress systems.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       PROCESS
-       ============================================ -->
+  <!-- Process -->
   <section class="process" id="process">
     <div class="wrap">
       <div class="section-head">
-        <h2 class="reveal">How I work</h2>
+        <h2>Process</h2>
+        <p>A structured approach to transforming complex educational goals into engaging products.</p>
       </div>
 
       <div class="process__journey">
         <div class="process__stage reveal">
-          <span class="process__num">01</span>
-          <h3>Discovery</h3>
-          <p>Understand the learners, the business problem, the context and the behaviour change we're after.</p>
+          <div class="process__num">1</div>
+          <h3>Discover & Align</h3>
+          <p>Analyzing learner needs, defining clear business goals, and setting key metrics for success.</p>
         </div>
-        <div class="process__connector" aria-hidden="true"></div>
+
         <div class="process__stage reveal">
-          <span class="process__num">02</span>
-          <h3>Prototyping</h3>
-          <p>Turn the learning problem into an experience that can be tested early, before full production.</p>
+          <div class="process__num">2</div>
+          <h3>Prototype & Test</h3>
+          <p>Building interactive prototypes early to test mechanics, tone, and flow with real users.</p>
         </div>
-        <div class="process__connector" aria-hidden="true"></div>
+
         <div class="process__stage reveal">
-          <span class="process__num">03</span>
-          <h3>Production</h3>
-          <p>Build, integrate, test and refine the final learning experience.</p>
+          <div class="process__num">3</div>
+          <h3>Build & Refine</h3>
+          <p>Developing full-fidelity assets, integrating LMS platforms, and optimizing based on analytics.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       CREDENTIALS
-       ============================================ -->
+  <!-- Credentials -->
   <section class="credentials">
     <div class="wrap">
-      <h2 class="reveal">Built on education. Tested through experience.</h2>
-
+      <h2>Credentials</h2>
       <div class="credential-list">
         <div class="credential reveal">
-          <span class="credential__stat">M.Ed.</span>
-          <span class="credential__label">Technical University of Munich</span>
+          <div class="credential__stat">5+</div>
+          <div class="credential__label">Years Experience</div>
         </div>
         <div class="credential reveal">
-          <span class="credential__stat">4+ years</span>
-          <span class="credential__label">Learning design and evaluation experience</span>
+          <div class="credential__stat">40+</div>
+          <div class="credential__label">Projects Completed</div>
         </div>
         <div class="credential reveal">
-          <span class="credential__stat">International</span>
-          <span class="credential__label">Experience working across international companies and learning environments</span>
+          <div class="credential__stat">98%</div>
+          <div class="credential__label">Client Satisfaction</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       CONTACT CTA
-       ============================================ -->
+  <!-- Contact Section -->
   <section class="contact" id="contact">
     <div class="wrap">
-      <h2 class="reveal">Have a learning problem?</h2>
-      <p class="reveal">Let's design the experience.</p>
+      <h2>Let's build something great.</h2>
+      <p>Have an upcoming project or looking to elevate your learning experience?</p>
 
-      <div class="contact__actions reveal">
-        <a href="#" class="btn btn--primary" id="contactEmailBtn">Start a conversation <span class="arrow">→</span></a>
-        <a href="#work" class="btn btn--ghost">View my work <span class="arrow">→</span></a>
+      <div class="contact__actions">
+        <a href="mailto:hello@razinabdullah.com" class="btn btn--primary">Get in Touch &rarr;</a>
+        <a href="#work" class="btn btn--ghost">See Work</a>
       </div>
 
-      <div class="contact__meta reveal">
-        <a href="#" id="contactEmailLink" class="contact__meta-link">Email — add address</a>
-        <a href="#" id="contactLinkedinLink" class="contact__meta-link" target="_blank" rel="noopener">LinkedIn — add profile</a>
+      <div class="contact__meta">
+        <a href="mailto:hello@razinabdullah.com" class="contact__meta-link">hello@razinabdullah.com</a>
+        <a href="https://linkedin.com" target="_blank" rel="noopener" class="contact__meta-link">LinkedIn</a>
       </div>
     </div>
   </section>
 
-</main>
-
-<!-- ============================================
-     FOOTER
-     ============================================ -->
-<footer class="footer">
-  <div class="wrap footer__inner">
-    <div class="footer__brand">
-      <p class="footer__name">Razin Abdullah</p>
-      <p class="footer__role">Learning Experience Designer</p>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer__inner">
+        <div class="footer__name">Razin Abdullah</div>
+        <div class="footer__links">
+          <a href="#hero">Back to top &uarr;</a>
+        </div>
+      </div>
     </div>
+  </footer>
 
-    <nav class="footer__links" aria-label="Footer">
-      <a href="#work">Work</a>
-      <a href="#services">Services</a>
-      <a href="#process">Process</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <a href="#" id="footerLinkedin" target="_blank" rel="noopener">LinkedIn</a>
-    </nav>
-
-    <p class="footer__copy">© 2026 Razin Abdullah</p>
-  </div>
-</footer>
-
-<script src="js/main.js"></script>
+  <!-- JavaScript -->
+  <script src="js/main.js"></script>
 </body>
 </html>

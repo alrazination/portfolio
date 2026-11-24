@@ -76,7 +76,36 @@
       <div class="cs-sec">
         <h2>Designing the mistakes</h2>
         <figure class="moment">
-          <img src="../img/thumbs/eco-party.webp" alt="Screenshot of the simulation at the moment described below" loading="lazy" width="1280" height="720">
+          <svg class="anim" data-still="3.5" viewBox="0 0 640 360" role="img" aria-label="Animation: a cup labelled compostable drops onto the planet waste side of the scale, the scale tips, and a trap warning appears: it only composts in industrial facilities.">
+<rect width="640" height="360" fill="#1C0E3C"/>
+<polygon points="320,130 294,300 346,300" fill="#7B5CD6"/><rect x="250" y="296" width="140" height="14" rx="7" fill="#5D3FB8"/>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -38;0 -38;0 0" keyTimes="0;.32;.44;.94;1" dur="5s" repeatCount="indefinite"/>
+  <path d="M170 130 L130 198 M170 130 L210 198" stroke="#CBBDEB" stroke-width="2.5"/>
+  <path d="M118 198 H222 Q218 230 170 230 Q122 230 118 198Z" fill="#C6FF3D"/>
+  <polygon points="170,168 176,182 191,182 179,191 183,205 170,197 157,205 161,191 149,182 164,182" fill="#FFF6EA"/>
+  <text x="170" y="256" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="800" font-size="15" fill="#FFF6EA">Party fun</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 38;0 38;0 0" keyTimes="0;.32;.44;.94;1" dur="5s" repeatCount="indefinite"/>
+  <path d="M470 130 L430 198 M470 130 L510 198" stroke="#CBBDEB" stroke-width="2.5"/>
+  <g opacity="0">
+    <animateTransform attributeName="transform" type="translate" values="0 -200;0 -200;0 0;0 0;0 -200" keyTimes="0;.08;.28;.94;1" dur="5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;.08;.28;.94;1" dur="5s" repeatCount="indefinite"/>
+    <path d="M454 156 H486 L481 198 H459Z" fill="#C9F0A9" stroke="#4AA82B" stroke-width="2.5"/>
+    <path d="M468 172 q8 -12 14 -8 q0 12 -14 8z" fill="#2F8F17"/>
+    <rect x="422" y="124" width="96" height="22" rx="11" fill="#C6FF3D"/><text x="470" y="140" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="800" font-size="12" fill="#14082B">compostable</text>
+  </g>
+  <path d="M418 198 H522 Q518 230 470 230 Q422 230 418 198Z" fill="#8A7BB0"/>
+  <text x="470" y="256" text-anchor="middle" font-family="Figtree, sans-serif" font-weight="800" font-size="15" fill="#FFF6EA">Planet waste</text>
+</g>
+<g><animateTransform attributeName="transform" type="rotate" values="0 320 130;0 320 130;13.5 320 130;13.5 320 130;0 320 130" keyTimes="0;.32;.44;.94;1" dur="5s" repeatCount="indefinite"/>
+  <rect x="160" y="124" width="320" height="12" rx="6" fill="#FF4F6D"/>
+</g>
+<circle cx="320" cy="130" r="10" fill="#FFF6EA"/>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.46;.5;.94;1" dur="5s" repeatCount="indefinite"/>
+  <rect x="36" y="32" width="104" height="46" rx="14" fill="#FF4F6D"/><text x="88" y="62" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="17" fill="#14082B">Trap!</text>
+  <text x="156" y="52" font-family="Figtree, sans-serif" font-weight="700" font-size="15" fill="#FFF6EA">Only composts in</text><text x="156" y="72" font-family="Figtree, sans-serif" font-weight="700" font-size="15" fill="#FFF6EA">industrial facilities</text>
+</g>
+</svg>
           <figcaption>The greenwashing trap. The cups look green, so plenty of players pick them, and that&#x27;s when the real lesson lands.</figcaption>
         </figure>
       </div>
@@ -86,13 +115,6 @@
         <div class="decisions"><div class="decision"><h3>Every item adds fun</h3><p>The point isn&#x27;t that parties are bad. Every choice improves the party, so the only trade-off is waste.</p></div><div class="decision"><h3>A deliberate trap</h3><p>One option is designed to look like the right answer. Being fooled once is more memorable than being told.</p></div><div class="decision"><h3>The gym reacts</h3><p>Smog and a warm glow show the state of the party at a glance, before anyone reads a word.</p></div><div class="decision"><h3>A coach, not a judge</h3><p>Vesp explains each choice in plain language and says what to swap when the scale won&#x27;t balance.</p></div></div>
       </div>
 
-      <div class="cs-sec">
-        <h2>How it's built</h2>
-        <div>
-          <div class="build"><span class="chip">SVG</span><span class="chip">Canvas confetti</span><span class="chip">Spring physics</span><span class="chip">Pointer events</span></div>
-          <div class="prose"><p>The gym, the scale and every catalogue item are drawn in SVG, and the scale uses a small spring simulation so it swings like a real balance. It shares a world with Close the loop: the plastic-cap moulding machine at the party is the kind learners run in the maker space.</p></div>
-        </div>
-      </div>
     </div>
   </section>
 

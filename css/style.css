@@ -351,3 +351,8 @@ p { margin: 0 0 1em; }
   .sticker { flex-wrap: nowrap; font-size: 0.78rem; gap: 8px; padding: 6px 10px 6px 6px; left: 10px; bottom: 10px; max-width: calc(100% - 20px); line-height: 1.3; }
   .sticker b { flex: none; font-size: 0.72rem; }
 }
+
+/* animated mistake illustrations */
+.moment { max-width: 44rem; }
+.moment svg.anim { display: block; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 0 0 4px var(--panel), 0 10px 0 4px #0B0418; }
+.moment figcaption { margin-top: 22px; }

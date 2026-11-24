@@ -76,7 +76,29 @@
       <div class="cs-sec">
         <h2>Designing the mistakes</h2>
         <figure class="moment">
-          <img src="../img/thumbs/wo-ist-der-loeffel.webp" alt="Screenshot of the simulation at the moment described below" loading="lazy" width="1280" height="720">
+          <svg class="anim" data-still="3" viewBox="0 0 640 360" role="img" aria-label="Animation: asked to find der Löffel, the learner clicks the fork instead and hears die Gabel, with its article. The word will come back later.">
+<rect width="640" height="360" fill="#1C0E3C"/>
+<g transform="translate(36 32)"><rect width="230" height="82" rx="16" fill="#FFF6EA"/><text x="20" y="30" font-family="Figtree, sans-serif" font-weight="700" font-size="14" fill="#55656D">Finde:</text><text x="20" y="64" font-family="Unbounded, sans-serif" font-weight="800" font-size="24"><tspan fill="#1d63c9">der</tspan><tspan fill="#17252C"> Löffel</tspan></text></g>
+<rect x="170" y="196" width="320" height="72" rx="8" fill="#ECE7DE"/>
+<rect x="160" y="266" width="340" height="58" rx="10" fill="#2F5D73"/><rect x="290" y="286" width="80" height="8" rx="4" fill="#B4BCC2"/>
+<g><rect x="214" y="229" width="70" height="7" rx="3.5" fill="#9AA3A8"/><ellipse cx="292" cy="232" rx="16" ry="10" fill="#9AA3A8"/></g>
+<g><rect x="356" y="229" width="70" height="7" rx="3.5" fill="#9AA3A8"/><rect x="424" y="222" width="8" height="21" rx="3" fill="#9AA3A8"/><g fill="#9AA3A8"><rect x="430" y="221" width="22" height="4" rx="2"/><rect x="430" y="228" width="22" height="4" rx="2"/><rect x="430" y="235" width="22" height="4" rx="2"/><rect x="430" y="242" width="22" height="4" rx="2"/></g></g>
+<circle cx="420" cy="232" r="0" fill="none" stroke="#FF4F6D" stroke-width="3"><animate attributeName="r" values="0;0;0;30;30;0" keyTimes="0;.29;.3;.42;.95;1" dur="5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;0;0;0" keyTimes="0;.29;.3;.42;.95;1" dur="5s" repeatCount="indefinite"/></circle>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.32;.36;.94;1" dur="5s" repeatCount="indefinite"/>
+  <rect x="330" y="128" width="186" height="48" rx="24" fill="#FFF6EA" stroke="#FF4F6D" stroke-width="3"/><path d="M412 175 L422 190 L432 175Z" fill="#FFF6EA"/>
+  <path d="M348 146 h8 l10 -8 v28 l-10 -8 h-8z" fill="#17252C"/>
+  <path d="M372 144 q6 8 0 16" stroke="#17252C" stroke-width="2.5" fill="none" stroke-linecap="round"><animate attributeName="opacity" values="1;.2;1" dur=".8s" repeatCount="indefinite"/></path>
+  <text x="388" y="160" font-family="Unbounded, sans-serif" font-weight="800" font-size="19"><tspan fill="#cf2e3d">die</tspan><tspan fill="#17252C"> Gabel</tspan></text>
+</g>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.52;.56;.94;1" dur="5s" repeatCount="indefinite"/>
+  <rect x="394" y="32" width="212" height="46" rx="14" fill="#C6FF3D"/>
+  <path d="M414 55 a10 10 0 1 1 3 7" stroke="#14082B" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M410 60 l7 3 l1 -8z" fill="#14082B"/>
+  <text x="440" y="61" font-family="Figtree, sans-serif" font-weight="800" font-size="15" fill="#14082B">Comes back later</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="560 330;560 330;414 228;414 228;560 330" keyTimes="0;.08;.28;.94;1" dur="5s" repeatCount="indefinite"/>
+  <path d="M0 0 L0 26 L7 20 L12 31 L17 29 L12 18 L21 18Z" fill="#FFF6EA" stroke="#14082B" stroke-width="2" stroke-linejoin="round"/>
+</g>
+</svg>
           <figcaption>In Finden + Artikel mode, the article stays hidden until the learner has found the object and chosen der, die or das.</figcaption>
         </figure>
       </div>
@@ -86,13 +108,6 @@
         <div class="decisions"><div class="decision"><h3>Explore before you&#x27;re tested</h3><p>Explore mode introduces the words with no points at all. Testing comes after learners have had a chance to look around.</p></div><div class="decision"><h3>Opening things is free</h3><p>Cupboards and drawers cost nothing to open, so nobody guesses out of fear of losing points.</p></div><div class="decision"><h3>Colour carries the article</h3><p>Der is always blue, die red, das green. In article mode the colour stays hidden until a choice is made, so it can&#x27;t give the answer away.</p></div><div class="decision"><h3>Mistakes come back</h3><p>Words found with help, or with the wrong article, return later in the same round. It&#x27;s spaced repetition without a separate review screen.</p></div><div class="decision"><h3>No clock, no leaderboard</h3><p>Learners move on when they&#x27;re ready. Beginners need time to say the word out loud.</p></div><div class="decision"><h3>Teacher notes built in</h3><p>The start screen explains the design for teachers, so they know how to use each mode in class.</p></div></div>
       </div>
 
-      <div class="cs-sec">
-        <h2>How it's built</h2>
-        <div>
-          <div class="build"><span class="chip">three.js</span><span class="chip">Web Speech API</span><span class="chip">localStorage</span><span class="chip">Atkinson Hyperlegible</span></div>
-          <div class="prose"><p>The whole kitchen is built in code: every cupboard, drawer and object is a three.js model that can open, glow or be picked. German pronunciation comes from the browser&#x27;s speech engine, and the words a learner has discovered are remembered between sessions. Buttons are at least 44 px, the type is chosen for readability, and the room can be explored with the arrow keys.</p></div>
-        </div>
-      </div>
     </div>
   </section>
 

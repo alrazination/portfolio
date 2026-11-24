@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cleanroom Gowning Sequence</title>
+<meta name="viewport" content="width=1280">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+  html,body{margin:0;padding:0;background:#05080f;font-family:"Segoe UI",Arial,sans-serif;overflow:hidden}
+  #app{position:relative;width:1280px;height:720px;overflow:hidden;background:#0b1220;color:#e2e8f0}
+  #stage{position:absolute;left:0;top:0;width:896px;height:720px;overflow:hidden}
+  #stage svg.main{position:absolute;left:0;top:0;width:896px;height:720px}
+  #rack{position:absolute;left:896px;top:0;width:384px;height:720px;box-sizing:border-box;padding:16px 18px;background:linear-gradient(#111a2c,#0a101d);border-left:2px solid #22d3ee55}
+  #banner{position:absolute;left:20px;top:12px;width:856px;min-height:56px;box-sizing:border-box;padding:9px 16px;border-radius:10px;border:2px solid;font-size:15px;line-height:1.3;z-index:20;transition:background .3s,border-color .3s}
+  #banner b{display:block;font-size:17px;letter-spacing:.2px}
+  .b-info{background:#0c2a3f;border-color:#22d3ee;color:#cffafe}
+  .b-ok{background:#052e1b;border-color:#34d399;color:#d1fae5}
+  .b-warn{background:#3a2a05;border-color:#fbbf24;color:#fef3c7}
+  .b-err{background:#450a0a;border-color:#f87171;color:#fee2e2}
+  .card{position:relative;height:104px;border-radius:12px;background:#16213a;border:1.5px solid #2c3e63;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:grab;touch-action:none;user-select:none;transition:border-color .2s,opacity .3s}
+  .card:hover{border-color:#22d3ee}
+  .card svg{width:62px;height:62px;pointer-events:none}
+  .card span{font-size:12.5px;color:#cbd5e1;pointer-events:none}
+  .card.used{opacity:.3;cursor:default;border-style:dashed}
+  .card.used::after{content:"\2713";position:absolute;top:4px;right:9px;color:#34d399;font-size:18px;font-weight:700}
+  .step{display:flex;align-items:center;gap:10px;padding:6px 10px;margin-bottom:6px;border-radius:8px;background:#121b30;border:1.5px solid #243253;font-size:13.5px;color:#94a3b8;transition:all .4s}
+  .step i{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid #475a85;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700}
+  .step.done{background:#06301f;border-color:#34d399;color:#d1fae5}
+  .step.done i{background:#34d399;border-color:#34d399;color:#04231a}
+  #ghost{position:absolute;width:84px;height:84px;margin:-42px 0 0 -42px;pointer-events:none;z-index:50;display:none;filter:drop-shadow(0 8px 10px #000a)}
+  #ghost svg{width:100%;height:100%}
+  #flash{position:absolute;inset:0;pointer-events:none;z-index:15;opacity:0}
+  #flash.on{animation:flash .55s 6}
+  @keyframes flash{0%,100%{box-shadow:inset 0 0 0 0 #ef444400;opacity:0}50%{box-shadow:inset 0 0 120px 30px #ef4444cc;opacity:1}}
+  .g{opacity:0;transform:translateY(-34px);transition:opacity .45s,transform .45s cubic-bezier(.3,1.5,.5,1)}
+  .g.on{opacity:1;transform:none}
+  #avatar{transition:transform 1.6s cubic-bezier(.5,0,.3,1);cursor:pointer}
+  #avatar.over{filter:drop-shadow(0 0 14px #22d3ee)}
+  #avatar.win{filter:drop-shadow(0 0 16px #34d399)}
+  #floorRed{opacity:0;transition:opacity .4s}
+  #floorRed.on{opacity:.55;animation:pulse .6s infinite alternate}
+  @keyframes pulse{to{opacity:.2}}
+  .fp{opacity:0}.fp.on{animation:fp .4s forwards}
+  @keyframes fp{to{opacity:.85}}
+  #reset{position:absolute;left:20px;bottom:14px;z-index:20;padding:7px 16px;border-radius:8px;background:#16213a;border:1.5px solid #2c3e63;color:#cbd5e1;font-size:13px;cursor:pointer}
+  #reset:hover{border-color:#22d3ee;color:#fff}
+  @media (prefers-reduced-motion:reduce){.g,#avatar{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="stage">
+  <svg class="main" viewBox="0 0 896 720" xmlns="http://www.w3.org/2000/svg">
+   <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1020"/><stop offset="1" stop-color="#16233d"/></linearGradient>
+    <linearGradient id="clean" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b3b66"/><stop offset="1" stop-color="#1d8fe0"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+   <rect width="896" height="430" fill="url(#wall)"/>
+   <g stroke="#1e3354" stroke-width="2" fill="none">
+    <path d="M0 110H896M0 300H896M224 0V430M448 0V430M672 0V430"/>
+   </g>
+   <g fill="#164e63" opacity=".6"><rect x="60" y="0" width="140" height="10"/><rect x="380" y="0" width="140" height="10"/><rect x="700" y="0" width="140" height="10"/></g>
+   <text x="448" y="40" text-anchor="middle" fill="#1e3a5f" font-size="0">.</text>
+   <!-- floor -->
+   <rect y="430" width="896" height="290" fill="#3b4252"/>
+   <rect y="430" width="896" height="160" fill="url(#clean)"/>
+   <rect y="430" width="896" height="160" fill="#22d3ee" opacity=".12" filter="url(#glow)"/>
+   <g stroke="#ffffff22" stroke-width="1.5"><path d="M0 470H896M0 510H896M0 550H896M150 430V590M300 430V590M448 430V590M596 430V590M746 430V590"/></g>
+   <g stroke="#ffffff10" stroke-width="1.5"><path d="M0 640H896M0 690H896"/></g>
+   <rect id="floorRed" y="430" width="896" height="290" fill="#ef4444"/>
+   <rect y="586" width="896" height="8" fill="#facc15"/>
+   <path d="M0 586H896" stroke="#111" stroke-width="2" stroke-dasharray="18 18"/>
+   <text x="448" y="462" text-anchor="middle" fill="#bae6fd" font-size="15" font-weight="700" letter-spacing="3">CLASS 100 CLEAN ZONE</text>
+   <text x="448" y="708" text-anchor="middle" fill="#94a3b8" font-size="15" font-weight="700" letter-spacing="3">PRE-GOWN AREA</text>
+   <text x="880" y="581" text-anchor="end" fill="#facc15" font-size="11" font-weight="700">CLEAN LINE</text>
+   <!-- footprints -->
+   <g id="prints" fill="#4a2e14"></g>
+   <!-- particle counter -->
+   <g id="counter">
+    <rect x="318" y="84" width="260" height="72" rx="10" fill="#07101e" stroke="#22d3ee" stroke-width="2" id="cBox"/>
+    <text x="448" y="102" text-anchor="middle" fill="#7dd3fc" font-size="11.5">PARTICLE COUNTER (per ft³)</text>
+    <text id="cVal" x="448" y="135" text-anchor="middle" fill="#22d3ee" font-size="32" font-weight="700" font-family="Consolas,monospace">10</text>
+    <rect x="338" y="143" width="220" height="6" rx="3" fill="#1e293b"/>
+    <rect id="cBar" x="338" y="143" width="0.2" height="6" rx="3" fill="#22d3ee"/>
+   </g>
+   <!-- avatar (origin at feet) -->
+   <g id="avatar" style="transform:translate(448px,655px) scale(.82)">
+    <ellipse cx="0" cy="4" rx="70" ry="10" fill="#0006"/>
+    <rect id="hit" x="-95" y="-430" width="190" height="440" fill="transparent"/>
+    <!-- street clothes -->
+    <rect x="-38" y="-172" width="34" height="150" rx="6" fill="#3b5b8a"/><rect x="4" y="-172" width="34" height="150" rx="6" fill="#3b5b8a"/>
+    <ellipse cx="-22" cy="-10" rx="26" ry="12" fill="#2a2018"/><ellipse cx="22" cy="-10" rx="26" ry="12" fill="#2a2018"/>
+    <rect x="-80" y="-325" width="26" height="160" rx="12" fill="#b45309"/><rect x="54" y="-325" width="26" height="160" rx="12" fill="#b45309"/>
+    <rect x="-56" y="-335" width="112" height="170" rx="16" fill="#d97706"/>
+    <circle cx="-67" cy="-158" r="12" fill="#e8b88f"/><circle cx="67" cy="-158" r="12" fill="#e8b88f"/>
+    <rect x="-11" y="-352" width="22" height="26" fill="#d9a77c"/>
+    <circle cx="0" cy="-388" r="38" fill="#e8b88f"/>
+    <path d="M-39 -392 C-40 -432 40 -432 39 -392 C28 -412 -28 -412 -39 -392Z" fill="#5b3a1a"/>
+    <circle cx="-13" cy="-386" r="3.5" fill="#222"/><circle cx="13" cy="-386" r="3.5" fill="#222"/>
+    <path d="M-10 -371 Q0 -363 10 -371" stroke="#8a4b2f" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- coverall -->
+    <g id="g-coverall" class="g">
+     <rect x="-92" y="-332" width="34" height="176" rx="15" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+     <rect x="58" y="-332" width="34" height="176" rx="15" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+     <rect x="-42" y="-180" width="40" height="172" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+     <rect x="2" y="-180" width="40" height="172" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+     <rect x="-62" y="-342" width="124" height="176" rx="20" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+     <path d="M0 -335V-172" stroke="#94a3b8" stroke-width="3"/><path d="M-40 -300H-8M8 -300H40" stroke="#cbd5e1" stroke-width="2"/>
+     <rect x="-24" y="-352" width="48" height="16" rx="8" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
+    </g>
+    <!-- booties -->
+    <g id="g-booties" class="g">
+     <rect x="-50" y="-34" width="52" height="44" rx="18" fill="#eef2f7" stroke="#94a3b8" stroke-width="2"/>
+     <rect x="-2" y="-34" width="52" height="44" rx="18" fill="#eef2f7" stroke="#94a3b8" stroke-width="2"/>
+     <path d="M-44 -26H-4M4 -26H44" stroke="#60a5fa" stroke-width="3"/>
+    </g>
+    <!-- hairnet -->
+    <g id="g-hairnet" class="g">
+     <path d="M-41 -392 C-44 -440 44 -440 41 -392 C30 -400 -30 -400 -41 -392Z" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+     <path d="M-36 -402H36" stroke="#60a5fa" stroke-width="2" stroke-dasharray="3 4"/>
+    </g>
+    <!-- hood -->
+    <g id="g-hood" class="g">
+     <path d="M0 -440 C-46 -440 -52 -400 -50 -372 L-70 -325 L70 -325 L50 -372 C52 -400 46 -440 0 -440Z" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+     <ellipse cx="0" cy="-384" rx="28" ry="31" fill="#e8b88f" stroke="#94a3b8" stroke-width="2"/>
+     <path d="M-28 -402 Q0 -418 28 -402" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+     <circle cx="-12" cy="-386" r="3.5" fill="#222"/><circle cx="12" cy="-386" r="3.5" fill="#222"/>
+     <path d="M-9 -371 Q0 -364 9 -371" stroke="#8a4b2f" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </g>
+    <!-- gloves -->
+    <g id="g-gloves" class="g">
+     <rect x="-90" y="-176" width="30" height="24" rx="8" fill="#38bdf8" stroke="#0369a1" stroke-width="2"/>
+     <rect x="60" y="-176" width="30" height="24" rx="8" fill="#38bdf8" stroke="#0369a1" stroke-width="2"/>
+     <ellipse cx="-75" cy="-142" rx="15" ry="19" fill="#38bdf8" stroke="#0369a1" stroke-width="2"/>
+     <ellipse cx="75" cy="-142" rx="15" ry="19" fill="#38bdf8" stroke="#0369a1" stroke-width="2"/>
+    </g>
+    <g id="dust"></g>
+   </g>
+   <circle cx="0" cy="0" r="0"/>
+  </svg>
+  <div id="banner" class="b-info"><b>Gowning Airlock</b>Drag each garment from the rack onto the technician, then click the technician to walk into the Clean Zone.</div>
+  <div id="flash"></div>
+  <button id="reset" type="button">Reset simulation</button>
+ </div>
+
+ <div id="rack">
+  <div style="font-size:19px;font-weight:700;margin-bottom:2px">Garment Rack</div>
+  <div style="font-size:12.5px;color:#7f93b8;margin-bottom:10px">Drag a garment onto the technician</div>
+  <div id="grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px"></div>
+  <div style="font-size:14px;font-weight:700;margin-bottom:7px;color:#cbd5e1">Top-Down checklist</div>
+  <div id="steps"></div>
+ </div>
+ <div id="ghost"></div>
+</div>
+
+<script>
+(function(){
+  const ORDER=['hairnet','hood','coverall','booties','gloves'];
+  const NAME={hairnet:'Hairnet',hood:'Cleanroom Hood',coverall:'Coverall',booties:'Shoe Covers',gloves:'Nitrile Gloves'};
+  const STEP={hairnet:'Hairnet over hair',hood:'Hood over head and neck',coverall:'Coverall on body',booties:'Shoe covers on feet',gloves:'Gloves sealed over sleeves'};
+  const S='stroke="#64748b" stroke-width="2.5" stroke-linejoin="round"';
+  const ICON={
+   hairnet:`<svg viewBox="0 0 64 64"><path d="M8 40C8 12 56 12 56 40C56 48 46 50 32 50C18 50 8 48 8 40Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/><path d="M12 38H52" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3 4"/><circle cx="24" cy="26" r="2" fill="#93c5fd"/><circle cx="38" cy="24" r="2" fill="#93c5fd"/><circle cx="32" cy="32" r="2" fill="#93c5fd"/></svg>`,
+   hood:`<svg viewBox="0 0 64 64"><path d="M32 4C16 4 12 20 14 34L5 56H59L50 34C52 20 48 4 32 4Z" fill="#f8fafc" ${S}/><ellipse cx="32" cy="28" rx="11" ry="14" fill="#16213a" ${S}/></svg>`,
+   coverall:`<svg viewBox="0 0 64 64"><path d="M22 4H42L59 17L53 34L46 29V60H35L32 40L29 60H18V29L11 34L5 17Z" fill="#f8fafc" ${S}/><path d="M32 6V40" stroke="#94a3b8" stroke-width="2.5"/></svg>`,
+   booties:`<svg viewBox="0 0 64 64"><rect x="5" y="24" width="24" height="32" rx="10" fill="#f8fafc" ${S}/><rect x="35" y="24" width="24" height="32" rx="10" fill="#f8fafc" ${S}/><path d="M7 33H27M37 33H57" stroke="#3b82f6" stroke-width="3"/></svg>`,
+   gloves:`<svg viewBox="0 0 64 64"><g fill="#38bdf8" stroke="#0369a1" stroke-width="2.5"><rect x="17" y="30" width="30" height="26" rx="8"/><rect x="17" y="10" width="7" height="28" rx="3.5"/><rect x="25" y="5" width="7" height="32" rx="3.5"/><rect x="33" y="7" width="7" height="30" rx="3.5"/><rect x="41" y="13" width="7" height="26" rx="3.5"/><rect x="8" y="28" width="7" height="20" rx="3.5" transform="rotate(-28 11 38)"/></g></svg>`
+  };
+  const $=id=>document.getElementById(id);
+  const app=$('app'), ghost=$('ghost'), av=$('avatar'), banner=$('banner');
+  let worn,n,locked,coverEarly,counterNow=10,raf;
+
+  // build rack
+  ORDER.forEach(k=>{
+    const c=document.createElement('div');c.className='card';c.dataset.k=k;
+    c.innerHTML=ICON[k]+'<span>'+NAME[k]+'</span>';
+    if(k==='gloves')c.style.gridColumn='1 / span 2',c.style.margin='0 auto',c.style.width='calc(50% - 5px)';
+    $('grid').appendChild(c);
+    c.addEventListener('pointerdown',e=>startDrag(e,k,c));
+  });
+  ORDER.forEach((k,i)=>{
+    const d=document.createElement('div');d.className='step';d.id='s-'+k;
+    d.innerHTML='<i>'+(i+1)+'</i><div>'+STEP[k]+'</div>';$('steps').appendChild(d);
+  });
+
+  const scale=()=>app.getBoundingClientRect().width/1280;
+  function say(type,title,text){banner.className='b-'+type;banner.innerHTML='<b>'+title+'</b>'+text}
+
+  function setCounter(target,color){
+    cancelAnimationFrame(raf);
+    const from=counterNow,t0=performance.now(),dur=800;
+    $('cVal').setAttribute('fill',color);$('cBar').setAttribute('fill',color);
+    $('cBox').setAttribute('stroke',color);
+    (function step(t){
+      const p=Math.min(1,(t-t0)/dur);counterNow=Math.round(from+(target-from)*p);
+      $('cVal').textContent=counterNow.toLocaleString('en-US');
+      $('cBar').setAttribute('width',Math.max(.2,220*Math.min(1,counterNow/10000)));
+      if(p<1)raf=requestAnimationFrame(step);
+    })(t0);
+  }
+
+  function updateChecklist(){
+    ORDER.forEach((k,i)=>$('s-'+k).classList.toggle('done',i<n));
+    document.querySelectorAll('.card').forEach(c=>c.classList.toggle('used',!!worn[c.dataset.k]));
+  }
+  function wear(k){worn[k]=true;requestAnimationFrame(()=>$('g-'+k).classList.add('on'));}
+
+  function dustFail(k){
+    locked=true;
+    say('err','Contamination!','Hair/skin particles fell onto your clean suit. Always gown Top-to-Bottom.');
+    setCounter(10000,'#ef4444');$('flash').classList.add('on');
+    const ns='http://www.w3.org/2000/svg',dust=$('dust');
+    for(let i=0;i<90;i++){
+      const fx=(Math.random()-.5)*125,fy=-345+Math.random()*130,r=1.4+Math.random()*2.4;
+      const c=document.createElementNS(ns,'circle');
+      c.setAttribute('cx',fx);c.setAttribute('cy',fy);c.setAttribute('r',r);
+      c.setAttribute('fill',['#6b4423','#8b6b4a','#444','#a8896a'][i%4]);
+      dust.appendChild(c);
+      const sx=(Math.random()-.5)*70;
+      c.animate([{transform:`translate(${sx-fx}px,${-440-fy}px)`,opacity:0},{opacity:1,offset:.12},{transform:'translate(0,0)',opacity:1}],
+        {duration:1100+Math.random()*900,delay:Math.random()*1300,easing:'cubic-bezier(.5,0,1,.6)',fill:'backwards'});
+    }
+  }
+
+  function floorFail(){
+    locked=true;
+    av.style.transform='translate(448px,545px) scale(.8)';
+    $('floorRed').classList.add('on');$('flash').classList.add('on');
+    setCounter(10000,'#ef4444');
+    say('err','Breach! Street shoes crossed the Clean Line','Dirty footprints are now inside the Clean Zone. Shoe covers must go on before you cross.');
+    const ns='http://www.w3.org/2000/svg',p=$('prints');
+    [575,552,529,506,483].forEach((y,i)=>{
+      [-16,16].forEach((dx,j)=>{
+        const e=document.createElementNS(ns,'ellipse');
+        e.setAttribute('cx',448+dx);e.setAttribute('cy',y+(j?6:-4));e.setAttribute('rx',9);e.setAttribute('ry',15);
+        e.setAttribute('class','fp');e.style.animationDelay=(.25*i+.1*j)+'s';p.appendChild(e);
+        requestAnimationFrame(()=>e.classList.add('on'));
+      });
+    });
+  }
+
+  function drop(k){
+    if(locked||worn[k])return;
+    if(k==='hairnet'||k==='hood'){
+      if(worn.coverall){wear(k);updateChecklist();dustFail(k);return}
+      if(k==='hood'&&!worn.hairnet){say('warn','Hairnet first','Contain hair with the hairnet before the hood goes on.');return}
+      wear(k);n++;updateChecklist();
+      say('ok',NAME[k]+' on',k==='hairnet'?'Hair is contained. Ready for the hood.':'Head and neck covered. Ready for the coverall.');
+    }else if(k==='coverall'){
+      wear(k);
+      if(n===2){n=3;updateChecklist();say('ok','Coverall on','Suit snapped on. Next: shoe covers.')}
+      else{updateChecklist();say('info','Coverall on','')}
+    }else if(k==='booties'){
+      if(n<3){say('warn','Not yet','Finish the head and body first: hairnet, hood, then coverall.');return}
+      wear(k);n=4;updateChecklist();setCounter(3,'#22d3ee');
+      say('ok','Shoe covers on','Stepping into the Clean Zone. Last step: gloves.');
+      setTimeout(()=>{av.style.transform='translate(448px,545px) scale(.8)'},550);
+    }else if(k==='gloves'){
+      if(n<4){say('warn','Gloves go last','Put gloves on after the suit and shoe covers are in place, so they seal the sleeves.');return}
+      wear(k);n=5;updateChecklist();locked=true;av.classList.add('win');
+      setCounter(0,'#34d399');
+      say('ok','GOWNING COMPLETE — YOU MAY ENTER THE FAB.','Particle count: 0. Top-down gowning keeps wafers clean.');
+    }
+  }
+
+  // drag & drop (scale-safe for Storyline)
+  function startDrag(e,k,card){
+    if(locked||worn[k])return;
+    e.preventDefault();
+    ghost.innerHTML=ICON[k];ghost.style.display='block';
+    const move=ev=>{
+      const r=app.getBoundingClientRect(),s=scale();
+      ghost.style.left=(ev.clientX-r.left)/s+'px';ghost.style.top=(ev.clientY-r.top)/s+'px';
+      av.classList.toggle('over',overAvatar(ev));
+    };
+    const up=ev=>{
+      window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+      ghost.style.display='none';av.classList.remove('over');
+      if(ev.type!=='pointercancel'&&overAvatar(ev))drop(k);
+    };
+    move(e);
+    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+  }
+  function overAvatar(ev){
+    const r=$('hit').getBoundingClientRect();
+    return ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom;
+  }
+
+  // click avatar = walk across the line
+  av.addEventListener('click',()=>{
+    if(locked||worn.booties)return;
+    floorFail();
+  });
+
+  function reset(){
+    worn={};n=0;locked=false;coverEarly=false;
+    ORDER.forEach(k=>$('g-'+k).classList.remove('on'));
+    $('dust').innerHTML='';$('prints').innerHTML='';
+    $('floorRed').classList.remove('on');$('flash').classList.remove('on');av.classList.remove('win');
+    av.style.transform='translate(448px,655px) scale(.82)';
+    setCounter(10,'#22d3ee');updateChecklist();
+    say('info','Gowning Airlock','Drag each garment from the rack onto the technician, then click the technician to walk into the Clean Zone.');
+  }
+  $('reset').addEventListener('click',reset);
+  reset();
+})();
+</script>
+</body>
+</html>

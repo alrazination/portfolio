@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wo ist der Löffel?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: friendly classroom game, calm and encouraging, never punishing
+   IDEA: a real kitchen you stand in and search, like a hidden-object picture book
+   PICTURE: the full-screen 360° kitchen itself; panels float over it
+   COLOUR and TYPE: teal cabinets, warm wood; article colours der blue, die red, das green; Baloo 2 + Atkinson Hyperlegible
+   LAYOUT: task card top-left, score top-right, feedback card bottom-centre, zoom at the right edge */
+:root{color-scheme:light dark;--panel:light-dark(#ffffff,#1d2a31);--ink:light-dark(#17252c,#eef3f5);--muted:light-dark(#55656d,#a9b8bf);--line:light-dark(#dfe5e8,#33454e);--accent:#2f5d73;--der:#1d63c9;--die:#cf2e3d;--das:#178a4c;--ok:#178a4c;--warn:#b9541a}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:#cfd8dc;color:var(--ink);font:16px/1.5 "Atkinson Hyperlegible",system-ui,sans-serif}
+#cv{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#cv.drag{cursor:grabbing}
+.panel{background:var(--panel);border-radius:18px;box-shadow:0 10px 30px rgba(10,30,40,.22),0 1px 0 rgba(255,255,255,.4) inset}
+.hud{position:fixed;z-index:5}
+#task{top:12px;left:12px;padding:12px 14px 12px 16px;width:min(380px,calc(100vw - 150px))}
+#task .lbl{font-size:13px;color:var(--muted);font-weight:700}
+#word{font:800 clamp(24px,4.2vw,34px)/1.1 "Baloo 2",system-ui,sans-serif;margin:2px 0 8px;overflow-wrap:anywhere}
+.blank{display:inline-block;min-width:2.2em;border-bottom:3px dashed var(--muted);color:transparent}
+.der{color:var(--der)}.die{color:var(--die)}.das{color:var(--das)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,select{font:inherit;color:inherit}
+.btn{min-height:44px;padding:8px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--panel);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--accent)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #f2b705;outline-offset:2px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.sm{min-height:40px;padding:6px 12px;font-size:14px}
+.btn svg{width:20px;height:20px;flex:none}
+#hinttext{margin-top:8px;font-size:15px;color:var(--ink);background:light-dark(#fff6d6,#3a3418);border-radius:10px;padding:6px 10px;display:none}
+#stats{top:12px;right:12px;padding:10px 14px;text-align:right;min-width:118px}
+#score{font:800 26px/1 "Baloo 2",sans-serif}
+#score small{font:700 12px "Atkinson Hyperlegible";color:var(--muted);display:block;margin-top:2px}
+#prog{font-size:13px;color:var(--muted);margin:4px 0 6px}
+#zoom{right:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px}
+#zoom .btn{width:48px;height:48px;justify-content:center;padding:0;font-size:24px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+#help{left:12px;bottom:12px;font-size:13px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.85);color:#23343c}
+#card{left:50%;bottom:14px;transform:translateX(-50%);width:min(540px,calc(100vw - 24px));padding:16px 18px;display:none}
+#card.show{display:block;animation:up .25s ease-out}
+@keyframes up{from{transform:translate(-50%,14px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+#card h3{margin:0 0 2px;font:800 15px "Atkinson Hyperlegible";color:var(--muted)}
+#card .big{font:800 clamp(30px,6vw,42px)/1.1 "Baloo 2",sans-serif;margin:2px 0 6px}
+#card .meta{color:var(--muted);font-size:15px}
+#card .sent{font-size:17px;margin:6px 0 10px}
+#card .en{font-size:14px;color:var(--muted);font-style:italic}
+#card .tip{font-size:15px;background:light-dark(#eef5f8,#22343c);border-radius:10px;padding:8px 10px;margin:8px 0}
+.good{color:var(--ok)}.bad{color:var(--warn)}
+.artbtns{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 4px}
+.artbtns .btn{justify-content:center;font:800 24px "Baloo 2",sans-serif;min-height:56px;color:#fff;border:0}
+.artbtns [data-act=art-der]{background:var(--der)}.artbtns [data-act=art-die]{background:var(--die)}.artbtns [data-act=art-das]{background:var(--das)}
+#tag{position:fixed;z-index:4;pointer-events:none;transform:translate(-50%,-100%);background:#fff;color:#17252c;font:800 18px "Baloo 2",sans-serif;padding:3px 12px;border-radius:999px;box-shadow:0 6px 16px rgba(0,0,0,.25);white-space:nowrap;opacity:0;transition:opacity .2s}
+#tag.show{opacity:1}
+#tag::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:#fff}
+#tag.wrong{outline:3px solid var(--warn)}#tag.right{outline:3px solid var(--ok)}
+.overlay{position:fixed;inset:0;z-index:10;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(20,40,50,.45);backdrop-filter:blur(4px)}
+.overlay.show{display:flex}
+.overlay .panel{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:clamp(18px,4vw,30px)}
+.overlay h1{font:800 clamp(32px,6vw,46px)/1.05 "Baloo 2",sans-serif;margin:0 0 4px;text-wrap:balance}
+.overlay h2{font:800 22px/1.2 "Baloo 2",sans-serif;margin:18px 0 8px}
+.sub{color:var(--muted);margin:0 0 14px}
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mode{position:relative;border:2px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;display:block}
+.mode input{position:absolute;opacity:0}
+.mode b{display:block;font:800 18px "Baloo 2",sans-serif}
+.mode span{font-size:14px;color:var(--muted);display:block;line-height:1.35}
+.mode:has(input:checked){border-color:var(--accent);background:light-dark(#eaf2f6,#21343d)}
+.mode:has(input:focus-visible){outline:3px solid #f2b705}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.opts label{font-size:14px;color:var(--muted);font-weight:700}
+.opts select{width:100%;min-height:44px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);padding:6px 8px;font-size:16px;margin-top:3px}
+.check{display:flex;align-items:center;gap:8px;min-height:44px;font-size:15px}
+.check input{width:20px;height:20px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font:800 18px "Baloo 2",sans-serif;margin:6px 0}
+details{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:15px}
+summary{cursor:pointer;font-weight:700;min-height:32px}
+details li{margin:4px 0}
+.list{display:grid;gap:6px;margin:10px 0}
+.list div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:6px 0;font-size:17px}
+.list b{font-family:"Baloo 2",sans-serif;font-size:19px}
+.list span{font-size:14px;white-space:nowrap}
+#err{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:20;background:#e9eef0;color:#17252c}
+@media(max-width:600px){
+ #task{width:calc(100vw - 24px);padding:10px 12px}
+ #stats{top:auto;bottom:calc(12px);right:12px;padding:8px 10px;min-width:0}
+ #stats #menu{display:none}
+ #help{display:none}
+ #card{bottom:8px}
+ .modes,.opts{grid-template-columns:minmax(0,1fr)}
+ #zoom{top:auto;bottom:90px;transform:none}
+}
+@media(prefers-reduced-motion:reduce){#card.show{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="cv" aria-label="3D-Küche. Ziehen zum Umsehen, klicken zum Öffnen und Wählen."></canvas>
+
+<div id="task" class="hud panel" aria-live="polite">
+  <div class="lbl" id="tasklbl">Finde:</div>
+  <div id="word"></div>
+  <div class="row" id="taskbtns">
+    <button class="btn sm" data-act="say-target" aria-label="Wort anhören"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>Hören</button>
+    <button class="btn sm" data-act="hint" id="hintbtn">Tipp</button>
+  </div>
+  <div id="hinttext"></div>
+</div>
+
+<div id="stats" class="hud panel">
+  <div id="score">0<small>Punkte</small></div>
+  <div id="prog"></div>
+  <button class="btn sm" data-act="menu" id="menu">Menü</button>
+</div>
+
+<div id="zoom" class="hud">
+  <button class="btn panel" data-act="zin" aria-label="Hineinzoomen">+</button>
+  <button class="btn panel" data-act="zout" aria-label="Herauszoomen">−</button>
+  <button class="btn panel" data-act="center" id="mitte" aria-label="Zurück zur Mitte" style="font-size:13px;visibility:hidden">Mitte</button>
+</div>
+<div id="help" class="hud">Ziehen: umsehen · Klicken: öffnen oder wählen · Mausrad: Zoom</div>
+<div id="card" class="hud panel" aria-live="polite"></div>
+<div id="tag"></div>
+
+<div id="start" class="overlay show">
+  <div class="panel">
+    <h1>Wo ist der Löffel?</h1>
+    <p class="sub">Eine 360°-Küche für Deutsch A1. Schau dich um, öffne Schränke und Schubladen und finde die Wörter.<br><small>A 360° kitchen for A1 German: look around, open things, find the word.</small></p>
+    <div class="modes" role="radiogroup" aria-label="Modus">
+      <label class="mode"><input type="radio" name="mode" value="explore" checked><b>1 · Entdecken</b><span>Klicke auf alles. Hör und lies die Wörter. Ohne Punkte.</span></label>
+      <label class="mode"><input type="radio" name="mode" value="find"><b>2 · Finden</b><span>Du siehst ein Wort mit Artikel. Finde das Ding.</span></label>
+      <label class="mode"><input type="radio" name="mode" value="article"><b>3 · Finden + Artikel</b><span>Finde das Ding. Dann wähle: der, die oder das?</span></label>
+    </div>
+    <div class="opts">
+      <label>Thema<select id="theme">
+        <option value="all">Alles</option><option value="raum">Möbel &amp; Raum</option><option value="geraete">Geräte</option><option value="geschirr">Geschirr &amp; Besteck</option><option value="essen">Essen &amp; Trinken</option>
+      </select></label>
+      <label>Wörter pro Runde<select id="count"><option>8</option><option selected>12</option><option>20</option></select></label>
+      <label class="check"><input type="checkbox" id="en" checked>Englisch nach der Antwort zeigen</label>
+    </div>
+    <div class="legend"><span class="der">der</span><span class="die">die</span><span class="das">das</span></div>
+    <div class="row" style="margin-top:8px"><button class="btn primary" data-act="start">Los geht's!</button></div>
+    <details>
+      <summary>So lernst du am besten · Für Lehrkräfte</summary>
+      <ul>
+        <li><b>Erst entdecken, dann spielen.</b> Modus 1 führt die Wörter ein, bevor sie abgefragt werden.</li>
+        <li><b>Keine Beschriftungen im Raum.</b> Die Lernenden verbinden das Wort mit dem Gegenstand, nicht Text mit Text.</li>
+        <li><b>Falsch klicken ist Lernen.</b> Ein falscher Klick zeigt und spricht den Namen des Gegenstands (mit Artikel) und kostet nur wenig.</li>
+        <li><b>Öffnen kostet nichts.</b> Schränke und Schubladen öffnen ist frei, damit niemand aus Angst nur rät.</li>
+        <li><b>Artikel immer mit Nomen und Farbe:</b> der blau, die rot, das grün. In Modus 3 bleibt die Farbe versteckt, bis gewählt ist.</li>
+        <li><b>Gestufte Tipps:</b> 1 Satz (Wo?), 2 Blick zur Stelle, 3 Gegenstand leuchtet. Jeder Tipp kostet Punkte, nie alle.</li>
+        <li><b>Wiederholung:</b> Wörter mit Hilfe oder falschem Artikel kommen später in der Runde noch einmal.</li>
+        <li><b>Ganze Sätze:</b> Nach jedem Fund ein Modellsatz („Der Löffel ist in der Schublade.“), mit Plural und Aussprache.</li>
+        <li><b>Kein Zeitdruck</b>, keine Ranglisten: Die Lernenden bestimmen das Tempo mit „Weiter“.</li>
+      </ul>
+    </details>
+  </div>
+</div>
+
+<div id="review" class="overlay"><div class="panel" id="reviewin"></div></div>
+<div id="err"><p>Die 3D-Küche konnte nicht geladen werden. Bitte die Seite neu laden.<br><small>The 3D kitchen could not load. Please reload the page.</small></p></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+{
+if(!window.THREE){document.getElementById('err').style.display='flex';throw new Error('three missing');}
+const $=s=>document.querySelector(s);
+const PI=Math.PI;
+
+/* ---------- Vocabulary ---------- */
+const V=[
+['tisch','der','Tisch','die Tische','table','raum','am Fenster'],
+['stuhl','der','Stuhl','die Stühle','chair','raum','am Tisch'],
+['lampe','die','Lampe','die Lampen','lamp','raum','über dem Tisch'],
+['uhr','die','Uhr','die Uhren','clock','raum','an der Wand'],
+['kalender','der','Kalender','die Kalender','calendar','raum','an der Wand'],
+['bild','das','Bild','die Bilder','picture','raum','an der Wand'],
+['fenster','das','Fenster','die Fenster','window','raum','neben dem Tisch'],
+['tuer','die','Tür','die Türen','door','raum','an der Wand'],
+['teppich','der','Teppich','die Teppiche','rug','raum','unter dem Tisch'],
+['pflanze','die','Pflanze','die Pflanzen','plant','raum','am Fenster'],
+['vase','die','Vase','die Vasen','vase','raum','auf dem Tisch'],
+['blume','die','Blume','die Blumen','flower','raum','in der Vase'],
+['kerze','die','Kerze','die Kerzen','candle','raum','auf dem Tisch'],
+['schrank','der','Schrank','die Schränke','cupboard','raum','an der Wand'],
+['schublade','die','Schublade','die Schubladen','drawer','raum','unter der Arbeitsplatte'],
+['kuehlschrank','der','Kühlschrank','die Kühlschränke','fridge','geraete','neben der Mikrowelle'],
+['backofen','der','Backofen','die Backöfen','oven','geraete','unter dem Herd'],
+['herd','der','Herd','die Herde','stove, hob','geraete','über dem Backofen'],
+['mikrowelle','die','Mikrowelle','die Mikrowellen','microwave','geraete','neben dem Kühlschrank'],
+['spuelmaschine','die','Spülmaschine','die Spülmaschinen','dishwasher','geraete','neben der Spüle'],
+['spuele','die','Spüle','die Spülen','sink','geraete','neben der Spülmaschine'],
+['wasserhahn','der','Wasserhahn','die Wasserhähne','tap','geraete','an der Spüle'],
+['toaster','der','Toaster','die Toaster','toaster','geraete','neben der Mikrowelle'],
+['wasserkocher','der','Wasserkocher','die Wasserkocher','kettle','geraete','neben dem Toaster'],
+['kaffeemaschine','die','Kaffeemaschine','die Kaffeemaschinen','coffee machine','geraete','neben dem Wasserkocher'],
+['muelleimer','der','Mülleimer','die Mülleimer','bin','geraete','unter der Spüle'],
+['loeffel','der','Löffel','die Löffel','spoon','geschirr','in der Schublade'],
+['gabel','die','Gabel','die Gabeln','fork','geschirr','in der Schublade'],
+['messer','das','Messer','die Messer','knife','geschirr','in der Schublade'],
+['kochloeffel','der','Kochlöffel','die Kochlöffel','wooden spoon','geschirr','in der Schublade'],
+['schere','die','Schere','die Scheren','scissors','geschirr','in der Schublade'],
+['serviette','die','Serviette','die Servietten','napkin','geschirr','in der Schublade'],
+['teller','der','Teller','die Teller','plate','geschirr','im Schrank'],
+['tasse','die','Tasse','die Tassen','cup','geschirr','auf dem Tisch'],
+['glas','das','Glas','die Gläser','glass','geschirr','im Schrank'],
+['schuessel','die','Schüssel','die Schüsseln','bowl','geschirr','im Schrank'],
+['kanne','die','Kanne','die Kannen','teapot, jug','geschirr','im Schrank'],
+['topf','der','Topf','die Töpfe','saucepan','geschirr','in der Schublade'],
+['pfanne','die','Pfanne','die Pfannen','frying pan','geschirr','im Schrank'],
+['flasche','die','Flasche','die Flaschen','bottle','geschirr','auf dem Tisch'],
+['schneidebrett','das','Schneidebrett','die Schneidebretter','chopping board','geschirr','auf der Arbeitsplatte'],
+['geschirrtuch','das','Geschirrtuch','die Geschirrtücher','tea towel','geschirr','am Backofen'],
+['milch','die','Milch',null,'milk','essen','im Kühlschrank'],
+['kaese','der','Käse',null,'cheese','essen','im Kühlschrank'],
+['butter','die','Butter',null,'butter','essen','im Kühlschrank'],
+['ei','das','Ei','die Eier','egg','essen','im Kühlschrank'],
+['saft','der','Saft','die Säfte','juice','essen','im Kühlschrank'],
+['joghurt','der','Joghurt','die Joghurts','yoghurt','essen','im Kühlschrank'],
+['tomate','die','Tomate','die Tomaten','tomato','essen','im Kühlschrank'],
+['wurst','die','Wurst','die Würste','sausage','essen','im Kühlschrank'],
+['apfel','der','Apfel','die Äpfel','apple','essen','auf dem Tisch'],
+['banane','die','Banane','die Bananen','banana','essen','auf dem Tisch'],
+['orange','die','Orange','die Orangen','orange','essen','auf dem Tisch'],
+['brot','das','Brot','die Brote','bread','essen','auf dem Schneidebrett'],
+['kuchen','der','Kuchen','die Kuchen','cake','essen','im Backofen'],
+['pizza','die','Pizza','die Pizzas','pizza','essen','in der Mikrowelle'],
+['salz','das','Salz',null,'salt','essen','auf dem Tisch'],
+['pfeffer','der','Pfeffer',null,'pepper','essen','auf dem Tisch']
+].map(r=>({k:r[0],a:r[1],w:r[2],pl:r[3],en:r[4],cat:r[5],where:r[6]}));
+const VK={};V.forEach(v=>VK[v.k]=v);
+const COMP={kuehlschrank:'der Schrank',backofen:'der Ofen',wasserhahn:'der Hahn',wasserkocher:'der Kocher',kochloeffel:'der Löffel',muelleimer:'der Eimer',kaffeemaschine:'die Maschine',spuelmaschine:'die Maschine',schneidebrett:'das Brett',geschirrtuch:'das Tuch',mikrowelle:'die Welle'};
+function tipFor(v){
+  if(COMP[v.k])return `Das letzte Wort bestimmt den Artikel: ${COMP[v.k]} → ${v.a} ${v.w}.`;
+  if(/e$/.test(v.w)&&v.a==='die')return 'Viele Nomen auf -e haben den Artikel die.';
+  if(/e$/.test(v.w))return `Achtung, Ausnahme: ${v.a} ${v.w} endet auf -e, ist aber nicht die.`;
+  return `Lerne jedes Nomen mit Artikel: ${v.a} ${v.w}.`;
+}
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+const artHTML=v=>`<span class="${v.a}">${v.a} ${v.w}</span>`;
+const sentence=v=>`${cap(v.a)} ${v.w} ist ${v.where}.`;
+
+/* ---------- Speech ---------- */
+let deVoice=null;
+function pickVoice(){try{const vs=speechSynthesis.getVoices();deVoice=vs.find(v=>/^de[-_]DE/i.test(v.lang))||vs.find(v=>/^de/i.test(v.lang))||null;}catch(e){}}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}catch(e){}
+function say(t){try{if(!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';if(deVoice)u.voice=deVoice;u.rate=.85;speechSynthesis.speak(u);}catch(e){}}
+
+/* ---------- Three setup ---------- */
+const cv=$('#cv');
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+const scene=new THREE.Scene();scene.background=new THREE.Color('#f4f1ea');
+const camera=new THREE.PerspectiveCamera(66,1,.03,40);
+camera.position.set(0,1.55,.25);camera.rotation.order='YXZ';
+scene.add(new THREE.HemisphereLight(0xffffff,0xbfb29c,.62));
+scene.add(new THREE.AmbientLight(0xffffff,.14));
+const sun=new THREE.DirectionalLight(0xfff4e0,.55);sun.position.set(-4,4,2);scene.add(sun);
+const fill=new THREE.DirectionalLight(0xffffff,.25);fill.position.set(2,3,3);scene.add(fill);
+const lampLight=new THREE.PointLight(0xffd9a0,.45,4);lampLight.position.set(-1.5,1.95,1.2);scene.add(lampLight);
+
+const STEELC='#b4bcc2',STEEL={metalness:.25,roughness:.35};
+const FRONT='#2f5d73',IN='#ece7de',WOOD='#b98b5e';
+function mat(c,o){return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.65,metalness:0},o||{}));}
+function add(p,geo,m,x,y,z){const me=new THREE.Mesh(geo,m);me.position.set(x,y,z);p.add(me);return me;}
+function box(p,w,h,d,c,x,y,z,o){return add(p,new THREE.BoxGeometry(w,h,d),mat(c,o),x,y,z);}
+function cyl(p,rt,rb,h,c,x,y,z,o,seg){return add(p,new THREE.CylinderGeometry(rt,rb,h,seg||24),mat(c,o),x,y,z);}
+function sph(p,r,c,x,y,z,o){return add(p,new THREE.SphereGeometry(r,20,14),mat(c,o),x,y,z);}
+function tor(p,r,t,c,x,y,z,arc,o){return add(p,new THREE.TorusGeometry(r,t,8,28,arc||PI*2),mat(c,o),x,y,z);}
+function inner(m){m.userData.inner=true;return m;}
+function grp(p,x,y,z,ry){const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=ry||0;p.add(g);return g;}
+function tex(draw,w,h,rx,ry){const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rx,ry);return t;}
+
+/* ---------- Items & containers ---------- */
+const itemsByKey={},primary={},itemCont={},containers=[];
+let curC=null;
+function item(key,parent,x,y,z,ry,b){const g=grp(parent,x,y,z,ry);g.userData.item=key;(b||B[key])(g);(itemsByKey[key]=itemsByKey[key]||[]).push(g);if(!primary[key]){primary[key]=g;itemCont[key]=curC;}return g;}
+function cont(kind,root,parts){const c={kind,root,parts,t:0,target:0};containers.push(c);root.userData.container=c;parts.forEach(p=>p.obj.userData.container=c);return c;}
+function applyC(c){c.parts.forEach(p=>{if(p.type==='slide')p.obj.position.z=c.t*p.max;else if(p.type==='hy')p.obj.rotation.y=c.t*p.max;else p.obj.rotation.x=c.t*p.max;});}
+
+const B={
+ loeffel:g=>{box(g,.012,.005,.12,STEELC,0,.004,.03,STEEL);sph(g,.022,STEELC,0,.008,-.05,STEEL).scale.set(1,.35,1.4);},
+ gabel:g=>{box(g,.012,.005,.11,STEELC,0,.004,.035,STEEL);box(g,.03,.005,.02,STEELC,0,.004,-.03,STEEL);[-1.5,-.5,.5,1.5].forEach(i=>box(g,.005,.005,.04,STEELC,i*.0085,.004,-.06,STEEL));},
+ messer:g=>{box(g,.018,.014,.08,'#222',0,.007,.05);box(g,.022,.004,.12,'#d5dade',0,.006,-.05,{metalness:.4,roughness:.25});},
+ kochloeffel:g=>{box(g,.016,.014,.24,'#b07a45',0,.008,.06);sph(g,.035,'#b07a45',0,.012,-.1).scale.set(1,.4,1.3);},
+ schere:g=>{const a=tor(g,.022,.006,'#d0453a',-.022,.006,.07);a.rotation.x=PI/2;const b=tor(g,.022,.006,'#d0453a',.022,.006,.07);b.rotation.x=PI/2;const l=box(g,.012,.005,.13,STEELC,-.006,.006,-.03,STEEL);l.rotation.y=.12;const r=box(g,.012,.005,.13,STEELC,.006,.008,-.03,STEEL);r.rotation.y=-.12;},
+ serviette:g=>{for(let i=0;i<7;i++)box(g,.16,.004,.16,i%2?'#ffffff':'#f2c94c',0,.002+i*.0042,0);},
+ teller:g=>{for(let i=0;i<4;i++)cyl(g,.11,.09,.014,'#f7f7f4',0,.008+i*.016,0);},
+ tasse:g=>{cyl(g,.04,.035,.08,'#c94f3d',0,.04,0);tor(g,.022,.006,'#c94f3d',.045,.045,0);},
+ glas:g=>{cyl(g,.035,.03,.11,'#cfe8f5',0,.055,0,{transparent:true,opacity:.5,roughness:.05});},
+ schuessel:g=>{cyl(g,.09,.05,.07,'#e9a23b',0,.035,0);cyl(g,.082,.082,.003,'#c98420',0,.07,0);},
+ kanne:g=>{sph(g,.075,'#5c8fc7',0,.07,0).scale.set(1,.85,1);const s=cyl(g,.01,.018,.1,'#5c8fc7',.085,.09,0);s.rotation.z=-.9;tor(g,.04,.009,'#5c8fc7',-.075,.08,0);sph(g,.022,'#3f6e9f',0,.135,0);},
+ topf:g=>{cyl(g,.1,.1,.12,STEELC,0,.06,0,STEEL);box(g,.04,.015,.025,'#222',.12,.1,0);box(g,.04,.015,.025,'#222',-.12,.1,0);cyl(g,.103,.103,.01,STEELC,0,.125,0,STEEL);sph(g,.016,'#222',0,.138,0);},
+ pfanne:g=>{cyl(g,.12,.1,.035,'#2b2b2b',0,.018,0);box(g,.2,.02,.026,'#151515',.21,.03,0);},
+ muelleimer:g=>{cyl(g,.12,.11,.33,'#8a9399',0,.165,0,STEEL);cyl(g,.125,.125,.025,'#5d666d',0,.34,0);},
+ kuchen:g=>{box(g,.34,.01,.26,'#555',0,.005,0);cyl(g,.1,.1,.07,'#a86a3d',0,.045,0);cyl(g,.101,.101,.014,'#f3e2c7',0,.086,0);[[.05,0],[-.05,.02],[0,-.05],[.01,.05]].forEach(p=>sph(g,.012,'#c0182b',p[0],.098,p[1]));},
+ pizza:g=>{cyl(g,.14,.12,.012,'#ffffff',0,.006,0);cyl(g,.12,.12,.012,'#e3b56b',0,.018,0);cyl(g,.105,.105,.004,'#c8422c',0,.026,0);[[.05,.03],[-.04,.05],[-.03,-.05],[.05,-.04],[0,0]].forEach((p,i)=>sph(g,.014,i%2?'#3f8f3a':'#f5e9c8',p[0],.029,p[1]).scale.set(1,.4,1));},
+ milch:g=>{box(g,.07,.18,.07,'#ffffff',0,.09,0);box(g,.072,.05,.072,'#3b7dd8',0,.1,0);box(g,.07,.025,.02,'#ffffff',0,.19,0);},
+ saft:g=>{box(g,.07,.18,.07,'#ffe2b8',0,.09,0);box(g,.072,.06,.072,'#f28c28',0,.1,0);sph(g,.012,'#2e7d32',.025,.15,.036);box(g,.07,.025,.02,'#ffe2b8',0,.19,0);},
+ kaese:g=>{const k=cyl(g,.08,.08,.06,'#f3c623',0,.03,0,null,3);k.rotation.y=.4;[[.01,.01],[-.02,-.01]].forEach(p=>sph(g,.01,'#d9a90f',p[0],.06,p[1]).scale.set(1,.3,1));},
+ butter:g=>{box(g,.11,.04,.06,'#f7e08a',0,.02,0);box(g,.112,.014,.062,'#c9ccd1',0,.035,0,STEEL);},
+ ei:g=>{box(g,.2,.025,.06,'#c9b48f',0,.0125,0);for(let i=0;i<4;i++)sph(g,.021,'#f1e3cc',-.075+i*.05,.05,0).scale.set(1,1.3,1);},
+ joghurt:g=>{[-.04,.04].forEach(x=>{cyl(g,.03,.025,.06,'#ffffff',x,.03,0);cyl(g,.031,.031,.004,'#e86c9a',x,.062,0);});},
+ tomate:g=>{[[-.04,0],[.04,0],[0,.06]].forEach(p=>{sph(g,.035,'#d63a2a',p[0],.035,p[1]);cyl(g,.006,.006,.012,'#2e7d32',p[0],.072,p[1]);});},
+ wurst:g=>{const w=cyl(g,.025,.025,.18,'#a8443a',0,.026,0);w.rotation.z=PI/2;sph(g,.025,'#a8443a',.09,.026,0);sph(g,.025,'#a8443a',-.09,.026,0);},
+ apfel:g=>{sph(g,.04,'#c8262a',0,.04,0);cyl(g,.004,.004,.02,'#5a3a1a',0,.085,0);},
+ banane:g=>{[0,.03].forEach((z,i)=>{const t=tor(g,.09,.017,'#f2d33a',0,.02+i*.03,z,2.1);t.rotation.x=-PI/2;t.rotation.z=.5;});},
+ orange:g=>{sph(g,.042,'#f08a1c',0,.042,0,{roughness:.9});},
+ flasche:g=>{const o={transparent:true,opacity:.75,roughness:.1};cyl(g,.04,.04,.2,'#7fbf9a',0,.1,0,o);cyl(g,.015,.04,.05,'#7fbf9a',0,.225,0,o);cyl(g,.015,.015,.04,'#7fbf9a',0,.27,0,o);cyl(g,.017,.017,.02,'#2f6db5',0,.3,0);},
+ kerze:g=>{cyl(g,.04,.045,.015,'#c9a64a',0,.0075,0,STEEL);cyl(g,.02,.02,.16,'#fbfaf5',0,.095,0);add(g,new THREE.ConeGeometry(.009,.03,12),mat('#ffb020',{emissive:'#ff9a00',emissiveIntensity:1}),0,.19,0);},
+ vase:g=>{cyl(g,.04,.035,.16,'#3d6fb6',0,.08,0);cyl(g,.03,.04,.03,'#3d6fb6',0,.17,0);},
+ blume:g=>{[[0,0,0],[-.03,.02,.25],[.03,-.01,-.25]].forEach(f=>{const st=cyl(g,.004,.004,.22,'#3c8d3c',f[0],.11,f[1]);st.rotation.z=f[2]*.5;const hx=f[0]+Math.sin(-f[2]*.5)*.11*0;for(let i=0;i<5;i++){const a=i/5*PI*2;sph(g,.016,'#e0434f',f[0]*2+Math.cos(a)*.018,.225,f[1]+Math.sin(a)*.018);}sph(g,.012,'#f5c518',f[0]*2,.23,f[1]);});},
+ salz:g=>{cyl(g,.02,.022,.07,'#f4f4f4',0,.035,0);sph(g,.02,STEELC,0,.07,0,STEEL);},
+ pfeffer:g=>{cyl(g,.02,.022,.07,'#2a2a2a',0,.035,0);sph(g,.02,STEELC,0,.07,0,STEEL);},
+ schneidebrett:g=>{box(g,.38,.022,.25,'#c99a5b',0,.011,0);},
+ brot:g=>{sph(g,.1,'#b5793c',0,.05,0).scale.set(1.5,.6,.8);[-.06,0,.06].forEach(x=>{const s=box(g,.01,.01,.1,'#8a5525',x,.105,0);s.rotation.y=.4;});},
+ pflanze:g=>{cyl(g,.08,.06,.14,'#c0603a',0,.07,0);[[0,.2,0,1],[.05,.17,.03,.8],[-.05,.18,-.02,.8],[.02,.24,-.04,.7]].forEach(p=>sph(g,.06*p[3],'#3f8f4a',p[0],p[1],p[2]).scale.set(1,1.2,1));},
+ geschirrtuch:g=>{box(g,.18,.26,.006,'#ffffff',0,-.13,0);[-.06,-.18].forEach(y=>box(g,.182,.02,.008,'#d0453a',0,y,0));}
+};
+
+/* ---------- Room ---------- */
+const floorTex=tex((c,w,h)=>{c.fillStyle='#d9d3c7';c.fillRect(0,0,w,h);c.fillStyle='#c7bfb1';c.fillRect(0,0,w/2,h/2);c.fillRect(w/2,h/2,w/2,h/2);c.strokeStyle='#b5ad9f';c.lineWidth=2;c.strokeRect(0,0,w,h);},128,128,10,10);
+const fl=add(scene,new THREE.PlaneGeometry(6,6),new THREE.MeshStandardMaterial({map:floorTex,roughness:.9}),0,0,0);fl.rotation.x=-PI/2;
+const ce=add(scene,new THREE.PlaneGeometry(6,6),mat('#fbfaf7'),0,2.7,0);ce.rotation.x=PI/2;
+[[0,-3,0],[0,3,PI],[-3,0,PI/2],[3,0,-PI/2]].forEach(w=>{const m=add(scene,new THREE.PlaneGeometry(6,2.7),mat('#f1ece2'),w[0],1.35,w[1]);m.rotation.y=w[2];});
+const tileTex=tex((c,w,h)=>{c.fillStyle='#ffffff';c.fillRect(0,0,w,h);c.strokeStyle='#cfd6d9';c.lineWidth=4;c.strokeRect(0,0,w,h);},64,64,30,4);
+add(scene,new THREE.BoxGeometry(4.55,.53,.01),new THREE.MeshStandardMaterial({map:tileTex,roughness:.4}),-.125,1.185,-2.995);
+// skirting
+box(scene,6,.08,.01,'#ddd5c8',0,.04,2.995);box(scene,.01,.08,6,'#ddd5c8',-2.995,.04,0);
+
+/* window (west wall) */
+curC=null;
+const skyTex=tex((c,w,h)=>{const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#7fb8e6');g.addColorStop(.6,'#cfe7f7');c.fillStyle=g;c.fillRect(0,0,w,h);c.fillStyle='#86b86a';c.beginPath();c.ellipse(w*.3,h*1.02,w*.5,h*.3,0,0,PI*2);c.fill();c.fillStyle='#6aa45a';c.beginPath();c.ellipse(w*.85,h*1.05,w*.45,h*.28,0,0,PI*2);c.fill();c.fillStyle='#4f8a46';c.beginPath();c.arc(w*.72,h*.62,w*.09,0,PI*2);c.fill();c.fillStyle='#7a5333';c.fillRect(w*.71,h*.68,w*.02,h*.15);c.fillStyle='#fff';c.beginPath();c.ellipse(w*.25,h*.2,w*.1,h*.04,0,0,PI*2);c.fill();},256,256,1,1);
+item('fenster',scene,-2.99,1.0,1.0,0,g=>{const gl=add(g,new THREE.BoxGeometry(.01,1.1,1.2),new THREE.MeshBasicMaterial({map:skyTex}),0,.55,0);gl.rotation.y=0;
+  const F='#ffffff';box(g,.06,.06,1.3,F,.02,0,0);box(g,.06,.06,1.3,F,.02,1.1,0);box(g,.06,1.16,.06,F,.02,.55,.62);box(g,.06,1.16,.06,F,.02,.55,-.62);box(g,.05,1.1,.04,F,.02,.55,0);box(g,.05,.04,1.2,F,.02,.6,0);
+  box(g,.22,.04,1.34,'#e8e2d6',.1,-.02,0);});
+item('pflanze',scene,-2.88,1.0,.65,0);
+
+/* door, clock, calendar, picture */
+item('tuer',scene,1.7,0,2.975,PI,g=>{box(g,.9,2.05,.04,'#8a6a4a',0,1.025,0);box(g,.7,.8,.01,'#7a5c3f',0,1.5,.022);box(g,.7,.8,.01,'#7a5c3f',0,.55,.022);box(g,.12,.022,.04,STEELC,.32,1.05,.05,STEEL);box(g,1.02,.06,.03,'#efe9dc',0,2.08,0);box(g,.06,2.1,.03,'#efe9dc',-.48,1.05,0);box(g,.06,2.1,.03,'#efe9dc',.48,1.05,0);});
+item('uhr',scene,-.3,2.0,2.98,PI,g=>{const f=cyl(g,.17,.17,.025,'#ffffff',0,0,.012);f.rotation.x=PI/2;tor(g,.17,.016,'#2b2b2b',0,0,.02);for(let i=0;i<12;i++){const a=i/12*PI*2;box(g,.012,i%3?.02:.035,.004,'#2b2b2b',Math.sin(a)*.14,Math.cos(a)*.14,.028).rotation.z=-a;}const h=box(g,.014,.09,.004,'#2b2b2b',0,0,.032);h.geometry.translate(0,.04,0);h.rotation.z=-1.1;const m=box(g,.009,.13,.004,'#2b2b2b',0,0,.034);m.geometry.translate(0,.06,0);m.rotation.z=2.2;sph(g,.012,'#c8423b',0,0,.036);});
+item('kalender',scene,-1.1,1.45,2.985,PI,g=>{box(g,.34,.46,.01,'#ffffff',0,0,0);box(g,.34,.08,.012,'#c8423b',0,.19,.001);for(let r=0;r<5;r++)for(let c=0;c<6;c++)box(g,.035,.035,.004,(r*6+c)%7===6?'#f2b8b3':'#dfe3e6',-.125+c*.05,.1-r*.055,.007);});
+item('bild',scene,2.985,1.55,1.9,-PI/2,g=>{box(g,.7,.52,.02,'#2b2b2b',0,0,0);box(g,.62,.44,.022,'#9fd0e8',0,0,.002);box(g,.62,.14,.024,'#5aa05a',0,-.15,.003);sph(g,.05,'#f5c518',.18,.1,.014).scale.set(1,1,.2);box(g,.12,.1,.026,'#c8423b',-.12,-.06,.004);});
+item('teppich',scene,-1.5,0,1.2,0,g=>{box(g,2.0,.008,1.5,'#a8443a',0,.004,0);box(g,1.8,.01,1.3,'#c96a4a',0,.006,0);});
+
+/* table & chairs */
+item('tisch',scene,-1.5,0,1.2,0,g=>{box(g,1.3,.04,.85,'#a8774a',0,.73,0);[[-.58,-.36],[.58,-.36],[-.58,.36],[.58,.36]].forEach(p=>box(g,.06,.71,.06,'#8a5f38',p[0],.355,p[1]));});
+const chair=g=>{const C='#3a6b7e';box(g,.44,.04,.44,C,0,.45,0);[[-.19,-.19],[.19,-.19],[-.19,.19],[.19,.19]].forEach(p=>box(g,.035,.45,.035,C,p[0],.225,p[1]));box(g,.44,.4,.035,C,0,.68,-.205);box(g,.035,.27,.035,C,-.19,.6,-.205);box(g,.035,.27,.035,C,.19,.6,-.205);};
+[[-1.5,.55,0],[-1.5,1.85,PI],[-2.35,1.2,PI/2],[-.65,1.2,-PI/2]].forEach(c=>item('stuhl',scene,c[0],0,c[1],c[2],chair));
+item('lampe',scene,-1.5,2.7,1.2,0,g=>{cyl(g,.005,.005,.45,'#333',0,-.225,0);const s=add(g,new THREE.ConeGeometry(.2,.18,28,1,true),mat('#d8a03a',{side:THREE.DoubleSide}),0,-.54,0);sph(g,.05,'#fff6d8',0,-.6,0,{emissive:'#ffe7a8',emissiveIntensity:1});});
+const T=.75;
+const plate=cyl(scene,.17,.15,.025,'#8a5a3a',-1.5,T+.0125,1.2);
+item('apfel',scene,-1.57,T+.025,1.14);item('apfel',scene,-1.44,T+.025,1.27);
+item('orange',scene,-1.58,T+.025,1.28);item('orange',scene,-1.41,T+.025,1.12);
+item('banane',scene,-1.5,T+.06,1.2,.6);
+item('flasche',scene,-1.95,T,1.0);item('tasse',scene,-1.1,T,1.42);item('kerze',scene,-1.5,T,.9);
+item('vase',scene,-1.92,T,1.45);item('blume',scene,-1.92,T+.12,1.45);
+item('salz',scene,-1.15,T,1.0);item('pfeffer',scene,-1.07,T,1.0);
+
+/* ---------- Cabinet builders ---------- */
+function carcass(m,w,h,d,y0,side){box(m,.02,h,d,side||FRONT,.01,y0+h/2,-d/2);box(m,.02,h,d,side||FRONT,w-.01,y0+h/2,-d/2);box(m,w,.02,d,IN,w/2,y0+.01,-d/2);box(m,w,.02,d,IN,w/2,y0+h-.01,-d/2);inner(box(m,w,h,.02,IN,w/2,y0+h/2,-d+.01));}
+function door(m,x0,w,y0,h,side,hy){const p=grp(m,side==='L'?x0:x0+w,y0,0);const s=side==='L'?1:-1;box(p,w-.008,h-.008,.02,FRONT,s*w/2,h/2,.01);box(p,.016,.14,.022,STEELC,s*(w-.045),hy,.03,STEEL);return{obj:p,type:'hy',max:side==='L'?-1.85:1.85};}
+function drawer(m,w,d,y,h){const g=grp(m,0,y,0);box(g,w-.012,h-.012,.02,FRONT,w/2,h/2,.01);box(g,w*.45,.016,.022,STEELC,w/2,h-.055,.03,STEEL);inner(box(g,w-.06,.012,d-.04,IN,w/2,.02,-d/2));inner(box(g,.012,h*.55,d-.04,IN,.036,h*.3,-d/2));inner(box(g,.012,h*.55,d-.04,IN,w-.036,h*.3,-d/2));inner(box(g,w-.06,h*.55,.012,IN,w/2,h*.3,-d+.03));return cont('schublade',g,[{obj:g,type:'slide',max:.4}]);}
+function lowerCab(par,x0,w,doors,shelf){const m=grp(par,x0,0,0);carcass(m,w,.78,.6,.1);box(m,w,.1,.5,'#2a2f33',w/2,.05,-.33);const parts=doors==='LR'?[door(m,0,w/2,.1,.78,'L',.68),door(m,w/2,w/2,.1,.78,'R',.68)]:[door(m,0,w,.1,.78,doors,.68)];if(shelf)inner(box(m,w-.04,.02,.56,IN,w/2,.48,-.3));curC=cont('schrank',m,parts);return m;}
+function upperCab(par,x0,w,doors){const m=grp(par,x0,1.45,-2.65);carcass(m,w,.7,.35,0);const parts=doors==='LR'?[door(m,0,w/2,0,.7,'L',.1),door(m,w/2,w/2,0,.7,'R',.1)]:[door(m,0,w,0,.7,doors,.1)];curC=cont('schrank',m,parts);return m;}
+function drawerStack(par,x0,w,hs,fill){const m=grp(par,x0,0,0);carcass(m,w,.78,.6,.1);box(m,w,.1,.5,'#2a2f33',w/2,.05,-.33);let y=.1;hs.forEach((h,i)=>{curC=drawer(m,w,.54,y,h);fill[i]&&fill[i](curC.root,w);y+=h;});return m;}
+
+/* ---------- North wall: lower run ---------- */
+const N=grp(scene,0,0,-2.4);
+drawerStack(N,-2.4,.6,[.52,.26],[
+  (d,w)=>{item('topf',d,w/2,.026,-.27);},
+  (d,w)=>{for(let i=0;i<3;i++){item('loeffel',d,.13+i*.022,.026,-.25);item('gabel',d,.27+i*.022,.026,-.25);item('messer',d,.42+i*.026,.026,-.25);}}
+]);
+{const m=lowerCab(N,-1.8,.6,'L',true);item('flasche',m,.2,.49,-.3);item('flasche',m,.38,.49,-.32);}
+{const m=lowerCab(N,-1.2,1.2,'LR',false);item('muelleimer',m,.75,.11,-.3);}
+/* dishwasher */
+{const m=grp(N,0,0,0);carcass(m,.6,.78,.6,.1,'#d5d8db');box(m,.6,.1,.5,'#2a2f33',.3,.05,-.33);const p=grp(m,0,.1,0);box(p,.59,.77,.025,'#cfd4d8',.3,.385,.0125,STEEL);box(p,.4,.02,.03,'#7d868c',.3,.69,.04);box(p,.59,.05,.026,'#3a3f44',.3,.745,.013);
+ inner(box(m,.5,.01,.5,'#b9c0c6',.3,.32,-.3));curC=cont('spuelmaschine',m,[{obj:p,type:'rx',max:1.45}]);
+ item('teller',m,.3,.44,-.3,0,g=>{for(let i=0;i<4;i++){const d=cyl(g,.11,.11,.012,'#f7f7f4',-.09+i*.06,0,0);d.rotation.z=PI/2;}});}
+/* oven */
+{const m=grp(N,.6,0,0);curC=null;box(m,.02,.78,.6,'#2b2e31',.01,.49,-.3);box(m,.02,.78,.6,'#2b2e31',.59,.49,-.3);box(m,.6,.1,.5,'#2a2f33',.3,.05,-.33);
+ box(m,.58,.12,.02,'#1d1f21',.3,.81,.01);[.1,.2,.4,.5].forEach(x=>{const k=cyl(m,.018,.018,.02,STEELC,x,.81,.025,STEEL);k.rotation.x=PI/2;});
+ inner(box(m,.56,.02,.58,'#2a2a2a',.3,.11,-.3));inner(box(m,.56,.02,.58,'#2a2a2a',.3,.74,-.3));inner(box(m,.56,.62,.02,'#262626',.3,.43,-.59));inner(box(m,.5,.008,.5,'#9aa3a8',.3,.3,-.3));
+ const p=grp(m,0,.12,0);box(p,.58,.62,.025,'#1f2224',.3,.31,.0125);box(p,.42,.3,.006,'#46525c',.3,.32,.027);box(p,.44,.02,.03,STEELC,.3,.55,.045,STEEL);
+ const c=cont('backofen',m,[{obj:p,type:'rx',max:1.45}]);curC=c;item('kuchen',m,.3,.305,-.3);
+ curC=null;item('geschirrtuch',p,.42,.54,.065);}
+{const m=lowerCab(N,1.2,.6,'R',true);item('pfanne',m,.22,.49,-.3,.3);}
+box(scene,.35,.78,.6,FRONT,1.975,.49,-2.7);box(scene,.35,.1,.5,'#2a2f33',1.975,.05,-2.73);
+/* worktop + sink, tap, hob, bread */
+curC=null;
+box(scene,4.55,.04,.62,WOOD,-.125,.9,-2.69);
+item('spuele',scene,-.6,.92,-2.68,0,g=>{box(g,.9,.012,.5,STEELC,0,.006,0,STEEL);box(g,.8,.006,.4,'#5d666d',0,.014,0,STEEL);cyl(g,.025,.025,.004,'#333',0,.018,0);});
+item('wasserhahn',scene,-.6,.92,-2.96,0,g=>{cyl(g,.03,.03,.04,STEELC,0,.02,0,STEEL);cyl(g,.015,.015,.24,STEELC,0,.15,0,STEEL);const a=tor(g,.08,.014,STEELC,0,.27,.08,PI,STEEL);a.rotation.y=PI/2;cyl(g,.014,.012,.05,STEELC,0,.245,.16,STEEL);});
+item('herd',scene,.9,.92,-2.7,0,g=>{box(g,.58,.012,.52,'#111316',0,.006,0,{roughness:.2});[[-.13,-.12],[.13,-.12],[-.13,.12],[.13,.12]].forEach((p,i)=>{const r=tor(g,i<2?.07:.055,.006,'#6b2b25',p[0],.014,p[1]);r.rotation.x=PI/2;});});
+item('schneidebrett',scene,1.55,.92,-2.7,.1);item('brot',scene,1.55,.942,-2.7,.1);
+/* hood */
+box(scene,.6,.12,.45,STEELC,.9,1.7,-2.775,STEEL);box(scene,.26,.9,.26,STEELC,.9,2.25,-2.87,STEEL);
+
+/* ---------- North wall: upper cabinets ---------- */
+{const m=upperCab(scene,-2.4,1.2,'LR');item('teller',m,.3,.02,-.17);item('teller',m,.62,.02,-.17);item('schuessel',m,.95,.02,-.17);}
+{const m=upperCab(scene,-1.2,1.2,'LR');[.15,.32,.49,.71,.88,1.05].forEach((x,i)=>item('glas',m,x,.02,-.17-(i%2)*.06));}
+{const m=upperCab(scene,0,.6,'L');[.13,.3,.47].forEach(x=>item('tasse',m,x,.02,-.17,-.6));}
+{const m=upperCab(scene,1.2,.6,'R');item('kanne',m,.2,.02,-.17);item('schuessel',m,.44,.02,-.17);}
+
+/* ---------- Fridge ---------- */
+{const m=grp(scene,2.15,0,-2.3);const W=.8,H=1.95,D=.7;
+ box(m,.02,H,D,'#f4f4f2',.01,H/2,-D/2);box(m,.02,H,D,'#f4f4f2',W-.01,H/2,-D/2);box(m,W,.02,D,'#f4f4f2',W/2,H-.01,-D/2);box(m,W,.04,D,'#e8eaea',W/2,.02,-D/2);inner(box(m,W,H,.02,'#ffffff',W/2,H/2,-D+.01,{emissive:'#e8f4ff',emissiveIntensity:.35}));
+ [.45,.85,1.25].forEach(y=>inner(box(m,W-.04,.012,D-.06,'#d7ecf5',W/2,y,-D/2-.02,{transparent:true,opacity:.6})));
+ inner(box(m,W-.04,.012,D-.06,'#d7ecf5',W/2,1.6,-D/2-.02,{transparent:true,opacity:.6}));
+ const p=grp(m,W,0,0);box(p,W-.006,H-.01,.06,'#f7f7f5',-W/2,H/2,.03);box(p,.03,.5,.03,STEELC,-(W-.06),1.15,.075,STEEL);box(p,W-.01,.008,.062,'#dcdcdc',-W/2,1.45,.03);
+ curC=cont('kuehlschrank',m,[{obj:p,type:'hy',max:1.75}]);
+ item('tomate',m,.22,.04,-.32);item('wurst',m,.56,.04,-.3,.3);
+ item('kaese',m,.17,.456,-.3);item('butter',m,.4,.456,-.3);item('joghurt',m,.62,.456,-.3);
+ item('milch',m,.22,.856,-.3);item('saft',m,.5,.856,-.3);
+ item('ei',m,.4,1.256,-.3);}
+
+/* ---------- East wall run (faces the room) ---------- */
+const E=grp(scene,2.4,0,-1.3,-PI/2);
+{const m=lowerCab(E,0,.6,'L',true);item('schuessel',m,.3,.49,-.3);}
+drawerStack(E,.6,.6,[.26,.26,.26],[
+  (d,w)=>{for(let i=0;i<3;i++)item('serviette',d,w/2,.026,-.27,0);},
+  (d,w)=>{item('kochloeffel',d,.2,.026,-.25);item('kochloeffel',d,.32,.026,-.25);},
+  (d,w)=>{item('schere',d,.2,.026,-.25);item('schere',d,.4,.026,-.27,.3);}
+]);
+{const m=lowerCab(E,1.2,1.2,'LR',true);item('topf',m,.3,.49,-.3);item('pfanne',m,.82,.49,-.3,.4);}
+curC=null;
+box(E,2.4,.04,.62,WOOD,1.2,.9,-.31);
+/* microwave */
+{const m=grp(E,.06,.92,-.06);const W=.48,H=.28,D=.34,C='#3a3f44';
+ box(m,.02,H,D,C,.01,H/2,-D/2);box(m,.02,H,D,C,W-.01,H/2,-D/2);box(m,W,.02,D,C,W/2,H-.01,-D/2);box(m,W,.02,D,C,W/2,.01,-D/2);inner(box(m,W,H,.02,'#d9dcdf',W/2,H/2,-D+.01));
+ box(m,.12,H,.02,'#2a2e32',W-.06,H/2,.01);[.2,.12].forEach(y=>{const k=cyl(m,.018,.018,.02,STEELC,W-.06,y,.03,STEEL);k.rotation.x=PI/2;});
+ const p=grp(m,0,0,0);box(p,.355,H-.01,.02,'#2c3136',.18,H/2,.01);box(p,.26,.17,.006,'#5f6b73',.16,H/2,.022);box(p,.016,.18,.02,STEELC,.33,H/2,.03,STEEL);
+ curC=cont('mikrowelle',m,[{obj:p,type:'hy',max:-1.8}]);item('pizza',m,.18,.02,-.17);}
+curC=null;
+item('toaster',E,.9,.92,-.3,0,g=>{box(g,.28,.17,.16,STEELC,0,.085,0,STEEL);box(g,.2,.008,.03,'#222',0,.172,-.03);box(g,.2,.008,.03,'#222',0,.172,.03);box(g,.02,.04,.03,'#222',.15,.12,0);});
+item('wasserkocher',E,1.5,.92,-.3,0,g=>{cyl(g,.09,.09,.02,'#222',0,.01,0);cyl(g,.065,.085,.22,'#e9e9e9',0,.13,0);cyl(g,.05,.065,.02,'#cfcfcf',0,.25,0);box(g,.03,.18,.05,'#222',-.09,.14,0);const s=add(g,new THREE.ConeGeometry(.02,.05,12),mat('#e9e9e9'),.075,.22,0);s.rotation.z=-PI/2;});
+item('kaffeemaschine',E,2.05,.92,-.32,0,g=>{box(g,.22,.03,.24,'#222',0,.015,0);box(g,.22,.34,.08,'#2b2b2b',0,.17,-.08);box(g,.22,.07,.24,'#2b2b2b',0,.37,0);cyl(g,.065,.06,.14,'#3a2416',0,.1,.03,{transparent:true,opacity:.85,roughness:.1});box(g,.02,.08,.02,'#222',.075,.12,.03);});
+
+/* ---------- finish setup ---------- */
+scene.updateMatrixWorld(true);
+const present=new Set([...Object.keys(itemsByKey),...containers.map(c=>c.kind)]);
+const VOC=V.filter(v=>present.has(v.k));
+containers.forEach(c=>{if(!primary[c.kind])primary[c.kind]=c.root;});
+
+/* ---------- Camera control ---------- */
+let yaw=0,pitch=-.12,tYaw=null,tPitch=null,fov=66,tFov=66;
+const CENTER=new THREE.Vector3(0,1.55,.25),camT=CENTER.clone();
+function goTo(c){const ctr=new THREE.Box3().setFromObject(c.root).getCenter(new THREE.Vector3());const n=new THREE.Vector3(0,0,1).applyQuaternion(c.root.getWorldQuaternion(new THREE.Quaternion()));n.y=0;n.normalize();const p=ctr.addScaledVector(n,c.kind==='schublade'?1.3:1.35);p.y=c.kind==='schublade'?1.55:1.5;p.x=Math.max(-2.6,Math.min(2.6,p.x));p.z=Math.max(-2.6,Math.min(2.6,p.z));camT.copy(p);}
+function aimAt(obj){const c=new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());const d=c.sub(camT);let y=Math.atan2(-d.x,-d.z);while(y-yaw>PI)y-=PI*2;while(y-yaw<-PI)y+=PI*2;tYaw=y;tPitch=Math.atan2(d.y,Math.hypot(d.x,d.z))-.12;}
+const pts=new Map();let downPos=null,moved=false,pinch0=0;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pts.size===1){downPos={x:e.clientX,y:e.clientY};moved=false;}else{moved=true;const a=[...pts.values()];pinch0=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);}});
+cv.addEventListener('pointermove',e=>{const p=pts.get(e.pointerId);if(!p)return;if(pts.size===2){p.x=e.clientX;p.y=e.clientY;const a=[...pts.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);if(pinch0){tFov=Math.max(28,Math.min(80,tFov*pinch0/d));pinch0=d;}return;}
+  const dx=e.clientX-p.x,dy=e.clientY-p.y;p.x=e.clientX;p.y=e.clientY;if(Math.hypot(e.clientX-downPos.x,e.clientY-downPos.y)>6){moved=true;cv.classList.add('drag');}
+  if(moved){const k=.0048*(fov/66);yaw+=dx*k;pitch=Math.max(-1.35,Math.min(1.2,pitch+dy*k));tYaw=tPitch=null;}});
+function up(e){const had=pts.has(e.pointerId);pts.delete(e.pointerId);cv.classList.remove('drag');if(had&&pts.size===0&&!moved)click(e.clientX,e.clientY);if(pts.size<2)pinch0=0;}
+cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);});
+cv.addEventListener('wheel',e=>{e.preventDefault();tFov=Math.max(28,Math.min(80,tFov+e.deltaY*.03));},{passive:false});
+addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('select,input'))return;const k=e.key;if(k==='ArrowLeft'){yaw+=.12;tYaw=null;}else if(k==='ArrowRight'){yaw-=.12;tYaw=null;}else if(k==='ArrowUp'){pitch=Math.min(1.2,pitch+.1);tPitch=null;}else if(k==='ArrowDown'){pitch=Math.max(-1.35,pitch-.1);tPitch=null;}else if(k==='+'){tFov=Math.max(28,tFov-8);}else if(k==='-'){tFov=Math.min(80,tFov+8);}else if(k==='Enter'){const n=$('#card [data-act=next]');if(n){n.click();e.preventDefault();}}});
+
+/* ---------- Picking ---------- */
+const ray=new THREE.Raycaster(),mv=new THREE.Vector2();
+function pick(x,y){mv.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromCamera(mv,camera);const hits=ray.intersectObjects(scene.children,true);
+  for(const h of hits){if(h.object.userData.inner)continue;let o=h.object;while(o){if(o.userData.item)return{item:o};if(o.userData.container)return{cont:o.userData.container};o=o.parent;}return null;}return null;}
+
+/* ---------- Glow ---------- */
+let glowing=[];
+function meshesOf(root,skipItems){const out=[];(function walk(o){if(o!==root&&skipItems&&o.userData.item)return;if(o.isMesh&&o.material.emissive)out.push(o);o.children.forEach(walk);})(root);return out;}
+function setGlow(root,color,skip){meshesOf(root,skip).forEach(m=>{if(m.userData.e0===undefined){m.userData.e0=m.material.emissive.getHex();m.userData.ei0=m.material.emissiveIntensity;}glowing.push({m,color});});}
+function clearGlow(){glowing.forEach(g=>{g.m.material.emissive.setHex(g.m.userData.e0);g.m.material.emissiveIntensity=g.m.userData.ei0;});glowing=[];}
+
+/* ---------- Tag ---------- */
+const tagEl=$('#tag');let tag={obj:null,until:0};
+function showTag(obj,html,cls){tagEl.innerHTML=html;tagEl.className='show '+(cls||'');tag={obj,until:performance.now()+2800};}
+
+/* ---------- Game state ---------- */
+const S={mode:'explore',queue:[],cur:null,score:0,done:0,res:{},en:true,discovered:new Set()};
+try{JSON.parse(localStorage.getItem('kueche-entdeckt')||'[]').forEach(k=>S.discovered.add(k));}catch(e){}
+function saveDisc(){try{localStorage.setItem('kueche-entdeckt',JSON.stringify([...S.discovered]));}catch(e){}}
+const card=$('#card');
+function showCard(h){card.innerHTML=h;card.classList.add('show');}
+function hideCard(){card.classList.remove('show');card.innerHTML='';}
+const sayBtn=t=>`<button class="btn sm" data-act="say" data-t="${t}" aria-label="Anhören"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>Hören</button>`;
+function infoBlock(v){return `<div class="big">${artHTML(v)}</div><div class="meta">Plural: ${v.pl||'– (kein Plural)'}</div><div class="sent">${sentence(v)}</div>${S.en?`<div class="en">${v.en}</div>`:''}`;}
+
+function updateHUD(){
+  $('#score').innerHTML=`${S.score}<small>Punkte</small>`;
+  const tb=$('#taskbtns');
+  if(S.mode==='explore'){$('#tasklbl').textContent='Entdecken: Klicke auf alles!';$('#word').innerHTML=`${S.discovered.size} <span style="font-size:.6em;color:var(--muted)">von ${VOC.length} Wörtern</span>`;$('#hintbtn').style.display='none';$('[data-act=say-target]').style.display='none';$('#prog').textContent='Freies Entdecken';$('#score').style.display='none';$('#hinttext').style.display='none';return;}
+  $('#score').style.display='';$('#hintbtn').style.display='';$('[data-act=say-target]').style.display='';
+  const c=S.cur;if(!c)return;const v=VK[c.k];
+  $('#tasklbl').textContent=c.repeat?'Noch einmal: Finde':'Finde:';
+  $('#word').innerHTML=S.mode==='article'&&c.phase!=='done'?`<span class="blank">___</span> ${v.w}`:artHTML(v);
+  const total=S.done+S.queue.length+1;$('#prog').textContent=`Wort ${S.done+1} von ${total}`;
+  $('#hintbtn').textContent=c.hints>=3?'Kein Tipp mehr':`Tipp ${c.hints+1}/3 (−3)`;$('#hintbtn').disabled=c.hints>=3||c.phase!=='search';
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startGame(mode,keys){
+  S.mode=mode;S.score=0;S.done=0;S.res={};clearGlow();hideCard();
+  containers.forEach(c=>c.target=0);camT.copy(CENTER);
+  $('#start').classList.remove('show');$('#review').classList.remove('show');
+  if(mode==='explore'){S.cur=null;updateHUD();showCard(`<h3>Entdecken</h3><div class="sent">Ziehe, um dich umzusehen. Klicke auf Dinge, Schränke und Schubladen. Hör zu und sprich nach.</div><div class="en">Drag to look around. Click anything to hear its name.</div>`);return;}
+  S.queue=keys.map(k=>({k}));next();
+}
+function next(){
+  clearGlow();hideCard();$('#hinttext').style.display='none';
+  const n=S.queue.shift();
+  if(!n){review();return;}
+  S.cur={k:n.k,repeat:!!n.repeat,wrong:0,hints:0,phase:'search',art:null};
+  updateHUD();
+  const v=VK[n.k];say(S.mode==='article'?v.w:`${v.a} ${v.w}`);
+}
+function hint(){
+  const c=S.cur;if(!c||c.phase!=='search'||c.hints>=3)return;c.hints++;
+  const v=VK[c.k],obj=primary[c.k],box=itemCont[c.k];
+  const ht=$('#hinttext');
+  if(c.hints===1){const s=S.mode==='article'?`___ ${v.w} ist ${v.where}.`:sentence(v);ht.innerHTML='Tipp: '+s;ht.style.display='block';say(S.mode==='article'?`${v.w} ist ${v.where}`:sentence(v));}
+  if(c.hints===2){if(box&&box.root!==obj){aimAt(box.root);setGlow(box.root,0x2a8cff,true);}else aimAt(obj);ht.innerHTML+=' <br>Schau mal dort!';}
+  if(c.hints===3){const wasOpen=!box||box.root===obj||box.t>.95;if(box&&box.root!==obj){box.target=1;goTo(box);}wasOpen?aimAt(obj):setTimeout(()=>aimAt(obj),550);clearGlow();setGlow(obj,0xffc400);tFov=Math.min(tFov,48);ht.innerHTML+=' <br>Klick auf das Ding, das leuchtet.';}
+  updateHUD();
+}
+function wrong(obj,k){
+  const c=S.cur;c.wrong++;const v=VK[k],t=VK[c.k];
+  showTag(obj,`<span class="${v.a}">${v.a}</span> ${v.w}`,'wrong');say(`${v.a} ${v.w}`);
+  showCard(`<h3 class="bad">Das ist nicht gesucht.</h3><div class="sent">Das ist ${artHTML(v)}.</div><div class="meta">Du suchst: ${S.mode==='article'?`___ ${t.w}`:artHTML(t)}</div>`);
+}
+function found(obj){
+  const c=S.cur,v=VK[c.k];c.phase=S.mode==='article'?'article':'done';
+  c.pts=Math.max(1,10-2*c.wrong-3*c.hints);S.score+=c.pts;clearGlow();
+  if(S.mode==='article'){showTag(obj,`<span class="blank" style="min-width:1.6em">___</span> ${v.w}`,'right');say(v.w);
+    showCard(`<h3 class="good">Gefunden! +${c.pts}</h3><div class="sent">Welcher Artikel?</div><div class="big" style="font-size:30px"><span class="blank">___</span> ${v.w}</div><div class="artbtns"><button class="btn" data-act="art-der">der</button><button class="btn" data-act="art-die">die</button><button class="btn" data-act="art-das">das</button></div>`);
+  }else{showTag(obj,`<span class="${v.a}">${v.a}</span> ${v.w}`,'right');say(`${v.a} ${v.w}. ${sentence(v)}`);finishWord();}
+  updateHUD();
+}
+function chooseArt(a){
+  const c=S.cur;if(!c||c.phase!=='article')return;const v=VK[c.k];c.art=a===v.a;c.phase='done';
+  if(c.art){S.score+=5;}
+  say(`${v.a} ${v.w}`);showTag(primary[c.k],`<span class="${v.a}">${v.a}</span> ${v.w}`,c.art?'right':'wrong');
+  finishWord(a);updateHUD();
+}
+function finishWord(chosen){
+  const c=S.cur,v=VK[c.k];
+  const helped=c.wrong>=2||c.hints>=2||c.art===false;
+  if(!S.res[c.k])S.res[c.k]={k:c.k,helped,art:c.art,first:c.wrong===0&&c.hints===0};
+  if(helped&&!c.repeat){const pos=Math.min(S.queue.length,3+(Math.random()*2|0));S.queue.splice(pos,0,{k:c.k,repeat:true});}
+  let head='';
+  if(S.mode==='article'){head=c.art?`<h3 class="good">Richtig! +5 · Artikel</h3>`:`<h3 class="bad">Nicht ganz. Du hast „${chosen}“ gewählt.</h3>`;}
+  else head=`<h3 class="good">Richtig! +${c.pts}</h3>`;
+  const tip=S.mode==='article'?`<div class="tip">${tipFor(v)}</div>`:'';
+  const again=helped&&!c.repeat?`<div class="meta">Dieses Wort kommt gleich noch einmal.</div>`:'';
+  showCard(`${head}${infoBlock(v)}${tip}<div class="meta">Sprich laut nach: <b>${v.a} ${v.w}</b></div>${again}<div class="row" style="margin-top:10px">${sayBtn(`${v.a} ${v.w}`)}<button class="btn primary" data-act="next">Weiter</button></div>`);
+  S.done++;
+}
+function review(){
+  S.cur=null;clearGlow();hideCard();
+  const rows=Object.values(S.res);const hard=rows.filter(r=>r.helped).map(r=>r.k);
+  try{const k='kueche-best-'+S.mode,b=+localStorage.getItem(k)||0;if(S.score>b)localStorage.setItem(k,S.score);}catch(e){}
+  $('#reviewin').innerHTML=`<h1>Super gemacht!</h1><p class="sub">${S.score} Punkte · ${rows.filter(r=>r.first).length} von ${rows.length} Wörtern sofort gefunden</p>
+  <div class="list">${rows.map(r=>{const v=VK[r.k];const st=r.art===false?'<span class="bad">Artikel üben</span>':r.helped?'<span class="bad">mit Hilfe</span>':r.first?'<span class="good">sofort</span>':'<span class="good">gefunden</span>';return `<div><b class="${v.a}">${v.a} ${v.w}</b>${st}</div>`;}).join('')}</div>
+  <div class="row">${hard.length?`<button class="btn primary" data-act="repeat" data-keys="${hard.join(',')}">Schwierige Wörter üben (${hard.length})</button>`:''}<button class="btn ${hard.length?'':'primary'}" data-act="again">Neue Runde</button><button class="btn" data-act="menu">Menü</button></div>`;
+  $('#review').classList.add('show');updateHUD();
+}
+function click(x,y){
+  const r=pick(x,y);if(!r)return;
+  if(r.cont){const c=r.cont,v=VK[c.kind];
+    if(S.cur&&S.cur.phase==='search'&&c.kind===S.cur.k){found(c.root);return;}
+    const opening=c.target<.5;c.target=opening?1:0;if(opening){goTo(c);setTimeout(()=>aimAt(c.root),350);tFov=Math.min(tFov,60);}
+    if(S.mode==='explore'){exploreShow(c.root,c.kind);}
+    else if(!(S.mode==='article'&&S.cur&&S.cur.phase==='search'&&false))showTag(c.root,`<span class="${v.a}">${v.a}</span> ${v.w}`);
+    return;}
+  const k=r.item.userData.item;
+  if(S.mode==='explore'){exploreShow(r.item,k);return;}
+  if(!S.cur||S.cur.phase!=='search')return;
+  if(k===S.cur.k)found(r.item);else wrong(r.item,k);
+}
+function exploreShow(obj,k){const v=VK[k];S.discovered.add(k);saveDisc();showTag(obj,`<span class="${v.a}">${v.a}</span> ${v.w}`);say(`${v.a} ${v.w}`);
+  showCard(`<h3>Neues Wort</h3>${infoBlock(v)}<div class="row" style="margin-top:8px">${sayBtn(`${v.a} ${v.w}`)}${sayBtn(sentence(v)).replace('Hören','Satz hören')}</div>`);updateHUD();}
+function openMenu(){$('#review').classList.remove('show');$('#start').classList.add('show');speechSynthesis&&speechSynthesis.cancel&&speechSynthesis.cancel();}
+function keysFromMenu(){const th=$('#theme').value,n=+$('#count').value;const pool=VOC.filter(v=>th==='all'||v.cat===th).map(v=>v.k);return shuffle(pool).slice(0,Math.min(n,pool.length));}
+
+document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  if(a==='start'){S.en=$('#en').checked;startGame(document.querySelector('input[name=mode]:checked').value,keysFromMenu());}
+  else if(a==='next')next();
+  else if(a==='hint')hint();
+  else if(a==='say')say(b.dataset.t);
+  else if(a==='say-target'&&S.cur){const v=VK[S.cur.k];say(S.mode==='article'&&S.cur.phase!=='done'?v.w:`${v.a} ${v.w}`);}
+  else if(a.startsWith('art-'))chooseArt(a.slice(4));
+  else if(a==='menu')openMenu();
+  else if(a==='again')startGame(S.mode,keysFromMenu());
+  else if(a==='repeat')startGame(S.mode,shuffle(b.dataset.keys.split(',')));
+  else if(a==='center'){camT.copy(CENTER);tFov=66;}
+  else if(a==='zin')tFov=Math.max(28,tFov-8);
+  else if(a==='zout')tFov=Math.min(80,tFov+8);
+});
+
+/* ---------- Loop ---------- */
+function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+const clock=new THREE.Clock();const tv=new THREE.Vector3(),bb=new THREE.Box3();
+function loop(){
+  const dt=Math.min(clock.getDelta(),.05),t=clock.elapsedTime;
+  containers.forEach(c=>{if(Math.abs(c.target-c.t)>.001){c.t+=(c.target-c.t)*Math.min(1,dt*7);applyC(c);}});
+  if(tYaw!==null){yaw+=(tYaw-yaw)*Math.min(1,dt*4);if(Math.abs(tYaw-yaw)<.002)tYaw=null;}
+  if(tPitch!==null){pitch+=(tPitch-pitch)*Math.min(1,dt*4);if(Math.abs(tPitch-pitch)<.002)tPitch=null;}
+  fov+=(tFov-fov)*Math.min(1,dt*6);camera.fov=fov;camera.updateProjectionMatrix();
+  camera.position.lerp(camT,Math.min(1,dt*3));$('#mitte').style.visibility=camT.distanceTo(CENTER)>.1?'visible':'hidden';camera.rotation.y=yaw;camera.rotation.x=pitch;
+  const s=.45+.45*Math.sin(t*6);glowing.forEach(g=>{g.m.material.emissive.setHex(g.color);g.m.material.emissiveIntensity=s;});
+  if(tag.obj){bb.setFromObject(tag.obj);bb.getCenter(tv);tv.y=bb.max.y+.03;tv.project(camera);
+    if(tv.z>1||performance.now()>tag.until){tagEl.classList.remove('show');if(performance.now()>tag.until)tag.obj=null;}
+    else{tagEl.style.left=((tv.x+1)/2*innerWidth)+'px';tagEl.style.top=((1-tv.y)/2*innerHeight-8)+'px';}}
+  renderer.render(scene,camera);requestAnimationFrame(loop);
+}
+updateHUD();loop();
+}
+</script>
+</body>
+</html>

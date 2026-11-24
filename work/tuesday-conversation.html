@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Tuesday conversation · Razin Abdullah</title>
+<meta name="description" content="Concept project: a branching simulation where new team leads practise a difficult feedback conversation.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316213A'/%3E%3Crect x='7' y='19' width='18' height='5' rx='2' fill='%23F5D90A'/%3E%3C/svg%3E">
+<link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="../">Razin Abdullah<small>Learning experience designer</small></a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#work">Work</a>
+      <a href="../#services">Services</a>
+      <a href="../#about">About</a>
+      <a class="btn" href="../#contact">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../#work">All work</a>
+      <h1>The Tuesday conversation</h1>
+      <p class="cs-hero__lede">New team leads put off difficult conversations for weeks, then have them badly. This simulation lets them practise one before it's real, and shows how each choice affects both the relationship and the outcome.</p>
+      <dl class="cs-meta">
+        <div><dt>Format</dt><dd>Branching simulation, 5 minutes</dd></div>
+        <div><dt>Audience</dt><dd>Newly promoted team leads</dd></div>
+        <div><dt>My role</dt><dd>Research, design, writing, build</dd></div>
+        <div><dt>Built with</dt><dd>HTML, CSS, JavaScript</dd></div>
+      </dl>
+      <p class="concept-note"><b>Concept project.</b> The brief is self-initiated and the company, people and dialogue are invented to show my process. There's no client data and no results yet, so you'll find a plan for measuring it instead.</p>
+    </div>
+  </section>
+
+  <section class="cs-demo" aria-labelledby="demo-h">
+    <div class="wrap">
+      <div class="cs-demo__head">
+        <h2 id="demo-h">Play it first</h2>
+        <p>You're a new team lead. Jonas, until recently your peer, has missed the last three Friday report deadlines. You have a 15-minute one-to-one.</p>
+      </div>
+      <div class="card scn" id="sim"></div>
+    </div>
+  </section>
+
+  <section class="cs-body">
+    <div class="wrap">
+
+      <div class="cs-sec">
+        <h2>The brief</h2>
+        <div class="prose">
+          <p>A growing company promotes most of its team leads from within. Six months in, HR hears the same thing: new leads avoid giving feedback, especially to former peers, until a small problem becomes a formal one.</p>
+          <p>The existing training is a 40-minute video on feedback models. Completion is high. Leads can name the model. They still don't have the conversation.</p>
+        </div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>The real problem</h2>
+        <div class="prose">
+          <p>This isn't a knowledge gap. A new lead knows they should be specific and listen. What they lack is the experience of saying it out loud to someone they had lunch with last month, and seeing that it can go well.</p>
+          <p>So I mapped the conversation as a few moments where leads commonly go wrong, using Cathy Moore's action mapping to keep only what supports those moments:</p>
+          <div class="map">
+            <div class="map__row"><b>Business goal</b><span>Performance issues are raised within two weeks, not left for months.</span></div>
+            <div class="map__row"><b>Opening</b><span>Name the specific issue and invite their view, without softening it into small talk or turning it into a verdict.</span></div>
+            <div class="map__row"><b>Pushback</b><span>Stay on the issue when the other person deflects, without getting defensive.</span></div>
+            <div class="map__row"><b>Cause</b><span>Find out what's getting in the way before proposing a fix.</span></div>
+            <div class="map__row"><b>Close</b><span>Agree who does what by when, and when you'll check in.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>Design decisions</h2>
+        <div>
+          <div class="decision">
+            <h3>Two meters instead of a score</h3>
+            <p>Every choice moves both trust and clarity. Real conversations trade one against the other: being blunt is clear but costly, being warm can be vague.</p>
+            <p class="why">A single score teaches "find the right answer". Two meters teach the trade-off a lead is actually making.</p>
+          </div>
+          <div class="decision">
+            <h3>Wrong options are things real leads say</h3>
+            <p>No option is obviously silly. "Let's both keep an eye on it" and "I'll take the reports off your plate" feel kind in the moment. That's exactly why people choose them.</p>
+            <p class="why">If distractors are easy to spot, learners practise spotting distractors, not judgment.</p>
+          </div>
+          <div class="decision">
+            <h3>Jonas reacts before the coach comments</h3>
+            <p>The next scene opens with Jonas's response to what you said, so the consequence shows up in the conversation itself. The coaching note explains why.</p>
+            <p class="why">Seeing someone shut down teaches more than being told "that was too direct".</p>
+          </div>
+          <div class="decision">
+            <h3>Short enough to replay</h3>
+            <p>Three decisions, under five minutes. The debrief shows the path you took and nudges you to try a different one.</p>
+            <p class="why">Most of the learning happens on the second run, when people test the option they were curious about.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>Decision map</h2>
+        <div class="flow" role="img" aria-label="Decision map: one opening, three different reactions from Jonas depending on how you open, then a shared closing decision with three possible endings.">
+          <svg viewBox="0 0 680 250" width="100%">
+            <defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4A5670"/></marker></defs>
+            <g fill="none" stroke="#4A5670" stroke-width="1.5" marker-end="url(#ah)">
+              <path d="M120 125 C 160 125, 170 45, 210 45"/>
+              <path d="M120 125 L 210 125"/>
+              <path d="M120 125 C 160 125, 170 205, 210 205"/>
+              <path d="M330 45 C 370 45, 380 125, 410 125"/>
+              <path d="M330 125 L 410 125"/>
+              <path d="M330 205 C 370 205, 380 125, 410 125"/>
+              <path d="M520 125 C 550 125, 555 45, 580 45"/>
+              <path d="M520 125 L 580 125"/>
+              <path d="M520 125 C 550 125, 555 205, 580 205"/>
+            </g>
+            <g font-size="13" fill="#16213A">
+              <rect x="10" y="100" width="110" height="50" rx="8" fill="#16213A"/><text x="65" y="129" fill="#EDF0F2" text-anchor="middle" font-weight="600">Opening</text>
+              <rect x="210" y="22" width="120" height="46" rx="8" fill="#fff" stroke="#16213A" stroke-width="1.5"/><text x="270" y="50" text-anchor="middle">Jonas deflects</text>
+              <rect x="210" y="102" width="120" height="46" rx="8" fill="#fff" stroke="#16213A" stroke-width="1.5"/><text x="270" y="130" text-anchor="middle">Jonas is vague</text>
+              <rect x="210" y="182" width="120" height="46" rx="8" fill="#F5D90A" stroke="#16213A" stroke-width="1.5"/><text x="270" y="210" text-anchor="middle">Jonas opens up</text>
+              <rect x="410" y="100" width="110" height="50" rx="8" fill="#16213A"/><text x="465" y="129" fill="#EDF0F2" text-anchor="middle" font-weight="600">Close</text>
+              <text x="590" y="49">Clear plan</text>
+              <text x="590" y="129">Vague hope</text>
+              <text x="590" y="209">Threat</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>How I'd measure it</h2>
+        <div>
+        <div class="prose">
+          <p>Completion would tell us nothing here, so the plan looks at whether conversations happen sooner and go better, using Will Thalheimer's LTEM tiers as a guide.</p>
+        </div>
+        <div class="table-scroll">
+          <table class="plan">
+            <thead><tr><th>What</th><th>How</th><th>When</th></tr></thead>
+            <tbody>
+              <tr><td>Decision-making</td><td>Share of leads who reach "clear plan" on their first run, and on their second</td><td>In the module</td></tr>
+              <tr><td>Confidence</td><td>Two questions before and after: "How likely are you to raise an issue this week?"</td><td>In the module</td></tr>
+              <tr><td>Transfer</td><td>Leads log their next real feedback conversation in a two-minute form: when, how it went</td><td>Within 4 weeks</td></tr>
+              <tr><td>Business effect</td><td>Time from a problem first being noticed to being raised, from HR case notes</td><td>3 and 6 months</td></tr>
+            </tbody>
+          </table>
+        </div>
+        </div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>What I'd do next</h2>
+        <div class="prose">
+          <p>With a real client, the dialogue would come from interviews with a few experienced leads and the people they manage. The best lines in scenarios are always the ones someone actually said.</p>
+          <p>I'd then build two more conversations with different causes behind the same symptom (a skills gap, a motivation problem), so leads learn to diagnose rather than memorise one script.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-next">
+    <div class="wrap">
+      <div>Next case study<br><a class="big" href="slides-to-practice.html">From 38 slides to 12 minutes of practice</a></div>
+      <a class="btn" href="../#contact">Talk about your course</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot"><div class="wrap"><span>© 2026 Razin Abdullah</span><a href="../">Back to home</a></div></footer>
+
+<script src="../js/scenario.js"></script>
+<script>
+Scenario(document.getElementById('sim'), {
+  title: 'One-to-one with Jonas',
+  steps: 3,
+  meters: { trust: { label: 'Trust', start: 50 }, clarity: { label: 'Clarity', start: 30 } },
+  start: 'open',
+  nodes: {
+    open: {
+      q: 'Jonas sits down with his coffee. How do you open?',
+      choices: [
+        { t: '“Jonas, we need to talk about the reports. Three late in a row isn\'t okay.”', verdict: 'mid', label: 'Clear, but it lands as a verdict',
+          fb: 'The issue is on the table, which is good. But you\'ve decided what it means before hearing him, so he\'ll start defending.', fx: { trust: -10, clarity: 15 }, next: 'deflect' },
+        { t: '“How are things going generally? Anything on your mind?”', verdict: 'mid', label: 'Warm, but he can\'t see why you\'re here',
+          fb: 'Kind, and it avoids the awkward bit. It also means he has no idea what this meeting is about.', fx: { trust: 5, clarity: -10 }, next: 'vague' },
+        { t: '“I want to talk about the weekly reports. The last three came in after Friday. Before I say more, how do you see it?”', verdict: 'good', label: 'Specific and open',
+          fb: 'You name the facts without judging them, then hand him the floor. That\'s the hardest opening to get defensive about.', fx: { trust: 10, clarity: 15 }, next: 'opens' }
+      ]
+    },
+    deflect: {
+      q: 'Jonas: “Honestly, everyone\'s late with reports. Why is this suddenly about me?”',
+      choices: [
+        { t: '“Let\'s not compare. This is about you.”', verdict: 'bad', label: 'Now it\'s a standoff',
+          fb: 'Technically true, but it confirms his feeling that he\'s being singled out.', fx: { trust: -15 }, next: 'close' },
+        { t: '“Fair question. Yours feed the client summary on Monday, so I see the knock-on effect. What\'s been getting in the way?”', verdict: 'good', label: 'You took the question seriously',
+          fb: 'You answered the "why me" honestly and moved straight to the cause. He relaxes a little.', fx: { trust: 15, clarity: 10 }, next: 'close' },
+        { t: '“You\'re right. I\'ll raise it with the whole team instead.”', verdict: 'bad', label: 'The issue just disappeared',
+          fb: 'It feels like de-escalating. In practice, a team-wide email changes nothing for Jonas, and he learns pushback works.', fx: { trust: 5, clarity: -20 }, next: 'close' }
+      ]
+    },
+    vague: {
+      q: 'Jonas: “All good, busy as always. Was there something specific?”',
+      choices: [
+        { t: '“No, no, just checking in.”', verdict: 'bad', label: 'The moment\'s gone',
+          fb: 'He gave you the opening. Next week it\'ll feel even harder to bring up.', fx: { clarity: -20 }, next: 'close' },
+        { t: '“Yes, the weekly reports. The last three came in after Friday. What\'s been happening?”', verdict: 'good', label: 'Good recovery',
+          fb: 'Specific and curious. Better late than never, though it did cost you a few minutes.', fx: { trust: 5, clarity: 20 }, next: 'close' },
+        { t: '“Well, a couple of people have mentioned the reports are late.”', verdict: 'bad', label: 'Now it sounds like gossip',
+          fb: 'Hiding behind "people say" makes it feel like he\'s being talked about. Own the observation yourself.', fx: { trust: -15, clarity: 5 }, next: 'close' }
+      ]
+    },
+    opens: {
+      q: 'Jonas: “Yeah, I know. The new client calls take half my week now and the reports get pushed.”',
+      choices: [
+        { t: '“Everyone\'s busy. Reports still need to be on time.”', verdict: 'bad', label: 'He opened up and got shut down',
+          fb: 'He just told you the cause. Dismissing it teaches him not to tell you next time.', fx: { trust: -15, clarity: 5 }, next: 'close' },
+        { t: '“That\'s useful to know. What would need to change for Friday to work?”', verdict: 'good', label: 'You\'re solving it together',
+          fb: 'You acknowledge the real constraint and ask him to own part of the fix.', fx: { trust: 15, clarity: 10 }, next: 'close' },
+        { t: '“Okay, I\'ll take the reports off your plate.”', verdict: 'mid', label: 'Generous, but you\'ve absorbed the problem',
+          fb: 'He\'s relieved. But the work goes somewhere, probably to you, and the call load is still unexamined.', fx: { trust: 10, clarity: -10 }, next: 'close' }
+      ]
+    },
+    close: {
+      q: 'Five minutes left. How do you wrap up?',
+      choices: [
+        { t: '“Let\'s both keep an eye on it.”', verdict: 'bad', label: 'Nobody owns anything',
+          fb: 'It feels like agreement, but there\'s no action, no owner and no date. You\'ll be having this conversation again.', fx: { clarity: -15 } , next: null },
+        { t: '“So: you block Thursday afternoon for the report, I talk to sales about the call load, and we check in next Tuesday. Does that work?”', verdict: 'good', label: 'A plan you both own',
+          fb: 'Each of you has one action and a date to check in. Asking "does that work?" lets him adjust it.', fx: { trust: 5, clarity: 20 }, next: null },
+        { t: '“If it happens again, I\'ll have to make a note of it.”', verdict: 'bad', label: 'You ended on a threat',
+          fb: 'Sometimes a formal step is right, but not as the first conversation\'s closing line. He leaves feeling warned, not helped.', fx: { trust: -20, clarity: 5 }, next: null }
+      ]
+    }
+  },
+  end: function (s) {
+    var t = s.meters.trust, c = s.meters.clarity, head, body;
+    if (t >= 60 && c >= 60) { head = 'Jonas leaves with a plan he helped make.'; body = 'The report arrives on Thursday. Two weeks later he tells you about another problem before it becomes one.'; }
+    else if (c >= 60) { head = 'The report arrives on time. Jonas stops chatting at lunch.'; body = 'You got compliance, not commitment. The next issue will reach you late, through someone else.'; }
+    else if (t >= 60) { head = 'A friendly chat. Nothing changes.'; body = 'Jonas feels supported, and Friday\'s report is late again. The next conversation will be harder.'; }
+    else { head = 'Neither of you wants a second meeting.'; body = 'The relationship is strained and the problem is still there. This is how a small issue becomes an HR case.'; }
+    var path = s.path.map(function (p) { return '<li>' + p.choice.label + '</li>'; }).join('');
+    return '<p class="scn__q">' + head + '</p><p class="scn__ctx">' + body + '</p>' +
+      '<p style="font-weight:600;margin-bottom:6px">Your path</p><ol style="margin:0 0 14px;padding-left:1.2em">' + path + '</ol>' +
+      '<p class="scn__ctx" style="margin:0">The strongest path: name the facts and ask for his view, find the cause before the fix, close with owners and a date. Try a different route and see how Jonas reacts.</p>';
+  }
+});
+</script>
+</body>
+</html>

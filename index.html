@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Razin Abdullah · Learning experience designer</title>
-<meta name="description" content="Razin Abdullah designs simulations, eLearning and evaluation for training that gets completed but doesn't change what people do.">
-<meta property="og:title" content="Razin Abdullah, learning experience designer">
-<meta property="og:description" content="Training people practise, not just click through. Simulations, eLearning and evaluation.">
+<title>Razin Abdullah · Learning simulation designer</title>
+<meta name="description" content="Razin Abdullah designs learning simulations and games where people make real decisions, get it wrong safely, and see why it matters. Five playable projects inside.">
+<meta property="og:title" content="Razin Abdullah, learning simulation designer">
+<meta property="og:description" content="Training that plays like a game and works like the job. Five playable simulations.">
+<meta property="og:image" content="img/thumbs/flat-tire.webp">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2316213A'/%3E%3Crect x='7' y='19' width='18' height='5' rx='2' fill='%23F5D90A'/%3E%3C/svg%3E">
-<link rel="preload" href="fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314082B'/%3E%3Crect x='7' y='8' width='18' height='16' rx='5' fill='%23C6FF3D'/%3E%3Ccircle cx='22' cy='9' r='5' fill='%23FF4F6D'/%3E%3C/svg%3E">
+<link rel="preload" href="fonts/unbounded.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -17,12 +19,12 @@
 
 <header class="site-head">
   <div class="wrap">
-    <a class="brand" href="./">Razin Abdullah<small>Learning experience designer</small></a>
+    <a class="brand" href="./">razin<span>.</span>abdullah</a>
     <nav class="site-nav" aria-label="Main">
-      <a href="#work">Work</a>
-      <a href="#services">Services</a>
+      <a href="#levels">Simulations</a>
+      <a href="#process">Process</a>
       <a href="#about">About</a>
-      <a class="btn" href="#contact">Get in touch</a>
+      <a class="btn btn--sm" href="#contact">Start a project</a>
     </nav>
   </div>
 </header>
@@ -32,114 +34,96 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <h1>I design training people practise, not just click&nbsp;through.</h1>
-        <p class="hero__lede">Simulations, eLearning and evaluation for teams whose courses get completed but don't change what people do on the job.</p>
+        <h1>Training that plays like a game and works like the job.</h1>
+        <p class="hero__lede">I design learning simulations where people make real decisions, get it wrong safely, and see exactly why it matters. Five of them are on this page, and you can play every one.</p>
         <div class="hero__actions">
-          <a class="btn" href="#work">See the work</a>
-          <a class="btn btn--quiet" href="#contact">Talk about your course</a>
+          <a class="btn" href="#levels">Play my simulations</a>
+          <a class="btn btn--panel" href="#process">How I design them</a>
         </div>
-        <ul class="hero__facts">
-          <li><strong>M.Ed.</strong>, Technical University of Munich</li>
-          <li><strong>4+ years</strong> in learning design and evaluation</li>
-          <li><strong>International</strong> teams and learners</li>
+      </div>
+
+      <aside class="player" aria-label="About Razin">
+        <span class="player__tag">Player 1</span>
+        <div class="player__photo">
+          <img src="img/razin.webp" alt="Razin Abdullah" width="720" height="720">
+          <span class="player__badge">Ready</span>
+        </div>
+        <p class="player__name">Razin Abdullah</p>
+        <p class="player__class">Learning experience designer</p>
+        <ul class="player__stats">
+          <li><span>Specialty</span><b>Learning simulations</b></li>
+          <li><span>Trained at</span><b>M.Ed., TU Munich</b></li>
+          <li><span>Experience</span><b>4+ years</b></li>
+          <li><span>Builds in</span><b>HTML5, Storyline, 3D</b></li>
         </ul>
-      </div>
-      <div class="card scn" id="heroScenario" aria-label="Interactive scenario">
-        <noscript><p>This is a short interactive scenario. Turn on JavaScript to play it, or go straight to <a href="#work">the work</a>.</p></noscript>
-      </div>
+      </aside>
     </div>
   </section>
 
-  <section class="section" id="work">
+  <section class="section section--deep" id="levels">
     <div class="wrap">
       <div class="section__head">
-        <h2>Work</h2>
-        <p>Three concept projects, each built end to end: the problem, the design decisions, a demo you can play, and how I'd measure whether it worked.</p>
+        <h2>Five simulations. All playable.</h2>
+        <p>Each one starts from a mistake real people make, then turns it into something you can try, fail at safely, and learn from. Open any of them to play it and see how it was designed.</p>
       </div>
 
-      <div class="work">
-        <a class="work-item" href="work/tuesday-conversation.html">
-          <div class="card work-item__art" aria-hidden="true">
-            <div class="art-chat">
-              <div class="bubble">“Honestly, everyone's late with reports. Why is this suddenly about me?”</div>
-              <div class="bubble bubble--me">You've missed the last three deadlines, so…</div>
-              <div class="bubble bubble--pick">Ask what's been getting in the way</div>
-              <div class="bubble">“…Okay. The new client calls take half my week.”</div>
-            </div>
-          </div>
-          <div>
-            <span class="tag">Branching simulation</span>
-            <h3>The Tuesday conversation</h3>
-            <p>New team leads practise a difficult feedback conversation with a colleague who keeps missing deadlines, and see how each choice lands.</p>
-            <p class="work-item__inside">Inside: playable simulation, decision map, evaluation plan</p>
-            <span class="work-item__go">Read the case study</span>
+      <div class="levels">
+        <a class="level level--feature" href="work/wo-ist-der-loeffel.html">
+          <div class="level__img"><img src="img/thumbs/wo-ist-der-loeffel-start.webp" alt="A 3D kitchen with teal cabinets, seen from the middle of the room" loading="lazy" width="1280" height="720"></div>
+          <div class="level__body">
+            <div class="chips"><span class="chip chip--sky">3D world</span><span class="chip">German A1</span></div>
+            <h3>Wo ist der Löffel?</h3>
+            <p>A 360° kitchen where beginners learn 58 German words by finding the real thing: opening drawers, the fridge and the oven, instead of matching text to text.</p>
+            <p class="level__wrong"><b>Get it wrong:</b> you hear the name of what you actually clicked, with its article, and the word comes back later in the round.</p>
+            <span class="level__go">Play and see how it's made</span>
           </div>
         </a>
 
-        <a class="work-item" href="work/slides-to-practice.html">
-          <div class="card work-item__art" aria-hidden="true">
-            <div class="art-split">
-              <div class="art-slide"><b>Data protection: key principles</b><i></i><i></i><i></i><i style="width:70%"></i><i></i><i style="width:55%"></i><i></i><i></i><i style="width:80%"></i></div>
-              <div class="art-do"><b>A customer asks you to email their order history to a new address. Do you…</b><span>Send it, they asked</span><span class="on">Verify it's really them first</span><span>Refuse entirely</span></div>
-            </div>
-          </div>
-          <div>
-            <span class="tag">Slides into eLearning</span>
-            <h3>From 38 slides to 12 minutes of practice</h3>
-            <p>A data protection onboarding deck rebuilt around the six decisions new staff actually face, instead of the principles they're asked to memorise.</p>
-            <p class="work-item__inside">Inside: content audit, action map, playable module</p>
-            <span class="work-item__go">Read the case study</span>
+        <a class="level" href="work/flat-tire.html">
+          <div class="level__img"><img src="img/thumbs/flat-tire.webp" alt="A red car sliding off a toppled jack, with a Critical danger warning" loading="lazy" width="1280" height="720"></div>
+          <div class="level__body">
+            <div class="chips"><span class="chip chip--hot">Procedure simulation</span><span class="chip">Drivers</span></div>
+            <h3>Changing a flat tire</h3>
+            <p>Four tools, one car. Use them in the right order and you're back on the road. Use them in the wrong order and physics takes over.</p>
+            <p class="level__wrong"><b>Get it wrong:</b> jack the car up before setting the parking brake and it rolls off the jack.</p>
+            <span class="level__go">Play and see how it's made</span>
           </div>
         </a>
 
-        <a class="work-item" href="work/confident-and-wrong.html">
-          <div class="card work-item__art" aria-hidden="true">
-            <div class="art-grid">
-              <div><span>Sure and right</span><strong>Safe</strong></div>
-              <div class="hot"><span>Sure and wrong</span><strong>Risk</strong></div>
-              <div><span>Unsure and right</span><strong>Lucky</strong></div>
-              <div><span>Unsure and wrong</span><strong>Learning</strong></div>
-            </div>
-          </div>
-          <div>
-            <span class="tag">Learning evaluation</span>
-            <h3>Confident and wrong</h3>
-            <p>A phishing check that asks how sure people are, so the organisation can find the people most likely to click, not just the ones who fail a quiz.</p>
-            <p class="work-item__inside">Inside: playable check, confidence analysis, evaluation framework</p>
-            <span class="work-item__go">Read the case study</span>
+        <a class="level" href="work/cleanroom-gowning.html">
+          <div class="level__img"><img src="img/thumbs/cleanroom-gowning.webp" alt="A technician in a dirty cleanroom suit, with a particle counter reading 10,000" loading="lazy" width="1280" height="720"></div>
+          <div class="level__body">
+            <div class="chips"><span class="chip chip--hot">Procedure simulation</span><span class="chip">Semiconductor fab</span></div>
+            <h3>Cleanroom gowning</h3>
+            <p>Dress a technician for a Class 100 clean zone while a live particle counter watches every step.</p>
+            <p class="level__wrong"><b>Get it wrong:</b> put the hairnet on after the coverall and dust falls onto the clean suit. Particle count: 10,000.</p>
+            <span class="level__go">Play and see how it's made</span>
           </div>
         </a>
-      </div>
-    </div>
-  </section>
 
-  <section class="section" id="services">
-    <div class="wrap">
-      <div class="section__head">
-        <h2>What I can do for you</h2>
-        <p>Start from the problem you have. Most projects combine two or three of these.</p>
-      </div>
-      <div class="services">
-        <div class="service">
-          <h3>Branching simulations</h3>
-          <p class="service__when">For when people know the rules but make poor calls under pressure: in sales, service, leadership or safety.</p>
-          <p class="service__get"><b>You get</b> a decision map, a scripted scenario and a built, tested module.</p>
-        </div>
-        <div class="service">
-          <h3>Slide decks into eLearning</h3>
-          <p class="service__when">For a deck nobody remembers, or a course that's too long, confusing or simply ignored.</p>
-          <p class="service__get"><b>You get</b> a content audit, an action map and a rebuilt interactive module.</p>
-        </div>
-        <div class="service">
-          <h3>Learning video</h3>
-          <p class="service__when">For a concept that's hard to explain in text, or a process that's easier to show than describe.</p>
-          <p class="service__get"><b>You get</b> a script, a storyboard and a finished, captioned video.</p>
-        </div>
-        <div class="service">
-          <h3>Evaluation and LMS setup</h3>
-          <p class="service__when">For when you need to show the training worked, or the course has to report properly in your LMS.</p>
-          <p class="service__get"><b>You get</b> an evaluation plan, measures built into the course, and SCORM or xAPI packaging, tested in your system.</p>
-        </div>
+        <p class="series-note">Circular economy series</p>
+
+        <a class="level" href="work/close-the-loop.html">
+          <div class="level__img"><img src="img/thumbs/close-the-loop.webp" alt="A conveyor belt carrying waste toward an incinerator, above three upcycling machines" loading="lazy" width="1280" height="720"></div>
+          <div class="level__body">
+            <div class="chips"><span class="chip chip--lime">Arcade game</span><span class="chip">Circular economy</span></div>
+            <h3>Close the loop</h3>
+            <p>Rescue waste from a conveyor belt before it reaches the incinerator, and feed each item to the machine that can turn it into something new.</p>
+            <p class="level__wrong"><b>Get it wrong:</b> hesitate and the item burns. Resource destroyed.</p>
+            <span class="level__go">Play and see how it's made</span>
+          </div>
+        </a>
+
+        <a class="level" href="work/eco-party.html">
+          <div class="level__img"><img src="img/thumbs/eco-party.webp" alt="A school gym party plan with a Trap warning about compostable cups" loading="lazy" width="1280" height="720"></div>
+          <div class="level__body">
+            <div class="chips"><span class="chip chip--lime">Puzzle game</span><span class="chip">Circular economy</span></div>
+            <h3>Eco-Party Planner</h3>
+            <p>Plan a school party on a balance scale: party fun on one side, planet waste on the other.</p>
+            <p class="level__wrong"><b>Get it wrong:</b> choose the "compostable" cups and the greenwashing trap springs.</p>
+            <span class="level__go">Play and see how it's made</span>
+          </div>
+        </a>
       </div>
     </div>
   </section>
@@ -147,48 +131,82 @@
   <section class="section" id="process">
     <div class="wrap">
       <div class="section__head">
-        <h2>How a project runs</h2>
-        <p>You see something real early, and we agree up front how we'll know it worked.</p>
+        <h2>How I design a simulation</h2>
+        <p>Every project above went through the same five steps. The examples show where each step ended up in the work.</p>
       </div>
-      <ol class="steps">
+      <ol class="path">
         <li>
-          <h3>Find the real problem</h3>
-          <p>I review your material and data and talk to the people doing the job. You get a one-page problem statement and agreed success measures.</p>
-          <p class="you">From you: existing material and two or three people to interview.</p>
+          <h3>Find the moment that matters</h3>
+          <p>Not the topic, the decision. Where do people actually go wrong, and what does it cost them?</p>
+          <p class="eg">Cleanroom: the order you dress in, not the list of garments.</p>
         </li>
         <li>
-          <h3>Prototype</h3>
-          <p>One clickable scene before anything is built in full, so you react to something real, not a document.</p>
-          <p class="you">From you: a few learners to try it.</p>
+          <h3>Make the consequence visible</h3>
+          <p>Choose a mechanic that shows the effect of a choice the way the real world would.</p>
+          <p class="eg">Eco-Party: a scale that tips as the waste piles up.</p>
         </li>
         <li>
-          <h3>Build</h3>
-          <p>Full production, accessibility checks and LMS packaging, with two review rounds.</p>
-          <p class="you">From you: feedback in one consolidated list per round.</p>
+          <h3>Design the mistakes</h3>
+          <p>Wrong answers are the most important content. Each one gets a reason, never just a red cross.</p>
+          <p class="eg">Flat tire: the wheel spins in the air, because there's no ground friction.</p>
         </li>
         <li>
-          <h3>Measure</h3>
-          <p>We look at the measures agreed in step one and decide what to keep, change or cut.</p>
-          <p class="you">From you: access to the data.</p>
+          <h3>Build it to run anywhere</h3>
+          <p>Lightweight HTML5 that works in a browser, inside Articulate Storyline, or in an LMS.</p>
+          <p class="eg">Drag and drop that stays accurate when the Storyline player is resized.</p>
+        </li>
+        <li>
+          <h3>Play-test and tune</h3>
+          <p>Adjust hints, difficulty and feedback until the challenge is fair and the lesson lands.</p>
+          <p class="eg">Löffel: three hint levels, each costing a few points, never all of them.</p>
         </li>
       </ol>
     </div>
   </section>
 
-  <section class="section" id="about">
+  <section class="section section--deep" id="services">
     <div class="wrap">
       <div class="section__head">
-        <h2>About</h2>
+        <h2>What I can build for you</h2>
+        <p>Start with the problem. Most projects combine two of these.</p>
       </div>
+      <div class="services">
+        <div class="service">
+          <h3>Custom learning simulations</h3>
+          <p>For procedures, safety and judgment calls, where a mistake on the job is expensive or dangerous.</p>
+          <p class="get"><b>You get</b> a playable HTML5 simulation, from first concept to finished build.</p>
+        </div>
+        <div class="service">
+          <h3>Learning games for schools</h3>
+          <p>For topics like sustainability or languages that work better as play than as worksheets.</p>
+          <p class="get"><b>You get</b> a classroom-ready game, with notes for teachers on how to use it.</p>
+        </div>
+        <div class="service">
+          <h3>Interactions for Storyline</h3>
+          <p>For when your course lives in Articulate Storyline but needs an interaction it can't do on its own.</p>
+          <p class="get"><b>You get</b> a web object that drops straight into your Storyline project.</p>
+        </div>
+        <div class="service">
+          <h3>Course rescue</h3>
+          <p>For a course people click through without learning anything.</p>
+          <p class="get"><b>You get</b> a diagnosis and a redesigned module with practice at its centre.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="wrap">
+      <div class="section__head"><h2>About</h2></div>
       <div class="about">
         <div class="about__text">
-          <p>I'm Razin Abdullah, a learning experience designer. I start every project with one question: what should people do differently after this? The answer is usually a handful of decisions, and the course should let people practise exactly those.</p>
-          <p>I studied education at the Technical University of Munich and have spent over four years designing and evaluating learning for international teams. The projects on this site are self-initiated concept pieces, built end to end to show how I work. I'm happy to walk you through past work on a call.</p>
+          <p>People learn the most at the moment they get something wrong, as long as it's safe and they understand why. That's the moment I design for.</p>
+          <p>I'm Razin Abdullah, a learning experience designer with an M.Ed. from the Technical University of Munich. Over more than four years I've designed and evaluated learning for international teams and learners, from step-by-step procedures in high-stakes workplaces to games for classrooms and language beginners.</p>
         </div>
         <ul class="facts">
           <li><b>M.Ed.</b><span>Technical University of Munich</span></li>
           <li><b>4+ years</b><span>Learning design and evaluation</span></li>
-          <li><b>Focus</b><span>Simulations, scenario-based eLearning, evaluation</span></li>
+          <li><b>Builds with</b><span>HTML5, JavaScript, three.js, Articulate Storyline</span></li>
         </ul>
       </div>
     </div>
@@ -196,8 +214,8 @@
 
   <section class="section contact" id="contact">
     <div class="wrap">
-      <h2>Tell me about the course that isn't working.</h2>
-      <p>Send a few lines on who it's for and what's going wrong. I'll reply with how I'd approach it, whether or not we end up working together.</p>
+      <h2>Got a training problem? Let's make it playable.</h2>
+      <p>Tell me who it's for and where people go wrong. I'll reply with how I'd turn it into a simulation.</p>
       <div class="contact__row" data-contact-actions></div>
       <ul class="contact__list" data-contact-list></ul>
     </div>
@@ -207,49 +225,10 @@
 <footer class="site-foot">
   <div class="wrap">
     <span>© 2026 Razin Abdullah</span>
-    <span>Built by hand: HTML, CSS and a little JavaScript.</span>
+    <span>Every simulation on this site is hand-built and runs in your browser.</span>
   </div>
 </footer>
 
 <script src="js/site.js"></script>
-<script src="js/scenario.js"></script>
-<script>
-Scenario(document.getElementById('heroScenario'), {
-  title: 'Try it: a 60-second scenario',
-  steps: 2,
-  start: 'a',
-  nodes: {
-    a: {
-      q: 'Your product training has 94% completion. Customers still get wrong answers on support calls. What do you change first?',
-      choices: [
-        { t: 'Add a harder quiz at the end', verdict: 'mid', label: 'A common first move',
-          fb: 'A quiz checks whether people remember facts. The calls show they can\'t apply them under pressure, and a quiz won\'t tell you which moment goes wrong.', next: 'b' },
-        { t: 'Cut it into five-minute microlearning', verdict: 'mid', label: 'Shorter, same problem',
-          fb: 'Shorter helps attention. But if the course teaches the wrong things, you get the same result in less time.', next: 'b' },
-        { t: 'Listen to calls and find the decisions people get wrong', verdict: 'good', label: 'This is where I start',
-          fb: 'Completion only tells you people clicked through. The calls show which moments break. Those moments become the practice.', next: 'b' }
-      ]
-    },
-    b: {
-      q: 'You found it: when callers get angry, agents promise refunds they\'re not allowed to give. What goes in the course?',
-      choices: [
-        { t: 'A slide on the refund policy, plus the policy PDF', verdict: 'bad', label: 'They already know the policy',
-          fb: 'They break it when someone is shouting at them. Reading it again doesn\'t practise that moment.', next: null },
-        { t: 'A short branching call with an angry customer pushing for a refund', verdict: 'good', label: 'Yes: practise the moment',
-          fb: 'Agents face the exact situation, see what an impossible promise costs, and try again safely. That\'s what a simulation is for.', next: null },
-        { t: 'A video of a manager explaining why refunds matter', verdict: 'mid', label: 'Good context, no practice',
-          fb: 'It can set up the practice nicely. On its own, nobody has to make the decision.', next: null }
-      ]
-    }
-  },
-  end: function (s) {
-    var good = s.path.filter(function (p) { return p.choice.verdict === 'good'; }).length;
-    var head = good === 2 ? 'You think like a learning designer.' : 'That\'s the gap most training falls into.';
-    return '<p class="scn__q">' + head + '</p>' +
-      '<p class="scn__ctx">Find the decision that matters, then let people practise it with real consequences. That\'s how I approach every project, including the three below.</p>';
-  },
-  endActions: '<a class="btn" href="#work">See the work</a>'
-});
-</script>
 </body>
 </html>

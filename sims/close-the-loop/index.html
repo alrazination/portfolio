@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Close the Loop – Il Vespaio Maker Space</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1b1b2f;--ps:paused}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none}
+html,body{margin:0;padding:0;overflow:hidden;background:#1b1b2f;font-family:Fredoka,'Trebuchet MS','Comic Sans MS',sans-serif;color:var(--ink)}
+#stage{position:relative;width:1280px;height:720px;overflow:hidden;background:#fff4d6}
+#top{position:absolute;left:0;top:0;width:1280px;height:252px;border-bottom:8px solid var(--ink);background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 20px,transparent 20px 40px),linear-gradient(#4a4e69,#2b2d42)}
+#bot{position:absolute;left:0;top:252px;width:1280px;height:468px;background:radial-gradient(#e3c98e 2.5px,transparent 3.5px) 0 0/28px 28px,#fff4d6}
+#belt{position:absolute;left:0;top:186px;width:1090px;height:40px;border:5px solid var(--ink);border-left:0;border-radius:0 20px 20px 0;background:repeating-linear-gradient(90deg,#666 0 24px,#3a3a3a 24px 48px);animation:belt 1.4s linear infinite}
+#legs{position:absolute;left:0;top:226px;width:1090px;height:26px;background:repeating-linear-gradient(90deg,var(--ink) 0 16px,transparent 16px 220px)}
+@keyframes belt{to{background-position:48px 0}}
+.pill{position:absolute;left:50%;transform:translateX(-50%);border:4px solid var(--ink);border-radius:20px;font-weight:700;white-space:nowrap;z-index:30;box-shadow:0 4px 0 var(--ink)}
+#t1{top:12px;background:#ffd23f;padding:2px 20px;font-size:20px}
+#hint{position:absolute;left:50%;top:50px;transform:translateX(-50%);color:#fff;font-size:16px;font-weight:500;z-index:30;white-space:nowrap;opacity:.9}
+#t2{top:262px;background:#2ecc71;color:#fff;padding:2px 24px;font-size:22px;text-shadow:2px 2px 0 var(--ink)}
+#hud{position:absolute;left:16px;top:12px;width:280px;height:62px;padding:4px 12px;background:#fff;border:5px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);z-index:30}
+#hud small{display:block;font-size:13px;font-weight:700;line-height:15px}
+#hud div{display:flex;align-items:center;gap:10px}
+#bar{flex:1;height:22px;border:3px solid var(--ink);border-radius:12px;background:#ddd;overflow:hidden}
+#fill{display:block;height:100%;width:0;background:#e63946;transition:width .8s,background .8s}
+#pct{font-size:24px;font-weight:700;min-width:58px;text-align:right}
+#furn{position:absolute;left:1090px;top:30px;width:190px;height:222px;overflow:visible;z-index:10}
+.fl{transform-origin:96px 214px;animation:flick .35s ease-in-out infinite alternate}
+@keyframes flick{to{transform:scaleY(1.18) skewX(4deg)}}
+.chim{animation:puff 2.4s ease-out infinite}
+@keyframes puff{from{transform:translate(0,0) scale(.6);opacity:.9}to{transform:translate(var(--dx,10px),-60px) scale(2);opacity:0}}
+.item{position:absolute;top:100px;width:92px;height:92px;z-index:20;cursor:grab;touch-action:none;filter:drop-shadow(0 5px 0 rgba(0,0,0,.35))}
+.item svg{width:100%;height:100%;pointer-events:none;animation:bob 1.1s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-4px) rotate(3deg)}}
+.item b{position:absolute;left:50%;top:-17px;transform:translateX(-50%);white-space:nowrap;background:#ffd23f;border:3px solid var(--ink);border-radius:12px;padding:0 8px;font-size:13px;line-height:17px;pointer-events:none}
+.item.drag{z-index:60;cursor:grabbing;transform:scale(1.2) rotate(-6deg)}
+.item.burn{transform:scale(.1) rotate(200deg);opacity:0;transition:left .5s,top .5s,transform .5s,opacity .5s}
+.item.suck{animation:suck 1.5s ease-in forwards}
+@keyframes suck{0%{transform:scale(1.1)}50%{transform:scale(.8) rotate(360deg)}100%{transform:scale(.05) rotate(1000deg);opacity:0}}
+.zone{position:absolute;top:312px;width:380px;height:390px;background:#fff;border:6px solid var(--ink);border-radius:28px;box-shadow:0 8px 0 var(--ink);overflow:hidden;z-index:5;transition:transform .15s,box-shadow .15s}
+.zone h3{margin:0;height:46px;line-height:46px;text-align:center;font-weight:700;font-size:18px;color:#fff;text-shadow:2px 2px 0 var(--ink);border-bottom:5px solid var(--ink)}
+.zone svg.m{display:block;width:100%;height:232px}
+.zone.hot{transform:translateY(-6px) scale(1.03);box-shadow:0 14px 0 var(--ink),0 0 0 7px #7cfc00}
+.zone.nope{animation:nope .45s}
+@keyframes nope{25%{transform:translateX(-12px)}50%{transform:translateX(12px)}75%{transform:translateX(-8px)}}
+.zone.working{--ps:running}
+.zone.working svg.sh{animation:shake .14s infinite}
+@keyframes shake{0%{transform:translate(2px,1px) rotate(.4deg)}50%{transform:translate(-2px,-1px) rotate(-.4deg)}100%{transform:translate(1px,-2px)}}
+.spin{animation:spin .8s linear infinite;animation-play-state:var(--ps)}
+.rev{animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.nd{animation:nd .22s ease-in-out infinite alternate;animation-play-state:var(--ps)}
+@keyframes nd{to{transform:translateY(14px)}}
+.bub{animation:rise 1s ease-in infinite;animation-play-state:var(--ps)}
+@keyframes rise{from{transform:translateY(0);opacity:1}to{transform:translateY(-38px);opacity:0}}
+.tray{position:absolute;left:16px;bottom:12px;width:336px;height:80px;border:4px dashed #bbb;border-radius:18px;display:flex;align-items:center;gap:12px;padding:0 14px;color:#aaa;font-weight:700;font-size:18px}
+.tray.full{border-style:solid;border-color:var(--ink);background:#e6ffd9;color:var(--ink)}
+.tray span{line-height:1.1}.tray b{font-size:20px}.tray small{font-size:14px;font-weight:500}
+.prod{width:62px;height:62px;flex:none;animation:pop .8s cubic-bezier(.3,1.8,.5,1)}
+.prod svg{width:100%;height:100%}
+@keyframes pop{0%{transform:translateY(-140px) scale(0) rotate(-360deg)}100%{transform:none}}
+.ring{position:absolute;left:150px;top:100px;width:70px;height:70px;border-radius:50%;border:8px solid #ffd23f;box-shadow:0 0 30px #fff;pointer-events:none;z-index:3;animation:ring 1s ease-out forwards}
+@keyframes ring{from{transform:scale(.2);opacity:1}to{transform:scale(5);opacity:0}}
+.flash{position:absolute;inset:0;background:#fff;z-index:4;pointer-events:none;animation:fl .6s ease-out forwards}
+@keyframes fl{from{opacity:1}to{opacity:0}}
+.sp,.sm{position:absolute;z-index:70;pointer-events:none;line-height:1;font-weight:700}
+.sp{animation:burst .9s ease-out forwards}
+@keyframes burst{to{transform:translate(var(--dx),var(--dy)) rotate(360deg) scale(.3);opacity:0}}
+.sm{border-radius:50%;background:#c9c9c9;border:4px solid #777;animation:puff 1.2s ease-out forwards}
+.ping{position:absolute;z-index:75;font-size:42px;font-weight:700;color:#ffd23f;-webkit-text-stroke:2px var(--ink);pointer-events:none;animation:up 1s ease-out forwards}
+@keyframes up{from{transform:scale(.3)}30%{transform:scale(1.3)}to{transform:translateY(-60px);opacity:0}}
+#banner{position:absolute;left:50%;top:62px;width:880px;margin-left:-440px;padding:10px 20px;border:5px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);color:#fff;font-weight:700;font-size:22px;text-align:center;z-index:80;transform:translateY(-220px);transition:transform .4s cubic-bezier(.3,1.5,.5,1);pointer-events:none}
+#banner.show{transform:none}#banner.red{background:#e63946}#banner.orange{background:#f77f00}
+#win{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:90;background:rgba(27,27,47,.5)}
+#win.on{display:flex}
+#win .card{background:#2ecc71;color:#fff;text-align:center;padding:30px 46px;border:6px solid var(--ink);border-radius:32px;box-shadow:0 10px 0 var(--ink);max-width:900px;animation:pop .8s cubic-bezier(.3,1.5,.5,1)}
+#win h1{margin:0 0 10px;font-size:62px;line-height:1;text-shadow:4px 4px 0 var(--ink)}
+#win p{margin:0 0 20px;font-size:28px;font-weight:500;line-height:1.2}
+#again{font:700 22px Fredoka,sans-serif;background:#ffd23f;color:var(--ink);border:5px solid var(--ink);border-radius:18px;padding:6px 26px;cursor:pointer;box-shadow:0 5px 0 var(--ink)}
+.cf{position:absolute;top:-30px;z-index:95;pointer-events:none;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(790px) rotate(720deg)}}
+</style></head>
+<body>
+<div id="stage">
+ <div id="top"></div><div id="bot"></div>
+ <div id="hud"><small class="uppercase tracking-wide">Circularity Score</small><div><span id="bar"><i id="fill"></i></span><span id="pct">0%</span></div></div>
+ <div id="t1" class="pill">LINEAR ECONOMY BELT: take, make, waste</div>
+ <div id="hint">Rescue the waste before it burns! Drag each item into the machine that can upcycle it.</div>
+ <div id="belt"></div><div id="legs"></div>
+ <svg id="furn" viewBox="0 0 190 222">
+  <defs><pattern id="hz" width="20" height="20" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="20" fill="#ffd23f"/><rect x="10" width="10" height="20" fill="#1b1b2f"/></pattern></defs>
+  <g stroke="#1b1b2f" stroke-width="5" stroke-linejoin="round">
+   <rect x="124" y="6" width="38" height="70" fill="#6c757d"/><rect x="12" y="66" width="168" height="152" rx="16" fill="#8d99ae"/>
+   <rect x="24" y="74" width="144" height="40" rx="8" fill="url(#hz)"/>
+   <path d="M36 214v-62q0-38 38-38h44q38 0 38 38v62z" fill="#1b1b2f"/></g>
+  <g class="fl"><path d="M64 214q-14-30 6-48 2 16 14 20 0-24 12-34 4 24 20 36 8 12 0 26z" fill="#ff7b54"/><path d="M82 214q-6-20 8-32 10 12 12 32z" fill="#ffd23f"/></g>
+  <g font-size="13" font-weight="700" fill="#fff" stroke="#1b1b2f" stroke-width="3" paint-order="stroke" text-anchor="middle"><text x="96" y="91">LANDFILL /</text><text x="96" y="107">INCINERATOR</text></g>
+  <g fill="#bbb" stroke="#777" stroke-width="3"><circle class="chim" cx="143" cy="6" r="10"/><circle class="chim" style="animation-delay:1.2s;--dx:-14px" cx="143" cy="6" r="9"/></g>
+ </svg>
+ <div id="t2" class="pill">IL VESPAIO ECO-DESIGN MAKER SPACE</div>
+ <div id="banner"></div>
+ <div id="win"><div class="card"><h1>THE LOOP IS CLOSED!</h1><p>In a Circular Economy, waste is just a design flaw.</p><button id="again" onclick="location.reload()">Play again</button></div></div>
+</div>
+<script>
+const S=document.getElementById('stage'),B=document.getElementById('banner'),SP=40,INK='#1b1b2f';
+const sv=b=>`<svg viewBox="0 0 100 100"><g stroke="${INK}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">${b}</g></svg>`;
+const SV={
+caps:sv(`<circle cx="35" cy="62" r="22" fill="#ff4d6d"/><circle cx="68" cy="60" r="20" fill="#ffd23f"/><circle cx="52" cy="34" r="21" fill="#2ec4b6"/><g fill="none" stroke="#fff" stroke-width="3" opacity=".7"><circle cx="35" cy="62" r="12"/><circle cx="68" cy="60" r="11"/><circle cx="52" cy="34" r="12"/></g>`),
+jeans:sv(`<path d="M26 8h48l8 84H56L50 46l-6 46H18z" fill="#3a7bd5"/><rect x="26" y="8" width="48" height="12" fill="#2a5db0"/><path d="M24 62l10-4 6 6-8 4 8 6-12 2z" fill="#a9d0ff"/><path d="M50 20v26M64 70l8 4" stroke="#fff" stroke-width="2.5" stroke-dasharray="4 4"/>`),
+coffee:sv(`<path d="M8 84q4-44 42-46t42 46z" fill="#6f4e37"/><g fill="#432a18" stroke="none"><circle cx="32" cy="66" r="5"/><circle cx="54" cy="56" r="6"/><circle cx="68" cy="72" r="5"/><circle cx="44" cy="76" r="4"/></g><ellipse cx="50" cy="26" rx="9" ry="6" fill="#8b5e3c" transform="rotate(-25 50 26)"/>`),
+frisbee:sv(`<ellipse cx="50" cy="60" rx="44" ry="18" fill="#1fa89b"/><ellipse cx="50" cy="52" rx="44" ry="18" fill="#52e3d3"/><ellipse cx="50" cy="52" rx="26" ry="9" fill="none" stroke="#fff" stroke-width="4" opacity=".7"/><g stroke="none"><circle cx="22" cy="50" r="3" fill="#ff4d6d"/><circle cx="78" cy="54" r="3" fill="#ffd23f"/><circle cx="60" cy="64" r="3" fill="#ff4d6d"/></g>`),
+tote:sv(`<path d="M34 38q0-30 16-30t16 30" fill="none" stroke-width="6"/><path d="M18 36h64l6 56H12z" fill="#3a7bd5"/><path d="M50 50l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="#ffd23f" stroke-width="3"/>`),
+pot:sv(`<path d="M50 44V26" fill="none" stroke="#2a9d8f" stroke-width="5"/><path d="M50 30q-22-4-24-20 20 0 24 20z" fill="#7bd389"/><path d="M50 30q22-4 24-20-20 0-24 20z" fill="#52b788"/><path d="M22 54h56l-8 38H30z" fill="#e9c46a"/><rect x="16" y="44" width="68" height="14" rx="5" fill="#f4a261"/>`)};
+const bk=(x,c)=>`<g transform="translate(${x},0)"><path d="M0 130h46v54q0 8-8 8H8q-8 0-8-8z" fill="#fff" fill-opacity=".6" stroke="${INK}" stroke-width="4"/><path d="M3 156h40v28q0 5-5 5H8q-5 0-5-5z" fill="${c}"/><circle class="bub" cx="14" cy="172" r="4" fill="#fff"/><circle class="bub" style="animation-delay:.4s" cx="30" cy="168" r="3" fill="#fff"/></g>`;
+const HOP=`<text x="190" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="${INK}">DROP HERE</text>`;
+const ZONES=[
+{name:'Plastic Shredder & Injection Mold',col:'#ff7b54',out:'Eco-Frisbee!',pr:SV.frisbee,sh:1,svg:`<g stroke="${INK}" stroke-width="5" stroke-linejoin="round"><path d="M120 30h140l-28 26H148z" fill="#ffd23f"/><rect x="40" y="56" width="300" height="136" rx="18" fill="#ff7b54"/><rect x="64" y="74" width="140" height="100" rx="12" fill="#2b2d42"/><rect x="226" y="76" width="92" height="96" rx="10" fill="#8ecae6"/><rect x="28" y="190" width="324" height="30" rx="10" fill="${INK}"/></g><g class="spin" style="transform-origin:112px 120px"><circle cx="112" cy="120" r="24" fill="#ffd23f" stroke="#ffd23f" stroke-width="12" stroke-dasharray="10 8"/><circle cx="112" cy="120" r="9" fill="#2b2d42"/></g><g class="spin rev" style="transform-origin:168px 144px"><circle cx="168" cy="144" r="17" fill="#2ec4b6" stroke="#2ec4b6" stroke-width="10" stroke-dasharray="8 7"/><circle cx="168" cy="144" r="6" fill="#2b2d42"/></g><ellipse cx="272" cy="118" rx="30" ry="12" fill="#fff" stroke="${INK}" stroke-width="4"/><text x="272" y="156" text-anchor="middle" font-size="13" font-weight="700" fill="${INK}">MOLD</text>`+HOP},
+{name:'Circular Tailoring Desk',col:'#3a7bd5',out:'Upcycled Tote Bag!',pr:SV.tote,sh:1,svg:`<g stroke="${INK}" stroke-width="5" stroke-linejoin="round"><rect x="56" y="204" width="18" height="26" fill="#a0522d"/><rect x="306" y="204" width="18" height="26" fill="#a0522d"/><rect x="30" y="176" width="320" height="30" rx="10" fill="#a0522d"/><rect x="80" y="150" width="230" height="26" rx="8" fill="#ff5d8f"/><rect x="250" y="56" width="60" height="96" rx="14" fill="#ff5d8f"/><rect x="90" y="56" width="220" height="46" rx="20" fill="#ff5d8f"/><rect x="170" y="34" width="26" height="22" rx="4" fill="#2ec4b6"/><rect x="100" y="142" width="140" height="10" fill="#3a7bd5"/></g><path d="M183 40Q150 40 140 100" fill="none" stroke="#2ec4b6" stroke-width="3"/><path d="M104 147h132" stroke="#fff" stroke-dasharray="6 6" stroke-width="3"/><g class="nd"><rect x="136" y="100" width="8" height="38" fill="#dfe6e9" stroke="${INK}" stroke-width="3"/></g><g class="spin" style="transform-origin:322px 92px"><circle cx="322" cy="92" r="22" fill="#ffd23f" stroke="${INK}" stroke-width="5"/><path d="M322 74v36M304 92h36" stroke="${INK}" stroke-width="4"/></g>`+HOP},
+{name:'Biomaterials Lab',col:'#2a9d8f',out:'Compostable Plant Pot!',pr:SV.pot,sh:0,svg:`<g stroke="${INK}" stroke-width="5" stroke-linejoin="round"><rect x="20" y="192" width="340" height="30" rx="10" fill="#6d4c41"/><rect x="172" y="76" width="36" height="46" fill="#b2f2e5"/><path d="M130 30h120l-34 46h-52z" fill="#b2f2e5"/><path d="M172 118L112 190h156l-60-72z" fill="#fff" fill-opacity=".6"/><path d="M146 160L124 190h132l-22-30z" fill="#7bd389" stroke-width="3"/></g><circle class="bub" cx="160" cy="176" r="5" fill="#fff"/><circle class="bub" style="animation-delay:.3s" cx="192" cy="172" r="4" fill="#fff"/><circle class="bub" style="animation-delay:.6s" cx="222" cy="178" r="5" fill="#fff"/>${bk(34,'#c77dff')}${bk(300,'#ffb703')}`+HOP}];
+const ITEMS=[{n:'Plastic Caps',z:0,x:300,sv:SV.caps},{n:'Torn Jeans',z:1,x:100,sv:SV.jeans},{n:'Coffee Grounds',z:2,x:-100,sv:SV.coffee}];
+
+let AC;
+function snd(f,d,ty='sine',v=.15,w=0){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime+w;o.type=ty;o.frequency.value=f;o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.start(t);o.stop(t+d)}catch(e){}}
+function pt(e){const r=S.getBoundingClientRect(),s=r.width/1280;return{x:(e.clientX-r.left)/s,y:(e.clientY-r.top)/s}}
+function mk(c,x,y,h){const d=document.createElement('div');d.className=c;d.style.left=x+'px';d.style.top=y+'px';if(h)d.innerHTML=h;return d}
+function fx(x,y,ch,cols,n,sz){for(let i=0;i<n;i++){const a=Math.random()*6.28,r=50+Math.random()*90,s=mk('sp',x,y,ch[i%ch.length]);s.style.color=cols[i%cols.length];s.style.fontSize=(sz+Math.random()*12)+'px';s.style.setProperty('--dx',Math.cos(a)*r+'px');s.style.setProperty('--dy',Math.sin(a)*r+'px');S.appendChild(s);setTimeout(()=>s.remove(),950)}}
+function smoke(x,y){for(let i=0;i<9;i++){const r=Math.random(),s=mk('sm',x+(r-.5)*60,y+Math.random()*30);s.style.width=s.style.height=(26+r*26)+'px';s.style.setProperty('--dx',(r-.5)*90+'px');S.appendChild(s);setTimeout(()=>s.remove(),1250)}}
+let bt;function banner(c,t,ms){B.className=c+' show';B.textContent=t;clearTimeout(bt);bt=setTimeout(()=>B.className='',ms||3200)}
+const COLS=['#ffd23f','#ff5d8f','#2ec4b6','#fff'];
+
+ZONES.forEach((z,i)=>{const d=document.createElement('div');d.className='zone';d.style.left=(30+i*420)+'px';
+ d.innerHTML=`<h3 style="background:${z.col}">${z.name}</h3><svg class="m ${z.sh?'sh':''}" viewBox="0 0 380 232">${z.svg}</svg><div class="tray"><span>Output: ???</span></div>`;
+ S.appendChild(d);z.el=d;z.tray=d.querySelector('.tray')});
+const zoneAt=(x,y)=>ZONES.findIndex(z=>{const e=z.el;return x>=e.offsetLeft&&x<=e.offsetLeft+380&&y>=e.offsetTop&&y<=e.offsetTop+390});
+const hot=i=>ZONES.forEach((z,j)=>z.el.classList.toggle('hot',j===i));
+
+function burn(it){it.s='wait';const e=it.el;e.style.transition='';e.classList.add('burn');e.style.left=(it.x+60)+'px';
+ smoke(1150,150);snd(160,.5,'square',.1);snd(90,.6,'sawtooth',.1,.1);
+ banner('red','Resource Destroyed! The Linear Economy wastes valuable materials.');
+ setTimeout(()=>{e.style.transition='none';e.classList.remove('burn');it.x=-120;e.style.left='-120px';e.style.top='100px';it.s='belt'},1800)}
+function bounce(it){it.s='ret';const e=it.el,tx=Math.min(it.x+20,1000);e.classList.remove('drag');
+ e.style.transition='left .65s cubic-bezier(.3,1.6,.5,1),top .65s cubic-bezier(.3,1.6,.5,1)';e.style.left=tx+'px';e.style.top='100px';
+ setTimeout(()=>{e.style.transition='none';it.x=tx;it.s='belt'},680)}
+function wrong(it,zi){const e=ZONES[zi].el;e.classList.add('nope');setTimeout(()=>e.classList.remove('nope'),450);
+ snd(110,.35,'sawtooth');banner('orange',"Oops! That machine can't use this material. Try another one!",2600);bounce(it)}
+
+let done=0;
+function upcycle(it,zi){const z=ZONES[zi],ze=z.el,e=it.el;it.s='done';e.classList.remove('drag');ze.classList.add('working');
+ e.style.transition='left .4s,top .4s';e.style.left=(ze.offsetLeft+145)+'px';e.style.top=(ze.offsetTop+50)+'px';
+ setTimeout(()=>e.classList.add('suck'),400);
+ [0,450,900].forEach((d,i)=>setTimeout(()=>{const r=document.createElement('div');r.className='ring';r.style.borderColor=COLS[i];ze.appendChild(r);setTimeout(()=>r.remove(),1000)},d+400));
+ for(let i=0;i<10;i++)snd(80+i*14,.1,'square',.05,i*.17);
+ const iv=setInterval(()=>fx(ze.offsetLeft+190,ze.offsetTop+150,['✦','★','✨'],COLS,3,22),160);
+ setTimeout(()=>{clearInterval(iv);ze.classList.remove('working');e.remove();
+  const f=document.createElement('div');f.className='flash';ze.appendChild(f);setTimeout(()=>f.remove(),600);
+  snd(1318,.5);snd(1760,.8,'sine',.15,.12);
+  fx(ze.offsetLeft+190,ze.offsetTop+340,['★','✦','●'],[...COLS,'#2ecc71'],14,24);
+  const p=mk('ping',ze.offsetLeft+250,ze.offsetTop+250,'PING!');S.appendChild(p);setTimeout(()=>p.remove(),1000);
+  z.tray.className='tray full';z.tray.innerHTML=`<div class="prod">${z.pr}</div><span><b>${z.out}</b><br><small>upcycled from ${it.n}</small></span>`;
+  done++;const pc=Math.round(done/3*100);document.getElementById('pct').textContent=pc+'%';
+  const fl=document.getElementById('fill');fl.style.width=pc+'%';fl.style.background=`hsl(${pc*1.2},80%,48%)`;
+  if(done===3)setTimeout(win,1400)},1900)}
+
+function win(){document.getElementById('win').classList.add('on');
+ const G=['#2ecc71','#27ae60','#7bd389','#b7f171','#1e9e50','#52b788'];
+ for(let i=0;i<150;i++){const c=document.createElement('div'),r=Math.random();c.className='cf';c.style.left=Math.random()*1280+'px';c.style.width=(8+r*7)+'px';c.style.height=(12+r*12)+'px';c.style.background=G[i%6];c.style.borderRadius=r>.7?'50%':'2px';c.style.animationDuration=(2+r*2.5)+'s';c.style.animationDelay=(-Math.random()*4)+'s';S.appendChild(c)}
+ [523,659,784,1047,1319].forEach((f,i)=>snd(f,.4,'triangle',.15,i*.14))}
+
+ITEMS.forEach(it=>{const e=document.createElement('div');e.className='item';e.innerHTML=`<b>${it.n}</b>${it.sv}`;e.style.left=it.x+'px';S.appendChild(e);it.el=e;it.s='belt';
+ const cen=(ev)=>{const p=pt(ev);return[p.x-it.ox+46,p.y-it.oy+46]};
+ e.addEventListener('pointerdown',ev=>{if(it.s!=='belt')return;snd(500,.08,'triangle');it.s='drag';e.setPointerCapture(ev.pointerId);const p=pt(ev);it.ox=p.x-it.x;it.oy=p.y-100;e.style.transition='none';e.classList.add('drag')});
+ e.addEventListener('pointermove',ev=>{if(it.s!=='drag')return;const p=pt(ev);e.style.left=(p.x-it.ox)+'px';e.style.top=(p.y-it.oy)+'px';hot(zoneAt(...cen(ev)))});
+ e.addEventListener('pointerup',ev=>{if(it.s!=='drag')return;const zi=zoneAt(...cen(ev));hot(-1);zi<0?bounce(it):zi===it.z?upcycle(it,zi):wrong(it,zi)});
+ e.addEventListener('pointercancel',()=>{if(it.s==='drag'){hot(-1);bounce(it)}})});
+
+let last=performance.now();
+function tick(t){const dt=Math.min(.05,(t-last)/1e3);last=t;
+ ITEMS.forEach(it=>{if(it.s==='belt'||it.s==='drag')it.x+=SP*dt;if(it.s==='belt'){it.el.style.left=it.x+'px';if(it.x>1040)burn(it)}});
+ requestAnimationFrame(tick)}
+requestAnimationFrame(tick);
+</script></body></html>

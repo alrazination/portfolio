@@ -1,38 +1,44 @@
 # Razin Abdullah: portfolio
 
-Static site for GitHub Pages. Plain HTML, CSS and JavaScript, with no build step and no third-party requests.
+Static site for GitHub Pages. Plain HTML, CSS and JavaScript, no build step.
 
 ## Before you publish
 
 1. **Add your contact details** in `js/site.js` (`email`, `linkedin`, optional `calendar`). Until you do, the contact section has no buttons.
-2. Check the facts in the hero and About section (`index.html`) are exactly how you want them stated.
+2. **Check the case study text** in `work/*.html`. The "Where it started" and audience details were written from what the simulations themselves show. Correct anything that doesn't match how each project actually came about.
 
 ## Structure
 
 ```
-index.html                     Home: playable hero scenario, work, services, process, about, contact
-work/tuesday-conversation.html Case study: branching leadership simulation
-work/slides-to-practice.html   Case study: slide deck rebuilt as scenario-based eLearning
-work/confident-and-wrong.html  Case study: confidence-based phishing check and evaluation plan
-css/style.css                  All styles
-js/scenario.js                 Small branching-scenario engine (hero + two case studies)
-js/site.js                     Contact details
-fonts/                         Self-hosted Bricolage Grotesque and Newsreader (SIL OFL)
+index.html            Home: player card, the five simulations, process, services, about, contact
+work/<slug>.html      One case study per simulation, with the sim embedded
+sims/<slug>/index.html  The simulations themselves, unchanged
+img/razin.webp        Profile photo (cut to a circle)
+img/thumbs/           <slug>-start.webp = opening screen, <slug>.webp = the "consequence" moment
+css/style.css         All styles
+js/play.js            Loads a sim when the visitor presses start, and scales it to fit
+js/site.js            Contact details
+fonts/                Self-hosted Unbounded and Figtree (SIL OFL)
 ```
 
-## The case studies
+## Adding a simulation
 
-All three are **concept projects**, labelled as such on every page. The companies, people and dialogue are invented, and none of them claims client results. Each one shows a measurement plan instead. If you add real client work later, give it the same structure: brief, real problem, design decisions, demo, measurement.
+1. Put it in `sims/<slug>/index.html`.
+2. Add a 1280×720 screenshot of the start screen as `img/thumbs/<slug>-start.webp` and one of its most interesting mistake as `img/thumbs/<slug>.webp`.
+3. Copy one of the pages in `work/`, then add a card for it to the grid in `index.html`.
 
-To add a scenario, copy one of the `Scenario(...)` blocks and edit the `nodes`. Every choice has a `verdict` (`good`, `mid` or `bad`), a short `label`, feedback `fb`, and the `next` node (`null` ends the scenario).
+A sim with a fixed 1280×720 stage gets `data-fixed` on its `.sim` frame so it scales to fit. A sim that fills the window (like the 3D kitchen) doesn't need it.
 
-## Design notes
+## Brand
 
-- Light, cool paper background with navy ink. Interactive things look like index cards.
-- Yellow highlighter only marks something the visitor did: a choice they picked, or a score.
-- Fonts are self-hosted, so the site sends visitor IPs to no third party (embedding Google Fonts has led to GDPR claims in Germany).
-- No autoplay video and no scroll animations. Total page weight is about 220 KB, most of it fonts.
-- Keyboard focus is visible, reduced-motion is respected, and every demo works with a keyboard.
+"Level up": a game world at night.
+
+- Colours: night `#14082B`, panel `#22114A`, hot coral `#FF4F6D`, lime `#C6FF3D`, sky `#66D9FF`, cream `#FFF6EA`.
+- Coral marks consequences (what happens when you get it wrong). Lime marks success and the main action.
+- Unbounded for headings, Figtree for text.
+- Chunky panels with hard drop-shadows; buttons press down when clicked.
+
+The simulations still load their own libraries (Tailwind, three.js, Google Fonts) from CDNs, as they did before.
 
 ## Run locally
 

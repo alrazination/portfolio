@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Close the loop · Razin Abdullah</title>
+<meta name="description" content="The linear economy is a conveyor belt: take, make, waste. In this arcade game, learners have seconds to rescue materials before they burn, and must find the machine that gives each one a second life.">
+<meta property="og:image" content="../img/thumbs/close-the-loop.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2314082B'/%3E%3Crect x='7' y='8' width='18' height='16' rx='5' fill='%23C6FF3D'/%3E%3Ccircle cx='22' cy='9' r='5' fill='%23FF4F6D'/%3E%3C/svg%3E">
+<link rel="preload" href="../fonts/unbounded.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="../">razin<span>.</span>abdullah</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="../#levels">Simulations</a>
+      <a href="../#process">Process</a>
+      <a href="../#about">About</a>
+      <a class="btn btn--sm" href="../#contact">Start a project</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="cs-hero">
+    <div class="wrap">
+      <a class="cs-back" href="../#levels">← All simulations</a>
+      <div class="chips"><span class="chip chip--lime">Arcade game</span><span class="chip">Circular economy</span><span class="chip">Upcycling</span></div>
+      <h1>Close the loop</h1>
+      <p class="cs-hero__lede">The linear economy is a conveyor belt: take, make, waste. In this arcade game, learners have seconds to rescue materials before they burn, and must find the machine that gives each one a second life.</p>
+      <dl class="cs-meta"><div><dt>Audience</dt><dd>Young learners</dd></div><div><dt>Topic</dt><dd>Upcycling and the circular economy</dd></div><div><dt>Core mechanic</dt><dd>Rescue items from a moving belt</dd></div><div><dt>Built with</dt><dd>HTML, CSS animation, Web Audio</dd></div></dl>
+    </div>
+  </section>
+
+  <section class="play" aria-labelledby="play-h">
+    <div class="wrap">
+      <div class="play__head">
+        <div>
+          <h2 id="play-h">Play it</h2>
+          <p>Drag each item off the belt and into the machine that can upcycle it, before it reaches the incinerator.</p>
+        </div>
+        <a class="btn btn--panel btn--sm" href="../sims/close-the-loop/index.html" target="_blank" rel="noopener">Open full screen</a>
+      </div>
+      <div class="sim" data-fixed data-src="../sims/close-the-loop/index.html" data-title="Close the loop simulation">
+        <button class="sim__start" type="button">
+          <img src="../img/thumbs/close-the-loop-start.webp" alt="" width="1280" height="720">
+          <span class="btn">Press start</span>
+        </button>
+      </div>
+      <p class="play__note">Built for a mouse or touchscreen at laptop size or larger. On a phone, open it full screen and turn your phone sideways.</p>
+    </div>
+  </section>
+
+  <section class="cs-body">
+    <div class="wrap">
+      <div class="cs-sec">
+        <h2>Where it started</h2>
+        <div class="prose"><p>&quot;Linear economy&quot; and &quot;circular economy&quot; are abstract ideas. Learners can repeat the definitions without ever feeling the difference.</p><p>A conveyor belt that feeds an incinerator makes the linear economy literal: things move one way and end up as smoke. The only way to stop it is to act, and to know what each material can become.</p></div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>The core mechanic</h2>
+        <div>
+          <div class="prose"><p>Items ride the belt toward the fire. Learners drag each one into one of three machines in the Il Vespaio Eco-Design Maker Space, and the right machine turns waste into a new product.</p></div>
+          <div class="flow">
+            <div class="flow__row flow__head"><span>What the learner does</span><span></span><span>What happens</span></div>
+            <div class="flow__row"><div>Plastic caps into the shredder and mould</div><span aria-hidden="true">→</span><div>Out comes an eco-frisbee.</div></div><div class="flow__row"><div>Torn jeans onto the tailoring desk</div><span aria-hidden="true">→</span><div>Out comes an upcycled tote bag.</div></div><div class="flow__row"><div>Coffee grounds into the biomaterials lab</div><span aria-hidden="true">→</span><div>Out comes a compostable plant pot.</div></div><div class="flow__row"><div>Wrong machine, or too slow</div><span aria-hidden="true">→</span><div>The machine rejects it, or it burns: resource destroyed.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>Designing the mistakes</h2>
+        <figure class="moment">
+          <img src="../img/thumbs/close-the-loop.webp" alt="Screenshot of the simulation at the moment described below" loading="lazy" width="1280" height="720">
+          <figcaption>Torn jeans, rescued and turned into a tote bag. The circularity score fills up with every item saved.</figcaption>
+        </figure>
+      </div>
+
+      <div class="cs-sec">
+        <h2>Design decisions</h2>
+        <div class="decisions"><div class="decision"><h3>Time pressure with a reason</h3><p>The belt keeps moving because the linear economy doesn&#x27;t wait. Burned items come round again, so nobody gets stuck.</p></div><div class="decision"><h3>Show the product</h3><p>Each machine shows what it makes, so learners connect a material to its next life.</p></div><div class="decision"><h3>A score that means something</h3><p>The circularity score measures how much was kept in the loop, not how fast you clicked.</p></div><div class="decision"><h3>Celebrate every rescue</h3><p>Each save gets a sound, sparks and a &quot;PING!&quot;. Small rewards keep younger players going.</p></div></div>
+      </div>
+
+      <div class="cs-sec">
+        <h2>How it's built</h2>
+        <div>
+          <div class="build"><span class="chip">CSS animation</span><span class="chip">Inline SVG</span><span class="chip">Web Audio API</span><span class="chip">Pointer events</span></div>
+          <div class="prose"><p>Machines, belt and effects are CSS and inline SVG. Every sound is generated in the browser with the Web Audio API, so there are no audio files to load.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cs-next">
+    <div class="wrap">
+      <div><small>Next simulation</small><a class="big" href="eco-party.html">Eco-Party Planner</a></div>
+      <a class="btn" href="../#contact">Start a project</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-foot"><div class="wrap"><span>© 2026 Razin Abdullah</span><a href="../">Back to home</a></div></footer>
+<script src="../js/play.js"></script>
+</body>
+</html>

@@ -13,7 +13,7 @@ const CONTACT = {
   const list = document.querySelector('[data-contact-list]');
   if (!actions) return;
 
-  const subject = encodeURIComponent('A course that isn\'t working');
+  const subject = encodeURIComponent('A training problem to make playable');
   const add = (html) => actions.insertAdjacentHTML('beforeend', html);
   const item = (html) => list && list.insertAdjacentHTML('beforeend', `<li>${html}</li>`);
 
@@ -21,9 +21,9 @@ const CONTACT = {
     add(`<a class="btn" href="mailto:${CONTACT.email}?subject=${subject}">Email me</a>`);
     item(`Email: <a href="mailto:${CONTACT.email}">${CONTACT.email}</a>`);
   }
-  if (CONTACT.calendar) add(`<a class="btn btn--quiet" href="${CONTACT.calendar}" rel="noopener">Book a 20-minute call</a>`);
+  if (CONTACT.calendar) add(`<a class="btn btn--panel" href="${CONTACT.calendar}" rel="noopener">Book a 20-minute call</a>`);
   if (CONTACT.linkedin) {
-    add(`<a class="btn btn--quiet" href="${CONTACT.linkedin}" rel="noopener">Message me on LinkedIn</a>`);
+    add(`<a class="btn btn--panel" href="${CONTACT.linkedin}" rel="noopener">Message me on LinkedIn</a>`);
   }
   if (!actions.children.length) {
     console.warn('[site] No contact details set. Fill in CONTACT in js/site.js before publishing.');

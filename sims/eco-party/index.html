@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Eco-Party Planner</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{--ink:#2b2250;--gold:#ffc93c}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#1d1740;font-family:'Fredoka','Trebuchet MS','Comic Sans MS',sans-serif;color:var(--ink)}
+#stage{position:absolute;width:1280px;height:720px;transform-origin:0 0;overflow:hidden;background:#fff6dc}
+#gym{position:absolute;left:0;top:0;width:768px;height:720px;overflow:hidden}
+#right{position:absolute;left:768px;top:0;width:512px;height:720px;background:#fff6dc;border-left:6px solid var(--ink)}
+#sc{position:absolute;left:0;top:0}
+#cat{position:absolute;left:0;top:330px;width:506px;height:390px;background:#ffe7c2;border-top:5px solid var(--ink)}
+#grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px}
+.card{background:#fff;border:3px solid var(--c);border-radius:16px;padding:5px 5px 6px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;display:flex;flex-direction:column;align-items:center;transition:opacity .3s,transform .15s}
+.card:hover{transform:translateY(-3px)}
+.card svg{width:100%;height:74px;pointer-events:none}
+.card b{font-size:12.5px;line-height:1.15;text-align:center;font-weight:600}
+.tag{font-size:10.5px;background:var(--c);color:#fff;border-radius:99px;padding:0 9px;margin-bottom:2px;font-weight:600}
+.card.used{opacity:.3;pointer-events:none}
+.ghost{position:absolute;width:153px;z-index:60;pointer-events:none;transform:rotate(-4deg) scale(1.08);box-shadow:0 14px 24px rgba(0,0,0,.35)}
+.zone{position:absolute;border:4px dashed var(--c);border-radius:24px;background:rgba(255,255,255,.3);animation:pulse 2s ease-in-out infinite;transition:background .2s,transform .2s}
+.zone.hot{background:rgba(255,255,255,.7);transform:scale(1.02)}
+.zone.full{animation:none;border-style:solid;background:rgba(255,255,255,.12)}
+.zone.shake{animation:shake .4s}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px 0 var(--c)}50%{box-shadow:0 0 30px 9px var(--c)}}
+@keyframes shake{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
+.spark{animation:tw .9s infinite}
+.chip{position:absolute;left:16px;top:-16px;background:var(--c);color:#fff;font-weight:700;font-size:16px;padding:1px 14px;border-radius:99px;border:3px solid var(--ink);z-index:2}
+.hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:var(--ink);opacity:.55;text-align:center}
+.art{position:absolute;inset:0}.art svg{width:100%;height:100%}
+#coach{position:absolute;left:24px;top:298px;width:720px;height:66px;background:rgba(255,255,255,.94);border:3px solid var(--ink);border-radius:18px;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:16px;line-height:1.2;font-weight:600;z-index:5}
+#smog{position:absolute;inset:0;background:linear-gradient(rgba(125,105,60,.6),rgba(70,62,58,.75));opacity:0;transition:opacity 1s;pointer-events:none;z-index:10}
+#glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(255,250,200,.65),rgba(255,230,120,.0) 70%);opacity:0;transition:opacity 1s;pointer-events:none;z-index:10}
+#rs{position:absolute;right:14px;top:12px;z-index:12;background:#fff;border:3px solid var(--ink);border-radius:99px;font:600 14px 'Fredoka',sans-serif;padding:2px 14px;cursor:pointer;color:var(--ink)}
+#cv{position:absolute;inset:0;z-index:30;pointer-events:none;display:none}
+#banner{position:absolute;left:64px;top:0;width:640px;z-index:40;transform:translateY(-360px);transition:transform 1s cubic-bezier(.3,1.5,.5,1);background:linear-gradient(#ffe27a,#ffc93c);border:5px solid var(--ink);border-radius:28px;padding:16px 28px 18px;text-align:center;box-shadow:0 12px 0 rgba(43,34,80,.35)}
+#banner.on{transform:translateY(90px)}
+#banner h1{margin:0;font-size:44px;line-height:1.05;font-weight:700}
+#banner p{margin:8px 0 12px;font-size:19px;font-weight:600}
+.btn{background:var(--ink);color:#fff;border:0;border-radius:99px;font:700 18px 'Fredoka',sans-serif;padding:6px 26px;cursor:pointer}
+#modal{position:absolute;inset:0;z-index:100;background:rgba(20,10,50,.7);display:none;align-items:center;justify-content:center}
+#modal .box{width:600px;background:#fff;border:6px solid #e5383b;border-radius:28px;padding:24px 32px;text-align:center;animation:pop .4s}
+#modal h2{margin:0 0 6px;font-size:52px;color:#e5383b;font-weight:700}
+#modal p{margin:0 0 16px;font-size:23px;line-height:1.3;font-weight:600}
+@keyframes pop{0%{transform:scale(.5)}70%{transform:scale(1.07)}100%{transform:scale(1)}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="gym">
+    <svg width="768" height="720" viewBox="0 0 768 720" style="position:absolute;left:0;top:0">
+      <defs>
+        <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8be0d2"/><stop offset="1" stop-color="#5fc5d9"/></linearGradient>
+        <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8c97e"/><stop offset="1" stop-color="#e0954a"/></linearGradient>
+        <pattern id="pl" width="64" height="330" patternUnits="userSpaceOnUse"><line x1="0" x2="0" y2="330" stroke="#000" stroke-opacity=".09" stroke-width="3"/></pattern>
+      </defs>
+      <rect width="768" height="392" fill="url(#wall)"/>
+      <rect y="345" width="768" height="47" fill="#7b5cd6"/><rect y="345" width="768" height="6" fill="#5d3fb8"/>
+      <g fill="#fff" stroke="#2b2250" stroke-width="4"><rect x="70" y="86" width="90" height="120" rx="8" fill="#bdeaff"/><rect x="215" y="86" width="90" height="120" rx="8" fill="#bdeaff"/><rect x="463" y="86" width="90" height="120" rx="8" fill="#bdeaff"/><rect x="608" y="86" width="90" height="120" rx="8" fill="#bdeaff"/></g>
+      <g stroke="#2b2250" stroke-width="3"><path d="M115 86V206M70 146H160M260 86V206M215 146H305M508 86V206M463 146H553M653 86V206M608 146H698"/></g>
+      <circle cx="384" cy="150" r="46" fill="#ffd23f" stroke="#2b2250" stroke-width="4"/><text x="384" y="162" text-anchor="middle" font-size="34" font-weight="700" fill="#2b2250" font-family="Fredoka,sans-serif">GO!</text>
+      <rect y="392" width="768" height="328" fill="url(#floor)"/><rect y="392" width="768" height="328" fill="url(#pl)"/>
+      <rect y="388" width="768" height="8" fill="#2b2250"/>
+      <g fill="none" stroke="#fff" stroke-width="5" opacity=".75"><rect x="12" y="404" width="744" height="304" rx="10"/><circle cx="384" cy="556" r="70"/><path d="M384 404V708"/></g>
+      <text x="24" y="44" font-size="26" font-weight="700" fill="#2b2250" font-family="Fredoka,sans-serif">The School Gym</text>
+    </svg>
+    <div id="coach"><span style="font-size:36px">🐝</span><span id="ct"></span></div>
+    <div id="smog"></div><div id="glow"></div>
+    <button id="rs">Restart</button>
+    <canvas id="cv" width="768" height="720"></canvas>
+    <div id="banner"><h1>ECO-PARTY MASTER!</h1><p>You planned an amazing party with zero waste using the Circular Economy!</p><button class="btn" id="again">Play again</button></div>
+  </div>
+  <div id="right">
+    <svg id="sc" width="506" height="330" viewBox="0 0 512 330">
+      <defs><linearGradient id="sbg" x1="0" x2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset=".5" stop-color="#fff2c4"/><stop offset=".5" stop-color="#e3e3ea"/><stop offset="1" stop-color="#b3b3c2"/></linearGradient></defs>
+      <rect width="512" height="330" fill="url(#sbg)"/>
+      <rect id="redov" x="256" width="256" height="330" fill="#ff3b3b" opacity="0"/>
+      <path d="M256 120L226 300H286Z" fill="#7b5cd6" stroke="#2b2250" stroke-width="4" stroke-linejoin="round"/>
+      <rect x="190" y="294" width="132" height="18" rx="9" fill="#5d3fb8" stroke="#2b2250" stroke-width="4"/>
+      <g id="beam"><rect x="106" y="113" width="300" height="14" rx="7" fill="#ff7a59" stroke="#2b2250" stroke-width="4"/></g>
+      <g id="pL"><path d="M0 0L-60 80M0 0L60 80" stroke="#6b4b2a" stroke-width="3"/><g id="iL"></g><path d="M-68 78H68Q64 104 30 104H-30Q-64 104 -68 78Z" fill="#ffc93c" stroke="#2b2250" stroke-width="4"/><text y="128" text-anchor="middle" font-size="17" font-weight="700" fill="#2b2250" stroke="#fff" stroke-width="4" paint-order="stroke" font-family="Fredoka,sans-serif">Party Fun</text></g>
+      <g id="pR"><path d="M0 0L-60 80M0 0L60 80" stroke="#6b4b2a" stroke-width="3"/><g id="iR"></g><path d="M-68 78H68Q64 104 30 104H-30Q-64 104 -68 78Z" fill="#8a8a99" stroke="#2b2250" stroke-width="4"/><text y="128" text-anchor="middle" font-size="17" font-weight="700" fill="#2b2250" stroke="#fff" stroke-width="4" paint-order="stroke" font-family="Fredoka,sans-serif">Planet Waste</text></g>
+      <circle cx="256" cy="120" r="13" fill="#ffc93c" stroke="#2b2250" stroke-width="4"/>
+      <rect id="pillR" x="166" y="10" width="180" height="30" rx="15" fill="#fff" stroke="#2b2250" stroke-width="3"/>
+      <text id="pillT" x="256" y="31" text-anchor="middle" font-size="16" font-weight="700" fill="#2b2250" font-family="Fredoka,sans-serif">Plan your party!</text>
+    </svg>
+    <div id="cat">
+      <div style="padding:8px 16px 8px"><div class="font-bold" style="font-size:20px;font-weight:700">Party Catalog</div><div style="font-size:13px;font-weight:600;opacity:.7">Drag an item into a glowing zone in the gym.</div></div>
+      <div id="grid"></div>
+    </div>
+  </div>
+  <div id="modal"><div class="box"><h2>TRAP!</h2><p>Bioplastic cups look green, but they only compost in 60°C factories. In normal trash, they are just single-use waste. The scale tips!</p><button class="btn" id="ok">Got it!</button></div></div>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg',$=id=>document.getElementById(id);
+const star=(x,y,R,r,f)=>{let p='';for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,d=i%2?r:R;p+=`${(x+d*Math.cos(a)).toFixed(1)},${(y+d*Math.sin(a)).toFixed(1)} `}return `<polygon points="${p}" fill="${f}"/>`};
+const table='<rect x="20" y="196" width="310" height="26" rx="8" fill="#c98a4b" stroke="#7a4a1c" stroke-width="3"/><rect x="44" y="222" width="14" height="44" fill="#a46a30"/><rect x="292" y="222" width="14" height="44" fill="#a46a30"/>';
+
+/* ---------- item artwork ---------- */
+const ART={
+balloon(){const c=['#ff4d6d','#ffd23f','#3bc9f5','#7bd957','#b57bff','#ff9f1c'];let s='<svg viewBox="0 0 720 210">',P=[];
+ for(let i=0;i<=16;i++){const t=Math.PI*(1-i/16);P.push([360+315*Math.cos(t),172-135*Math.sin(t)])}
+ [2,5,8,11,14].forEach(i=>s+=`<line x1="${P[i][0]}" y1="0" x2="${P[i][0]}" y2="${P[i][1]}" stroke="#fff" stroke-width="2"/>`);
+ P.forEach((p,i)=>s+=`<ellipse cx="${p[0]}" cy="${p[1]}" rx="27" ry="31" fill="${c[i%6]}" stroke="#2b2250" stroke-width="2.5"/><ellipse cx="${p[0]-9}" cy="${p[1]-11}" rx="6" ry="9" fill="#fff" opacity=".55"/>`);
+ for(let i=0;i<15;i++){const t=Math.PI*(1-i/14);const x=360+268*Math.cos(t),y=176-100*Math.sin(t);s+=`<ellipse cx="${x}" cy="${y}" rx="21" ry="25" fill="${c[(i+3)%6]}" stroke="#2b2250" stroke-width="2.5"/><ellipse cx="${x-7}" cy="${y-9}" rx="5" ry="7" fill="#fff" opacity=".55"/>`}
+ return s+'</svg>'},
+bunting(){const col=['#3b6ea8','#5a8fcf','#e85d75','#ffd166','#2aa889','#9a63dc','#8fb8e8'];let s='<svg viewBox="0 0 720 210">';
+ for(let r=0;r<2;r++){const oy=r?104:8;let pts='';for(let k=0;k<=40;k++){const u=k/40;pts+=`${20+680*u},${oy+22*Math.sin(Math.PI*u)} `}
+  s+=`<polyline points="${pts}" fill="none" stroke="#6b4b2a" stroke-width="4"/>`;
+  for(let i=0;i<13;i++){const u=(i+.5)/13,x=20+680*u,y=oy+22*Math.sin(Math.PI*u);
+   s+=`<polygon points="${x-23},${y} ${x+23},${y} ${x},${y+64}" fill="${col[(i+r*3)%7]}" stroke="#2b2250" stroke-width="2.5" stroke-linejoin="round"/><polygon points="${x-15},${y+7} ${x+15},${y+7} ${x},${y+48}" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4 3" opacity=".8"/>`}}
+ return s+'</svg>'},
+pla(){const cup=(x,y)=>`<path d="M${x-26} ${y-34}h52l-8 34h-36z" fill="#c9f0a9" stroke="#4aa82b" stroke-width="3"/><rect x="${x-27}" y="${y-39}" width="54" height="7" rx="3" fill="#a5df7c" stroke="#4aa82b" stroke-width="2"/>`;
+ let s='<svg viewBox="0 0 350 270">'+table;[[90,5],[175,6],[260,4]].forEach(([x,n])=>{for(let i=0;i<n;i++)s+=cup(x,196-i*16);s+=`<path d="M${x-7} ${196-(n-1)*16-14}q9-16 16-11q0 14-16 11z" fill="#2f8f17"/>`});return s+'</svg>'},
+reuse(){const c=['#ff5fa2','#ffd23f','#7bd957','#b57bff','#ff9f1c'];let s='<svg viewBox="0 0 350 270">'+table;
+ s+='<rect x="40" y="68" width="78" height="128" rx="22" fill="#4fb3ff" stroke="#1c6fc0" stroke-width="4"/><rect x="62" y="48" width="34" height="22" rx="6" fill="#1c6fc0"/><rect x="116" y="150" width="22" height="12" rx="4" fill="#1c6fc0"/><rect x="54" y="90" width="12" height="70" rx="6" fill="#fff" opacity=".55"/>';
+ c.forEach((k,i)=>{const x=172+i*32;s+=`<path d="M${x-14} 144h28l-4 52h-20z" fill="${k}" stroke="#2b2250" stroke-width="2.5"/>`});
+ return s+'<circle cx="236" cy="92" r="26" fill="#ffd23f" stroke="#2b2250" stroke-width="3"/><text x="236" y="101" text-anchor="middle" font-size="24" font-weight="700" fill="#2b2250" font-family="Fredoka,sans-serif">€1</text></svg>'},
+toys(){let s='<svg viewBox="0 0 350 270"><path d="M50 130H300L280 232H70Z" fill="#d9a066" stroke="#7a4a1c" stroke-width="4" stroke-linejoin="round"/><rect x="62" y="170" width="226" height="16" fill="#f1c58f" opacity=".7"/>';
+ s+='<circle cx="108" cy="112" r="24" fill="#ffd23f" stroke="#2b2250" stroke-width="3"/><circle cx="126" cy="88" r="14" fill="#ffd23f" stroke="#2b2250" stroke-width="3"/><polygon points="138,86 154,90 138,96" fill="#ff7a29"/><circle cx="129" cy="84" r="2.5" fill="#2b2250"/>';
+ s+=star(195,98,30,13,'#ff4fa3').replace('/>',' stroke="#2b2250" stroke-width="3"/>');
+ s+='<rect x="226" y="84" width="58" height="24" rx="9" fill="#2fd0ff" stroke="#2b2250" stroke-width="3"/><circle cx="242" cy="112" r="9" fill="#2b2250"/><circle cx="270" cy="112" r="9" fill="#2b2250"/>';
+ s+='<circle cx="318" cy="244" r="14" fill="#7bd957" stroke="#2b2250" stroke-width="3"/><circle cx="34" cy="248" r="11" fill="#b57bff" stroke="#2b2250" stroke-width="3"/></svg>';return s},
+mold(){const c=['#ff5fa2','#ffd23f','#3bc9f5','#7bd957','#ff9f1c'];let s='<svg viewBox="0 0 350 270"><rect x="60" y="104" width="230" height="130" rx="16" fill="#ff9f1c" stroke="#b86400" stroke-width="4"/><path d="M96 38H214L194 104H116Z" fill="#cfd6e6" stroke="#7a86a8" stroke-width="4" stroke-linejoin="round"/>';
+ [[128,60],[155,52],[182,62],[148,78],[176,84]].forEach((p,i)=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="11" fill="${c[i]}" stroke="#2b2250" stroke-width="2.5"/>`);
+ s+='<rect x="236" y="56" width="28" height="48" fill="#7a86a8" stroke="#2b2250" stroke-width="3"/><rect x="224" y="100" width="52" height="14" rx="4" fill="#4b5578"/>';
+ s+='<g style="transform-origin:112px 176px;animation:spin 4s linear infinite"><circle cx="112" cy="176" r="22" fill="#ffd23f" stroke="#b86400" stroke-width="3"/><circle cx="112" cy="176" r="31" fill="none" stroke="#b86400" stroke-width="9" stroke-dasharray="7 7"/></g>';
+ s+='<rect x="170" y="146" width="84" height="48" rx="8" fill="#2b2250"/><rect x="178" y="154" width="68" height="32" rx="5" fill="#7bd957"/><circle cx="196" cy="170" r="6" fill="#fff"/><circle cx="224" cy="170" r="6" fill="#fff"/>';
+ s+='<rect x="236" y="234" width="100" height="14" rx="5" fill="#7a86a8" stroke="#2b2250" stroke-width="3"/>';
+ [0,1,2,3,4].forEach(i=>{const a=i*1.2566;s+=`<circle cx="${286+16*Math.cos(a)}" cy="${212+16*Math.sin(a)}" r="9" fill="${c[i]}" stroke="#2b2250" stroke-width="2"/>`});
+ return s+'<circle cx="286" cy="212" r="8" fill="#fff" stroke="#2b2250" stroke-width="2"/>'+star(332,196,12,5,'#ffd23f')+'</svg>'}
+};
+const items={
+balloon:{zone:'deco',type:'bad',name:'Mega Plastic Balloon Arch',msg:'Plastic balloons pop in minutes, then they are trash for good. Made, used once, thrown away: that is the linear economy.'},
+bunting:{zone:'deco',type:'good',name:'Upcycled Fabric & Denim Bunting',msg:'Old fabric and denim get a second life! The materials keep going round instead of turning into waste.'},
+pla:{zone:'drink',type:'trap',name:"Stacks of 'Compostable' PLA Cups",msg:'Looks green, but in normal trash it is single-use waste. Greenwashing fooled the party!'},
+reuse:{zone:'drink',type:'good',name:'Reusable Hard-Cup Deposit Station',msg:'Cups get washed and used again and again. The deposit brings every cup back!'},
+toys:{zone:'act',type:'bad',name:'Box of Cheap Plastic Prize Toys',msg:'Cheap toys break fast and get tossed. Lots of plastic for a tiny bit of fun.'},
+mold:{zone:'act',type:'good',name:'Vespaio Plastic-Cap Molding Machine',msg:'Collected plastic caps get melted and molded into brand-new things. Waste becomes the raw material!'}
+};
+const zones={deco:{n:'Decorations',c:'#ff5fa2',x:24,y:70,w:720,h:210,i:0},drink:{n:'Drinks Station',c:'#2fa8ff',x:24,y:410,w:350,h:280,i:1},act:{n:'Activity Station',c:'#ff9f1c',x:394,y:410,w:350,h:280,i:2}};
+const START='Hi! I am Vesp. Drag items from the catalog into the glowing zones to plan the school party.';
+
+/* ---------- build UI ---------- */
+const stage=$('stage'),gym=$('gym');
+for(const k in zones){const z=zones[k];z.item=null;z.wL=null;z.wR=null;const e=document.createElement('div');e.className='zone';
+ e.style.cssText=`left:${z.x}px;top:${z.y}px;width:${z.w}px;height:${z.h}px;--c:${z.c}`;
+ e.innerHTML=`<div class="chip">${z.n}</div><div class="hint">Drop ${z.n} here</div><div class="art"></div>`;
+ gym.insertBefore(e,$('smog'));z.el=e;z.art=e.querySelector('.art');z.hint=e.querySelector('.hint')}
+const cardIcon=id=>{let s=ART[id]();if(items[id].zone==='deco')s=s.replace('viewBox="0 0 720 210"','viewBox="150 0 420 210"');return s};
+const keys=Object.keys(items).sort(()=>Math.random()-.5);
+keys.forEach(id=>{const it=items[id],z=zones[it.zone],c=document.createElement('div');c.className='card';c.dataset.id=id;c.style.setProperty('--c',z.c);
+ c.innerHTML=`<span class="tag">${z.n}</span>${cardIcon(id)}<b>${it.name}</b>`;$('grid').appendChild(c);it.card=c;
+ c.addEventListener('pointerdown',e=>startDrag(e,id))});
+
+/* ---------- scale physics ---------- */
+const L=150,CX=256,CY=120;let ang=0,vel=0,target=0;
+function draw(){const a=ang*Math.PI/180,dx=L*Math.cos(a),dy=L*Math.sin(a);
+ $('beam').setAttribute('transform',`rotate(${ang} ${CX} ${CY})`);
+ $('pL').setAttribute('transform',`translate(${CX-dx} ${CY-dy})`);$('pR').setAttribute('transform',`translate(${CX+dx} ${CY+dy})`)}
+(function loop(){vel+=(target-ang)*.07;vel*=.84;ang+=vel;draw();requestAnimationFrame(loop)})();
+const W={
+fun:()=>`<circle cy="-17" r="17" fill="#ffd23f" stroke="#c98f00" stroke-width="3"/>${star(0,-17,11,5,'#fff')}`,
+bad:()=>`<g transform="scale(1.3)"><path d="M-19 0Q-27 -20 -13 -33L-9 -41L-15 -50L-3 -43L3 -43L15 -50L9 -41L13 -33Q27 -20 19 0Z" fill="#30303a" stroke="#12121a" stroke-width="2"/><path d="M-12 -12Q-14 -24 -8 -29" stroke="#7d7d92" stroke-width="3" fill="none"/><path d="M-4 -54q-5 -8 2 -13M7 -54q5 -8 -2 -13" stroke="#7ccf4a" stroke-width="2.5" fill="none"/></g>`,
+good:()=>`<circle cy="-14" r="14" fill="#3ddc84" stroke="#17924f" stroke-width="3"/><path d="M-7 -14a7 7 0 1 1 3 6" fill="none" stroke="#fff" stroke-width="3"/><polygon points="-10,-8 -2,-8 -6,-15" fill="#fff"/><g class="spark">${star(16,-30,6,2.5,'#fff27a')}${star(-17,-26,5,2,'#fff27a')}</g>`
+};
+function addW(side,k,kind){const g=document.createElementNS(NS,'g');g.setAttribute('transform',`translate(${[-38,0,38][zones[k].i]} 78)`);
+ g.innerHTML=`<g class="a">${W[kind]()}</g>`;$(side).appendChild(g);const a=g.firstChild;
+ a.animate([{transform:'translateY(-280px)',opacity:0},{transform:'translateY(0)',opacity:1,offset:.55},{transform:'translateY(-16px)',offset:.74},{transform:'translateY(0)'}],{duration:750,easing:'ease-in'});return g}
+function flyOff(g){if(!g)return;const a=g.firstChild;a.style.transformBox='fill-box';a.style.transformOrigin='center';
+ a.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:'translate(240px,-320px) rotate(260deg)',opacity:0}],{duration:650,easing:'ease-in',fill:'forwards'}).onfinish=()=>g.remove()}
+
+/* ---------- game logic ---------- */
+const filled=()=>Object.values(zones).filter(z=>z.item).length;
+const waste=()=>Object.values(zones).filter(z=>z.item&&items[z.item].type!=='good').length;
+const say=t=>$('ct').textContent=t;
+function update(){const w=waste(),f=filled();target=[0,12,21,30][Math.min(w,3)];
+ $('smog').style.opacity=Math.min(w,3)*.3;$('glow').style.opacity=(w===0&&f>0)?1:0;$('redov').setAttribute('opacity',w*.18);
+ const p=$('pillR'),t=$('pillT');
+ if(!f){p.setAttribute('fill','#fff');t.setAttribute('fill','#2b2250');t.textContent='Plan your party!'}
+ else if(!w){p.setAttribute('fill','#3ddc84');t.setAttribute('fill','#0d4a28');t.textContent='Balanced!'}
+ else{p.setAttribute('fill','#e5383b');t.setAttribute('fill','#fff');t.textContent='Too much waste!'}}
+function place(k,id){const z=zones[k],it=items[id];
+ if(z.item){items[z.item].card.classList.remove('used');flyOff(z.wR)}
+ z.item=id;it.card.classList.add('used');
+ z.art.innerHTML=ART[id]();z.hint.style.display='none';z.el.classList.add('full');
+ z.art.animate(k==='deco'?[{transform:'translateY(-230px)'},{transform:'translateY(14px)',offset:.7},{transform:'none'}]:[{transform:'scale(.4)',opacity:0},{transform:'scale(1.08)',offset:.7},{transform:'scale(1)',opacity:1}],{duration:650,easing:'ease-out'});
+ if(!z.wL)z.wL=addW('iL',k,'fun');
+ z.wR=addW('iR',k,it.type==='good'?'good':'bad');
+ update();
+ const w=waste(),f=filled();
+ say(it.msg+(w&&f===3?' All zones are full, but the scale is tipping. Swap the item that makes waste!':''));
+ if(it.type==='trap')setTimeout(()=>$('modal').style.display='flex',800);
+ if(f===3&&w===0)setTimeout(win,1200)}
+let cfOn=false;
+function win(){if(filled()!==3||waste()!==0)return;say('Perfect balance! Every item keeps materials in the loop.');$('banner').classList.add('on');confetti()}
+function confetti(){const cv=$('cv'),x=cv.getContext('2d'),C=['#ff4d6d','#ffd23f','#3bc9f5','#7bd957','#b57bff','#ff9f1c'];cfOn=true;cv.style.display='block';
+ const P=Array.from({length:170},()=>({x:Math.random()*768,y:-Math.random()*500,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,w:6+Math.random()*8,c:C[Math.random()*6|0],a:Math.random()*6,va:(Math.random()-.5)*.3}));let t=0;
+ (function f(){if(!cfOn)return;x.clearRect(0,0,768,720);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=p.va;if(p.y>740)p.y=-10;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.w/4,p.w,p.w/2);x.restore()});
+  if(++t<600)requestAnimationFrame(f);else{cfOn=false;cv.style.display='none'}})()}
+function reset(){cfOn=false;$('cv').style.display='none';$('banner').classList.remove('on');$('modal').style.display='none';
+ for(const k in zones){const z=zones[k];if(z.item)items[z.item].card.classList.remove('used');z.item=null;z.art.innerHTML='';z.hint.style.display='';z.el.classList.remove('full');flyOff(z.wR);flyOff(z.wL);z.wL=z.wR=null}
+ update();say(START)}
+$('ok').onclick=()=>$('modal').style.display='none';$('again').onclick=reset;$('rs').onclick=reset;
+
+/* ---------- drag and drop ---------- */
+let drag=null;
+function s(){return stage.getBoundingClientRect().width/1280}
+function moveGhost(e){const r=stage.getBoundingClientRect(),k=s();drag.g.style.left=(e.clientX-r.left)/k-76+'px';drag.g.style.top=(e.clientY-r.top)/k-60+'px'}
+function zoneAt(e){for(const k in zones){const r=zones[k].el.getBoundingClientRect();if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom)return k}return null}
+function startDrag(e,id){if(drag||items[id].card.classList.contains('used'))return;e.preventDefault();
+ const g=items[id].card.cloneNode(true);g.classList.add('ghost');g.classList.remove('used');stage.appendChild(g);drag={id,g};moveGhost(e)}
+window.addEventListener('pointermove',e=>{if(!drag)return;moveGhost(e);const h=zoneAt(e);for(const k in zones)zones[k].el.classList.toggle('hot',k===h)});
+function endDrag(e,cancel){if(!drag)return;const h=cancel?null:zoneAt(e),id=drag.id;drag.g.remove();drag=null;for(const k in zones)zones[k].el.classList.remove('hot');
+ if(!h)return;
+ if(h===items[id].zone)place(h,id);
+ else{const z=zones[h].el;z.classList.remove('shake');void z.offsetWidth;z.classList.add('shake');say(`Oops! That one belongs in ${zones[items[id].zone].n}. Try the other glowing zone.`)}}
+window.addEventListener('pointerup',e=>endDrag(e));window.addEventListener('pointercancel',e=>endDrag(e,true));
+
+function fit(){const k=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`scale(${k})`;stage.style.left=(innerWidth-1280*k)/2+'px';stage.style.top=(innerHeight-720*k)/2+'px'}
+addEventListener('resize',fit);fit();update();say(START);
+</script>
+</body>
+</html>

@@ -163,6 +163,51 @@
   }
 })();
 
+/* Hero "Your move": one decision, one consequence. */
+(function () {
+  var box = document.querySelector('[data-yourmove]');
+  if (!box) return;
+  var result = box.querySelector('.yc__result');
+  var choices = box.querySelectorAll('.yc__choice');
+  var badge = box.querySelector('[data-badge]');
+  var OUT = {
+    jack: { ok: false, badge: 'Car rolled off', h: 'The car rolled off the jack.', p: 'The parking brake was off, so nothing held the car once it was lifted. On a slide that’s a bullet point. Here you saw it happen.' },
+    swap: { ok: false, badge: 'Nuts too tight', h: 'The nuts won’t budge.', p: 'The car is still on the ground, the nuts are tight and the brake is off. There’s an order to this, and every step has a reason.' },
+    brake: { ok: true, h: 'Right first move.', p: 'With the brake on, the car can’t roll. That’s how all my simulations work: you decide, the world reacts, and the reason sticks.' }
+  };
+  var brakeTxt = box.querySelector('.yc__brake-txt');
+  function reset() {
+    box.className = 'yc';
+    brakeTxt.textContent = 'Brake off';
+    result.innerHTML = '';
+    Array.prototype.forEach.call(choices, function (c) { c.disabled = false; c.removeAttribute('aria-pressed'); });
+  }
+  Array.prototype.forEach.call(choices, function (btn) {
+    btn.addEventListener('click', function () {
+      var k = btn.getAttribute('data-move'), o = OUT[k];
+      reset();
+      void box.offsetWidth; // restart the animation
+      box.className = 'yc is-' + k + (o.ok ? ' is-good' : ' is-bad');
+      btn.setAttribute('aria-pressed', 'true');
+      Array.prototype.forEach.call(choices, function (c) { if (c !== btn) c.disabled = true; });
+      if (o.badge) badge.textContent = o.badge;
+      if (k === 'brake') brakeTxt.textContent = 'Brake on';
+      result.innerHTML = '<p class="yc__h">' + o.h + '</p><p>' + o.p + '</p><div class="yc__next">' +
+        (o.ok ? '<a class="btn btn--sm" href="work/flat-tire.html">Play the full simulation</a>' : '') +
+        '<button type="button" class="yc__again">' + (o.ok ? 'Start over' : 'Try again') + '</button></div>';
+      result.querySelector('.yc__again').addEventListener('click', function () { reset(); choices[0].focus(); });
+    });
+  });
+})();
+
+/* Header gets a backing once the page scrolls. */
+(function () {
+  var h = document.querySelector('.site-head');
+  if (!h) return;
+  var f = function () { h.classList.toggle('is-stuck', window.scrollY > 8); };
+  f(); window.addEventListener('scroll', f, { passive: true });
+})();
+
 /* Package buttons preselect the package in the contact form. */
 document.addEventListener('click', function (e) {
   var a = e.target.closest && e.target.closest('[data-package]');

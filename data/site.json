@@ -123,6 +123,29 @@
       "page": "work/fire-extinguisher.html"
     },
     {
+      "slug": "gdpr-every-dot",
+      "on": true,
+      "feature": true,
+      "series": "",
+      "title": "Every dot is a person",
+      "tagline": "GDPR in six everyday calls. Get one wrong and watch real people’s data leave the building.",
+      "chips": [
+        {
+          "label": "Judgment",
+          "tone": "sky"
+        },
+        {
+          "label": "GDPR",
+          "tone": ""
+        }
+      ],
+      "sticker": "Email the export home and 1,800 people leave the building",
+      "thumbStart": "img/thumbs/gdpr-every-dot-start.webp",
+      "thumbStartAlt": "A newsletter email beside a wall of 240 dots, one per person",
+      "thumbMistake": "img/thumbs/gdpr-every-dot.webp",
+      "page": "work/gdpr-every-dot.html"
+    },
+    {
       "slug": "close-the-loop",
       "on": true,
       "feature": false,
@@ -308,6 +331,12 @@
       "text": ""
     },
     "fire-extinguisher": {
+      "on": false,
+      "sample": false,
+      "stats": [],
+      "text": ""
+    },
+    "gdpr-every-dot": {
       "on": false,
       "sample": false,
       "stats": [],

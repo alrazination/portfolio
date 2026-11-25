@@ -246,7 +246,7 @@
   "testimonials": [
     {
       "id": "t1",
-      "on": true,
+      "on": false,
       "sample": true,
       "quote": "Our old gowning course was a 40-slide PDF. After the simulation, first-time gowning errors on the floor dropped noticeably, and new starters actually talk about it.",
       "name": "Jana Weber",

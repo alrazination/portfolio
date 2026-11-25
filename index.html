@@ -98,10 +98,11 @@
   <section class="section section--deep" id="levels">
     <div class="wrap">
       <div class="section__head">
-        <h2><span data-level-count>Eight simulations.</span> All playable.</h2>
-        <p>Each one is built around a mistake. Hover over a picture to see what happens when you make it.</p>
+        <h2>Simulations you can play.</h2>
+        <p>Each one is built around a mistake. Hover a picture to see it happen, or press Quick play to try it right here.</p>
       </div>
 
+      <div class="filters" data-filters role="group" aria-label="Filter by topic"></div>
       <div class="levels" data-levels>
         <noscript><p>Turn on JavaScript to see and play the simulations.</p></noscript>
       </div>
@@ -119,7 +120,7 @@
     <div class="wrap">
       <div class="section__head">
         <h2>I make learning visible.</h2>
-        <p>Most training explains. I'd rather show. Here's the same cleanroom rule, both ways.</p>
+        <p>Most training explains. I'd rather let you try. Here's the same cleanroom rule, both ways.</p>
       </div>
 
       <div class="versus">
@@ -128,40 +129,29 @@
           <p>Put on the hairnet first, then the hood so that it covers your head and neck. Next, step into the coverall. Put on the shoe covers before you cross the clean line. Finally, put on the gloves and pull them over your sleeves so they seal.</p>
         </div>
         <div class="versus__vs" aria-hidden="true">vs</div>
-        <figure class="versus__picture">
-          <span class="versus__label versus__label--lime">In a picture</span>
-          <svg viewBox="0 0 420 440" role="img" aria-label="A figure with numbered garments: 1 hairnet on the hair, 2 hood on the head, 3 coverall on the body, 4 shoe covers on the feet, 5 gloves on the hands. Particles fall downward, so you dress from the top.">
-            <defs>
-              <marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#FF4F6D"/></marker>
-            </defs>
-            <!-- falling particles, top to bottom -->
-            <g fill="#FF4F6D"><circle cx="40" cy="60" r="4"/><circle cx="52" cy="112" r="3"/><circle cx="36" cy="170" r="4"/><circle cx="50" cy="230" r="3"/></g>
-            <path d="M44 40 V380" stroke="#FF4F6D" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" marker-end="url(#arr)" fill="none"/>
-            <!-- figure -->
-            <g fill="#2D1A5E" stroke="#4B3290" stroke-width="3">
-              <circle cx="210" cy="78" r="38"/>
-              <rect x="160" y="128" width="100" height="160" rx="26"/>
-              <rect x="126" y="136" width="28" height="140" rx="14"/>
-              <rect x="266" y="136" width="28" height="140" rx="14"/>
-              <rect x="170" y="286" width="36" height="110" rx="14"/>
-              <rect x="214" y="286" width="36" height="110" rx="14"/>
+        <figure class="versus__picture gw" data-gowning>
+          <span class="versus__label versus__label--lime">In a simulation</span>
+          <svg viewBox="0 0 420 440" role="group" aria-label="Gowning mini-game. Choose the garments in the order you would put them on.">
+            <defs><marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#FF4F6D"/></marker></defs>
+            <path d="M44 40 V380" stroke="#FF4F6D" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" marker-end="url(#arr)" fill="none" opacity=".55"/>
+            <g class="gw-fig">
+              <rect class="gw-p gw-suit" x="160" y="128" width="100" height="160" rx="26"/>
+              <rect class="gw-p gw-suit" x="126" y="136" width="28" height="140" rx="14"/>
+              <rect class="gw-p gw-suit" x="266" y="136" width="28" height="140" rx="14"/>
+              <rect class="gw-p gw-suit" x="170" y="286" width="36" height="110" rx="14"/>
+              <rect class="gw-p gw-suit" x="214" y="286" width="36" height="110" rx="14"/>
+              <circle class="gw-p" cx="210" cy="78" r="38"/>
             </g>
-            <!-- connectors -->
-            <g stroke="#C6FF3D" stroke-width="2.5" stroke-dasharray="3 5" fill="none">
-              <path d="M128 52 H186"/><path d="M302 92 H244"/><path d="M128 205 H170"/><path d="M302 270 H282"/><path d="M302 392 H246"/>
-            </g>
-            <!-- 1 hairnet -->
-            <g transform="translate(66 22)"><rect width="62" height="62" rx="16" fill="#22114A" stroke="#C6FF3D" stroke-width="2.5"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M8 40C8 12 56 12 56 40C56 48 46 50 32 50C18 50 8 48 8 40Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/><path d="M12 38H52" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3 4"/></svg><circle cx="0" cy="0" r="13" fill="#C6FF3D"/><text x="0" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">1</text></g>
-            <!-- 2 hood -->
-            <g transform="translate(302 62)"><rect width="62" height="62" rx="16" fill="#22114A" stroke="#C6FF3D" stroke-width="2.5"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M32 4C16 4 12 20 14 34L5 56H59L50 34C52 20 48 4 32 4Z" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><ellipse cx="32" cy="28" rx="11" ry="14" fill="#16213a" stroke="#64748b" stroke-width="2.5"/></svg><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">2</text></g>
-            <!-- 3 coverall -->
-            <g transform="translate(66 174)"><rect width="62" height="62" rx="16" fill="#22114A" stroke="#C6FF3D" stroke-width="2.5"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M22 4H42L59 17L53 34L46 29V60H35L32 40L29 60H18V29L11 34L5 17Z" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/></svg><circle cx="0" cy="0" r="13" fill="#C6FF3D"/><text x="0" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">3</text></g>
-            <!-- 5 gloves -->
-            <g transform="translate(302 240)"><rect width="62" height="62" rx="16" fill="#22114A" stroke="#C6FF3D" stroke-width="2.5"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><g fill="#38bdf8" stroke="#0369a1" stroke-width="2.5"><rect x="17" y="30" width="30" height="26" rx="8"/><rect x="17" y="10" width="7" height="28" rx="3.5"/><rect x="25" y="5" width="7" height="32" rx="3.5"/><rect x="33" y="7" width="7" height="30" rx="3.5"/><rect x="41" y="13" width="7" height="26" rx="3.5"/></g></svg><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">5</text></g>
-            <!-- 4 booties -->
-            <g transform="translate(302 362)"><rect width="62" height="62" rx="16" fill="#22114A" stroke="#C6FF3D" stroke-width="2.5"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><rect x="5" y="24" width="24" height="32" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><rect x="35" y="24" width="24" height="32" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><path d="M7 33H27M37 33H57" stroke="#3b82f6" stroke-width="3"/></svg><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">4</text></g>
+            <g class="gw-w gw-w1"><path d="M172 74 C172 30 248 30 248 74 C240 62 180 62 172 74Z" fill="#DBEAFE" stroke="#3B82F6" stroke-width="3"/></g>
+            <g class="gw-w gw-w2"><path d="M210 26 C176 26 162 50 164 80 L160 118 H260 L256 80 C258 50 244 26 210 26Z" fill="#F8FAFC" stroke="#94A3B8" stroke-width="3"/><ellipse cx="210" cy="80" rx="22" ry="27" fill="#2D1A5E"/></g>
+            <g class="gw-w gw-w4"><rect x="164" y="370" width="46" height="34" rx="12" fill="#F8FAFC" stroke="#3B82F6" stroke-width="3"/><rect x="210" y="370" width="46" height="34" rx="12" fill="#F8FAFC" stroke="#3B82F6" stroke-width="3"/></g>
+            <g class="gw-w gw-w5"><circle cx="140" cy="282" r="17" fill="#38BDF8" stroke="#0369A1" stroke-width="3"/><circle cx="280" cy="282" r="17" fill="#38BDF8" stroke="#0369A1" stroke-width="3"/></g>
+            <g class="gw-dust" fill="#FF4F6D"><circle cx="186" cy="20" r="5"/><circle cx="206" cy="6" r="4"/><circle cx="226" cy="22" r="5"/><circle cx="196" cy="36" r="3.5"/><circle cx="236" cy="4" r="3.5"/><circle cx="218" cy="40" r="4"/></g>
+            <g class="gw-lines" stroke="#C6FF3D" stroke-width="2.5" stroke-dasharray="3 5" fill="none"><path d="M128 52 H174"/><path d="M302 92 H256"/><path d="M128 205 H160"/><path d="M302 270 H296"/><path d="M302 392 H256"/></g>
+            <g class="gw-b" data-step="1" tabindex="0" role="button" aria-label="Hairnet" transform="translate(66 22)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M8 40C8 12 56 12 56 40C56 48 46 50 32 50C18 50 8 48 8 40Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/><path d="M12 38H52" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3 4"/></svg><g class="gw-n"><circle cx="0" cy="0" r="13" fill="#C6FF3D"/><text x="0" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">1</text></g></g></g><g class="gw-b" data-step="2" tabindex="0" role="button" aria-label="Hood" transform="translate(302 62)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M32 4C16 4 12 20 14 34L5 56H59L50 34C52 20 48 4 32 4Z" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><ellipse cx="32" cy="28" rx="11" ry="14" fill="#16213a" stroke="#64748b" stroke-width="2.5"/></svg><g class="gw-n"><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">2</text></g></g></g><g class="gw-b" data-step="3" tabindex="0" role="button" aria-label="Coverall" transform="translate(66 174)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M22 4H42L59 17L53 34L46 29V60H35L32 40L29 60H18V29L11 34L5 17Z" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/></svg><g class="gw-n"><circle cx="0" cy="0" r="13" fill="#C6FF3D"/><text x="0" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">3</text></g></g></g><g class="gw-b" data-step="5" tabindex="0" role="button" aria-label="Gloves" transform="translate(302 240)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><g fill="#38bdf8" stroke="#0369a1" stroke-width="2.5"><rect x="17" y="30" width="30" height="26" rx="8"/><rect x="17" y="10" width="7" height="28" rx="3.5"/><rect x="25" y="5" width="7" height="32" rx="3.5"/><rect x="33" y="7" width="7" height="30" rx="3.5"/><rect x="41" y="13" width="7" height="26" rx="3.5"/></g></svg><g class="gw-n"><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">5</text></g></g></g><g class="gw-b" data-step="4" tabindex="0" role="button" aria-label="Shoe covers" transform="translate(302 362)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><rect x="5" y="24" width="24" height="32" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><rect x="35" y="24" width="24" height="32" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><path d="M7 33H27M37 33H57" stroke="#3b82f6" stroke-width="3"/></svg><g class="gw-n"><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">4</text></g></g></g>
           </svg>
-          <figcaption>Same rule. You read one. You see the other, and you see <em>why</em>: particles fall.</figcaption>
+          <figcaption class="gw-msg" role="status">Your turn: tap the garments in the order you'd put them on.</figcaption>
+          <button class="gw-reset" type="button" hidden>Try again</button>
         </figure>
       </div>
 
@@ -191,6 +181,30 @@
         <h2>What I can build for you</h2>
         <p>For anyone who wants to level up their learning offer: L&amp;D teams, training providers, schools and course creators. Start with the problem; most projects combine two or three of these.</p>
       </div>
+      <div class="fit" data-fit>
+        <div class="fit__q">
+          <p class="fit__label">What's going wrong?</p>
+          <div class="fit__opts" data-q="problem">
+            <button type="button" data-v="steps">People skip steps</button>
+            <button type="button" data-v="judgment">People make risky calls</button>
+            <button type="button" data-v="finish">Nobody finishes the course</button>
+            <button type="button" data-v="engage">Sessions fall flat</button>
+            <button type="button" data-v="measure">We can't tell if it works</button>
+            <button type="button" data-v="explain">An idea won't stick</button>
+          </div>
+        </div>
+        <div class="fit__q" data-step2 hidden>
+          <p class="fit__label">Where should it run?</p>
+          <div class="fit__opts" data-q="where">
+            <button type="button" data-v="lms">In our LMS</button>
+            <button type="button" data-v="none">We don't have an LMS</button>
+            <button type="button" data-v="live">In live sessions</button>
+            <button type="button" data-v="web">On our website</button>
+          </div>
+        </div>
+        <div class="fit__result" data-fit-result aria-live="polite"></div>
+      </div>
+
       <div class="services">
         <div class="service">
           <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="6" fill="#C6FF3D"/><rect x="10" y="14" width="16" height="4" rx="2" fill="#14082B"/><rect x="10" y="22" width="24" height="4" rx="2" fill="#14082B"/><circle cx="36" cy="16" r="3" fill="#FF4F6D"/><rect x="14" y="38" width="20" height="4" rx="2" fill="#CBBDEB"/></svg>
@@ -533,5 +547,6 @@
 </footer>
 
 <script src="js/site.js"></script>
+<script src="js/fx.js"></script>
 </body>
 </html>

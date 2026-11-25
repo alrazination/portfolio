@@ -26,7 +26,8 @@ admin/                  The admin panel
 img/thumbs/             <slug>-start = opening screen, <slug> = the "consequence" moment
 img/og/                 1200x630 link-preview images
 css/style.css           All site styles
-js/site.js              Renders data/site.json: project grid, proof, contact, form
+js/site.js              Renders data/site.json: project grid, filters, quick play, proof, contact, form
+js/fx.js                Interaction layer: pop-in reveals, progress bar, card tilt, hero grid, phone menu, gowning mini-game, project picker, achievements
 js/play.js              Loads a sim on "Press start" and scales it; phone preview
 js/project.js           Fills work/project.html
 vendor/                 three.js and the sims' fonts, served locally (no CDNs)

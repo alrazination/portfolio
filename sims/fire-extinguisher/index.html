@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fight or get out? A fire extinguisher simulation</title>
+<meta name="viewport" content="width=1280">
+<link rel="stylesheet" href="../../vendor/fonts/fonts.css">
+<style>
+:root{--ink:#1D1B26;--panel:#FFF8EE;--line:#EADFCB;--mut:#6E6556;--red:#D7263D;--ok:#1E9E62;--warn:#E89A00;--sky:#3BA7E0}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:1280px;height:720px;overflow:hidden;background:#120D0A;font-family:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none}
+#stage{position:absolute;left:0;top:0;width:1280px;height:720px;overflow:hidden;transform-origin:0 0;display:grid;grid-template-columns:900px 380px}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+h1,h2,h3{font-family:"Baloo 2","Atkinson Hyperlegible",sans-serif;margin:0;line-height:1.1}
+
+.scene{position:relative;width:900px;height:720px;overflow:hidden;background:#222}
+canvas{display:block;width:900px;height:720px;touch-action:none}
+.scene.spray canvas{cursor:crosshair}
+
+/* in-scene extinguisher (first-person) */
+.hand{position:absolute;right:26px;bottom:-10px;width:150px;height:250px;display:none}
+.hand.show{display:block;animation:up .45s cubic-bezier(.3,1.4,.5,1)}
+@keyframes up{from{transform:translateY(120px)}to{transform:none}}
+.pin{position:absolute;left:40px;top:26px;width:44px;height:44px;border:0;border-radius:50%;background:transparent;cursor:pointer;padding:0}
+.pin svg{width:44px;height:44px}
+.pin.glow{animation:glow 1s ease-in-out infinite}
+@keyframes glow{50%{transform:scale(1.15);filter:drop-shadow(0 0 10px #ffd54a)}}
+.pin.pulled{animation:fly .6s ease-in forwards;pointer-events:none}
+@keyframes fly{to{transform:translate(-90px,-140px) rotate(-260deg);opacity:0}}
+
+.tip{position:absolute;left:50%;top:22px;transform:translateX(-50%);background:rgba(20,14,10,.86);color:#fff;font-size:18px;font-weight:700;padding:10px 18px;border-radius:12px;white-space:nowrap;pointer-events:none;transition:opacity .2s}
+.tip:empty{opacity:0}
+.meter{position:absolute;left:24px;bottom:24px;width:250px;display:none;color:#fff;font-size:13px;font-weight:700}
+.meter.show{display:block}
+.meter .row{display:flex;justify-content:space-between;margin-bottom:5px}
+.bar{height:12px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden;margin-bottom:10px}
+.bar i{display:block;height:100%;border-radius:6px;background:#fff;transition:width .1s linear}
+.bar.fire i{background:linear-gradient(90deg,#FFB224,#FF4D2E)}
+
+/* result banner over the scene */
+.res{position:absolute;left:50%;top:50%;width:560px;transform:translate(-50%,-50%);background:#fff;border-radius:20px;padding:24px 28px;box-shadow:0 24px 70px rgba(0,0,0,.55);display:none;border-top:8px solid var(--red)}
+.res.show{display:block;animation:pop .4s cubic-bezier(.3,1.4,.5,1)}
+.res.ok{border-top-color:var(--ok)}.res.safe{border-top-color:var(--warn)}
+.res h2{font-size:30px;margin-bottom:8px}
+.res p{font-size:16.5px;line-height:1.5;color:#3A332A;margin:0 0 16px}
+.res .rule{background:#FFF4DC;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:700;color:#5B3E00;margin:-4px 0 16px}
+.res.ok .rule{background:#E3F6EC;color:#0C5A37}
+.go{background:var(--ink);color:#fff;border:0;border-radius:12px;padding:13px 22px;font-size:16.5px;font-weight:700;cursor:pointer}
+.go:hover{background:#3A3546}
+@keyframes pop{from{transform:translate(-50%,-44%);opacity:0}to{transform:translate(-50%,-50%);opacity:1}}
+
+/* side panel */
+.side{background:var(--panel);display:flex;flex-direction:column;padding:22px 22px 18px}
+.track{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mut);font-weight:700;margin-bottom:14px}
+.track i{width:26px;height:8px;border-radius:4px;background:var(--line);display:block}
+.track i.cur{background:var(--ink)}.track i.ok{background:var(--ok)}.track i.meh{background:var(--warn)}
+.side h1{font-size:28px;margin-bottom:6px}
+.side .desc{font-size:15.5px;line-height:1.5;color:#4A4236;margin:0 0 16px;min-height:70px}
+.side h3{font-size:16px;color:var(--mut);margin:0 0 10px;font-family:"Atkinson Hyperlegible",sans-serif}
+.rack{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opt{background:#fff;border:2px solid var(--line);border-radius:14px;padding:8px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13.5px;font-weight:700;color:var(--ink);transition:border-color .15s,transform .1s}
+.opt:hover:not(:disabled){border-color:var(--ink);transform:translateY(-2px)}
+.opt:disabled{opacity:.45;cursor:default}
+.opt svg{width:54px;height:70px}
+.opt small{font-size:11.5px;color:var(--mut);font-weight:400;text-align:center;line-height:1.2}
+.out{margin-top:12px;width:100%;background:#FFE7D6;border:2px solid #F3C4A3;color:#8A2E00;border-radius:14px;padding:13px;font-size:15.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+.out:hover:not(:disabled){border-color:#8A2E00}
+.out:disabled{opacity:.45;cursor:default}
+.key{margin-top:auto;font-size:12.5px;color:var(--mut);line-height:1.45}
+.restart{position:absolute;right:22px;top:20px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 11px;font-size:12.5px;font-weight:700;color:var(--mut);cursor:pointer}
+
+.ov{position:absolute;inset:0;background:rgba(18,13,10,.78);display:grid;place-items:center;z-index:40}
+.ov[hidden]{display:none}
+.card{background:var(--panel);border-radius:24px;padding:34px 40px;width:640px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.card h1{font-size:40px;margin-bottom:10px}
+.card p{font-size:17px;line-height:1.55;color:#3F382D;margin:0 0 14px}
+.card ul{margin:0 0 22px;padding-left:20px;font-size:16px;line-height:1.6;color:#3F382D}
+.rules{display:grid;gap:8px;margin:14px 0 22px;padding:0;list-style:none}
+.rules li{background:#fff;border-radius:12px;padding:10px 14px;font-size:15.5px;display:flex;gap:10px;align-items:center}
+.rules b{min-width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:13px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="scene" id="scene">
+    <canvas id="cv" width="900" height="720"></canvas>
+    <div class="tip" id="tip"></div>
+    <div class="meter" id="meter">
+      <div class="row"><span>Fire</span><span id="fireTxt"></span></div><div class="bar fire"><i id="fireBar"></i></div>
+      <div class="row"><span>Extinguisher</span><span id="chgTxt"></span></div><div class="bar"><i id="chgBar"></i></div>
+    </div>
+    <div class="hand" id="hand"></div>
+    <div class="res" id="res" role="dialog" aria-live="assertive"></div>
+  </div>
+
+  <aside class="side">
+    <button class="restart" id="restart" type="button">Restart</button>
+    <div class="track" id="track"></div>
+    <h1 id="sTitle"></h1>
+    <p class="desc" id="sDesc"></p>
+    <h3>What do you grab?</h3>
+    <div class="rack" id="rack"></div>
+    <button class="out" id="outBtn" type="button" data-opt="out"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M10 3h9v18h-9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 12h11M10 8l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Raise the alarm and get out</button>
+    <p class="key">The coloured band on each extinguisher tells you what's inside. Learn the colours and you can choose in a second.</p>
+  </aside>
+
+  <div class="ov" id="intro">
+    <div class="card">
+      <h1>Fight or get out?</h1>
+      <p>Four fires, four workplaces. For each one, grab the right thing from the wall, or decide it's time to leave.</p>
+      <ul>
+        <li>The wrong choice plays out, so you'll see why it's wrong.</li>
+        <li>With the right extinguisher: pull the pin, then hold the mouse down to spray. Aim at the base of the fire and sweep.</li>
+      </ul>
+      <button class="go" id="start" type="button">Start</button>
+    </div>
+  </div>
+
+  <div class="ov" id="end" hidden>
+    <div class="card">
+      <h1 id="endH"></h1>
+      <p id="endP"></p>
+      <ul class="rules">
+        <li><b style="background:#D7263D">1</b>Paper, wood, fabric: water or foam.</li>
+        <li><b style="background:#1D1B26">2</b>Anything electrical: CO₂. Never water.</li>
+        <li><b style="background:#E85D04">3</b>Burning fat: heat off, fire blanket. Never water.</li>
+        <li><b style="background:#6E6556">4</b>Bigger than a bin, or spreading: raise the alarm and get out.</li>
+      </ul>
+      <button class="go" id="again" type="button">Play again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var cv=$('#cv'),cx=cv.getContext('2d'),W=900,H=720;
+
+/* fit the 1280x720 stage to any window */
+function fit(){var s=Math.min(innerWidth/1280,innerHeight/720),st=$('#stage');
+  st.style.transform='scale('+s+')';st.style.left=Math.max(0,(innerWidth-1280*s)/2)+'px';st.style.top=Math.max(0,(innerHeight-720*s)/2)+'px';
+  document.body.style.width=innerWidth+'px';document.body.style.height=innerHeight+'px';}
+addEventListener('resize',fit);fit();
+
+/* ---------------- the extinguishers ---------------- */
+var OPTS=[
+  {id:'water',name:'Water',sub:'red band',band:'#D7263D',spray:'water'},
+  {id:'foam',name:'Foam',sub:'cream band',band:'#F2DFA7',spray:'foam'},
+  {id:'co2',name:'CO₂',sub:'black band',band:'#1D1B26',spray:'gas'},
+  {id:'powder',name:'Dry powder',sub:'blue band',band:'#2D6CDF',spray:'powder'},
+  {id:'blanket',name:'Fire blanket',sub:'pull the tapes',blanket:true}
+];
+function extSvg(o){
+  if(o.blanket)return '<svg viewBox="0 0 54 70"><rect x="6" y="10" width="42" height="50" rx="5" fill="#D7263D"/><rect x="6" y="10" width="42" height="12" rx="5" fill="#A51A2E"/><path d="M18 22v-12M36 22v-12" stroke="#fff" stroke-width="3"/><rect x="12" y="30" width="30" height="18" rx="3" fill="#fff"/><path d="M17 39h20" stroke="#D7263D" stroke-width="3"/></svg>';
+  return '<svg viewBox="0 0 54 70"><path d="M20 6h12v6H20z" fill="#333"/><path d="M32 8h10l4 6" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/><rect x="14" y="12" width="24" height="56" rx="10" fill="#D7263D"/><rect x="14" y="30" width="24" height="14" fill="'+o.band+'"'+(o.band==='#F2DFA7'?' stroke="#C9B373" stroke-width="1"':'')+'/><path d="M38 20q10 4 8 22" fill="none" stroke="#222" stroke-width="3"/></svg>';
+}
+
+/* ---------------- the four fires ---------------- */
+var SCENES=[
+ {id:'bin',title:'Waste bin, open-plan office',desc:'A cigarette ended up in a paper bin. The flames are knee-high and your desk is two metres away.',
+  draw:drawOffice,fire:{x:430,y:536,w:92,int:.75},
+  res:{
+   water:{t:'ok'},foam:{t:'ok'},
+   powder:{t:'ok',note:'Powder works, but it coats the whole office in fine dust. For paper, water or foam is the better pick.'},
+   co2:{t:'bad',anim:'reignite',h:'It came back.',p:'CO₂ knocks the flames down, but it doesn’t cool burning paper. Thirty seconds later the bin reignited.',rule:'Paper, wood and fabric: water or foam.'},
+   blanket:{t:'bad',anim:'none',h:'Too close for comfort.',p:'A fire blanket is for a small pan fire, or a person whose clothes are burning. Over a bin you’d have to lean right over the flames.',rule:'Paper, wood and fabric: water or foam, from two metres away.'},
+   out:{t:'safe',h:'Safe, but you could have stopped it.',p:'Leaving is never wrong. But this fire was small, and the right extinguisher was on the wall. In five seconds it would have been out.',rule:'Small and not spreading? Water or foam puts it out.'}}},
+ {id:'elec',title:'Overloaded power strip',desc:'Under a desk, a power strip with six plugs in it is burning. The cables are melting and the monitor is still on.',
+  draw:drawDesk,fire:{x:420,y:610,w:110,int:.8},
+  res:{
+   co2:{t:'ok'},
+   powder:{t:'ok',note:'Powder puts it out, but it ruins every computer nearby. CO₂ leaves nothing behind.'},
+   water:{t:'bad',anim:'zap',h:'You became part of the circuit.',p:'Water conducts electricity. The stream connected the live power strip to you, and the fire kept burning.',rule:'Anything electrical: CO₂. Never water.'},
+   foam:{t:'bad',anim:'zap',h:'Foam is mostly water.',p:'Most foam extinguishers conduct electricity, just like water. You took a shock and the fire carried on.',rule:'Anything electrical: CO₂.'},
+   blanket:{t:'bad',anim:'none',h:'The power is still on.',p:'The blanket can’t stop live electricity feeding the fire, and the plastic underneath kept burning.',rule:'Anything electrical: CO₂.'},
+   out:{t:'safe',h:'Safe, but you could have stopped it.',p:'Leaving is never wrong. But the CO₂ extinguisher was right there, and this fire was still small.',rule:'Electrical and still small? CO₂ puts it out.'}}},
+ {id:'fat',title:'Frying pan, staff kitchen',desc:'A colleague left oil heating on the hob. The pan is on fire and flames are licking the extractor hood.',
+  draw:drawKitchen,fire:{x:452,y:430,w:120,int:.85},
+  res:{
+   blanket:{t:'ok'},
+   water:{t:'bad',anim:'fireball',h:'Fireball.',p:'Water sank into 300°C oil, turned to steam in an instant and threw burning oil up to the ceiling.',rule:'Burning fat: heat off, fire blanket. Never water.'},
+   foam:{t:'bad',anim:'fireball',h:'Foam is mostly water.',p:'The water in the foam hit the hot oil, flashed to steam and blew a ball of fire across the kitchen.',rule:'Burning fat: heat off, fire blanket.'},
+   co2:{t:'bad',anim:'splash',h:'Burning oil everywhere.',p:'The force of the CO₂ jet blew burning oil out of the pan and across the counter.',rule:'Burning fat: heat off, fire blanket. (A wet chemical extinguisher, yellow band, also works.)'},
+   powder:{t:'bad',anim:'splash',h:'Burning oil everywhere.',p:'The powder jet hit the pan hard and scattered burning oil over the counter.',rule:'Burning fat: heat off, fire blanket.'},
+   out:{t:'safe',h:'Safe, but you could have stopped it.',p:'Leaving is never wrong. But a fire blanket was on the wall, and a pan fire this size is exactly what it’s for.',rule:'Burning fat: heat off, fire blanket.'}}},
+ {id:'store',title:'Storeroom',desc:'You open the storeroom door. Boxes are burning up to the ceiling and smoke is rolling out at head height.',
+  draw:drawStore,fire:{x:440,y:600,w:300,int:2.2},
+  res:{
+   out:{t:'ok',anim:'evac',h:'Right call.',p:'You closed the door, hit the alarm and got everyone out. A closed door holds back fire and smoke for minutes.',rule:'Bigger than a bin, or spreading: raise the alarm and get out.'},
+   water:{t:'bad',anim:'smoke'},foam:{t:'bad',anim:'smoke'},co2:{t:'bad',anim:'smoke'},powder:{t:'bad',anim:'smoke'},blanket:{t:'bad',anim:'smoke'}}}
+];
+var SMOKE_RES={h:'Too big to fight.',p:'A 6 kg extinguisher empties in about fifteen seconds. This fire was already at the ceiling: while you sprayed, the smoke dropped to the floor and filled the corridor behind you.',rule:'Bigger than a bin, or spreading: raise the alarm and get out.'};
+
+/* ---------------- state ---------------- */
+var G,F,P=[],SP=[],SM=[],extra=[],anim=null,shake=0,flash=0,flashCol='255,140,0',smoke=0;
+var mouse={x:450,y:500,down:false,px:450},highHint=0,stillHint=0;
+
+function newGame(){G={i:0,score:SCENES.map(function(){return null}),tries:0};loadScene()}
+function loadScene(boost){
+  var s=SCENES[G.i];
+  F={x:s.fire.x,y:s.fire.y,w:s.fire.w,int:s.fire.int*(boost||1),hp:100,out:false};
+  P=[];SP=[];SM=[];extra=[];anim=null;smoke=s.id==='store'?.42:0;
+  if(s.id==='store')extra=[{x:170,y:300,w:120,int:1.4,hp:100},{x:450,y:190,w:130,int:1.5,hp:100},{x:700,y:410,w:120,int:1.3,hp:100},{x:330,y:420,w:110,int:1.2,hp:100}];
+  G.phase='choose';G.opt=null;G.charge=100;G.heat=true;
+  $('#sTitle').textContent=s.title;$('#sDesc').textContent=s.desc;
+  renderTrack();renderRack(true);
+  $('#hand').className='hand';$('#meter').className='meter';$('#res').className='res';tip('');
+  $('#scene').classList.remove('spray');
+}
+function renderTrack(){
+  $('#track').innerHTML=SCENES.map(function(s,i){var c=G.score[i];return '<i class="'+(i===G.i?'cur':'')+(c==='ok'?' ok':c?' meh':'')+'"></i>'}).join('')+'<span>Fire '+(G.i+1)+' of '+SCENES.length+'</span>';
+}
+function renderRack(on){
+  $('#rack').innerHTML=OPTS.map(function(o){return '<button class="opt" type="button" data-opt="'+o.id+'"'+(on?'':' disabled')+'>'+extSvg(o)+o.name+'<small>'+o.sub+'</small></button>'}).join('');
+  $('#outBtn').disabled=!on;
+}
+function tip(t){$('#tip').textContent=t}
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-opt]');if(!b||b.disabled||G.phase!=='choose')return;
+  choose(b.getAttribute('data-opt'));
+});
+
+function choose(id){
+  var s=SCENES[G.i],r=s.res[id],o=OPTS.filter(function(x){return x.id===id})[0];
+  G.opt=o;renderRack(false);G.tries++;
+  if(r.t==='ok'&&id==='out'){G.phase='anim';anim={type:'evac',t:0};setTimeout(function(){result(r,'ok')},2300);return}
+  if(r.t==='ok'&&o.blanket){G.phase='blanket';G.note=r.note;tip('First, turn off the heat: click the hob knob.');return}
+  if(r.t==='ok'){G.phase='pin';G.note=r.note;showHand(o);tip('Pull the pin.');return}
+  if(r.t==='safe'){mark('meh');result(r,'safe');return}
+  // wrong: play out the consequence
+  G.phase='anim';var a=r.anim;
+  if(a==='none'){mark('meh');result(r,'bad');return}
+  anim={type:a,t:0,spray:o.spray||'none'};
+  var res=a==='smoke'?SMOKE_RES:r;
+  mark('meh');
+  setTimeout(function(){result(res,'bad')},a==='smoke'?3300:2500);
+}
+function mark(v){if(G.score[G.i]===null||v==='meh')G.score[G.i]=G.score[G.i]==='meh'?'meh':v;renderTrack()}
+
+function showHand(o){
+  var h=$('#hand');
+  h.innerHTML='<svg viewBox="0 0 150 250" width="150" height="250"><path d="M60 30h30v14H60z" fill="#333"/><rect x="38" y="44" width="74" height="220" rx="30" fill="#D7263D"/><rect x="38" y="100" width="74" height="46" fill="'+o.band+'"/><path d="M90 36 C130 30 120 -6 70 0" fill="none" stroke="#222" stroke-width="8" stroke-linecap="round"/><rect x="42" y="56" width="66" height="10" rx="5" fill="#fff" opacity=".25"/></svg>'+
+   '<button class="pin glow" type="button" aria-label="Pull the pin"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="14" fill="none" stroke="#FFD54A" stroke-width="5"/><rect x="20" y="22" width="4" height="22" fill="#FFD54A"/></svg></button>';
+  h.className='hand show';
+  h.querySelector('.pin').addEventListener('click',function(e){
+    e.currentTarget.classList.remove('glow');e.currentTarget.classList.add('pulled');
+    G.phase='spray';$('#scene').classList.add('spray');$('#meter').className='meter show';
+    tip('Hold the mouse down to squeeze. Aim at the base and sweep.');
+  });
+}
+
+/* pointer: aiming and spraying */
+function pos(e){var r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
+cv.addEventListener('pointerdown',function(e){
+  var p=pos(e);mouse.x=p.x;mouse.y=p.y;
+  if(G.phase==='pin'){tip('Pull the pin first: it stops the handle squeezing by accident.');return}
+  if(G.phase==='blanket'){blanketClick(p);return}
+  if(G.phase==='spray'){mouse.down=true;cv.setPointerCapture(e.pointerId)}
+});
+cv.addEventListener('pointermove',function(e){var p=pos(e);mouse.x=p.x;mouse.y=p.y});
+addEventListener('pointerup',function(){mouse.down=false});
+
+/* fat fire: knob, then blanket */
+function blanketClick(p){
+  var knob={x:560,y:500};
+  if(G.heat){
+    if(Math.hypot(p.x-knob.x,p.y-knob.y)<34){G.heat=false;tip('Heat off. Now lay the blanket over the pan: click the pan.');return}
+    if(Math.abs(p.x-F.x)<110&&Math.abs(p.y-F.y)<120){tip('The hob is still on. Under the blanket the oil keeps heating. Knob first.');return}
+    tip('Find the hob knob, front right of the hob.');return;
+  }
+  if(Math.abs(p.x-F.x)<120&&Math.abs(p.y-F.y)<140){G.phase='anim';anim={type:'blanket',t:0};tip('');
+    setTimeout(function(){mark('ok');result({h:'Out.',p:'Heat off, blanket over the pan, and you kept your hands behind it. Leave it on for 30 minutes: the oil can reignite if air gets in while it’s hot.',rule:'Burning fat: heat off, fire blanket.'},'ok')},1700)}
+}
+
+/* ---------------- results ---------------- */
+function result(r,kind){
+  G.phase='result';$('#scene').classList.remove('spray');mouse.down=false;$('#meter').className='meter';
+  var last=G.i===SCENES.length-1,again=kind==='bad';
+  $('#res').innerHTML='<h2>'+r.h+'</h2><p>'+r.p+'</p>'+(r.rule?'<div class="rule">'+r.rule+'</div>':'')+
+    '<button class="go" id="resBtn" type="button">'+(again?'Try this fire again':last?'See your results':'Next fire')+'</button>';
+  $('#res').className='res show '+kind;
+  $('#resBtn').focus();
+  $('#resBtn').addEventListener('click',function(){
+    if(again){loadScene(1.15);return}
+    if(last){finish();return}
+    G.i++;loadScene();
+  });
+}
+function extinguished(){
+  F.out=true;mouse.down=false;mark('ok');
+  var used=Math.round(100-G.charge);
+  result({h:'Out.',p:(G.note?G.note+' ':'')+'You used '+used+'% of the extinguisher. Aiming at the base and sweeping is what made it quick.',rule:G.i===0?'Paper, wood and fabric: water or foam.':'Anything electrical: CO₂.'},'ok');
+}
+function finish(){
+  var ok=G.score.filter(function(x){return x==='ok'}).length,first=ok===SCENES.length;
+  $('#endH').textContent=first?'Four fires, four right calls.':'All four handled, '+ok+' on the first try.';
+  $('#endP').textContent=first?'You chose correctly every time, first try. These are the four rules you used:':'Every wrong choice had a reason you can now see. These four rules cover what you met today:';
+  $('#end').hidden=false;$('#again').focus();
+}
+
+/* ---------------- particles ---------------- */
+function emitFire(f,mult){
+  var n=Math.round(f.int*(f.hp/100)*7*(mult||1));
+  for(var i=0;i<n;i++)P.push({x:f.x+(Math.random()-.5)*f.w,y:f.y-Math.random()*8,vx:(Math.random()-.5)*.9,vy:-(1.6+Math.random()*2.6)*(0.7+f.int*.45),life:0,max:36+Math.random()*30*(0.6+f.int*.5),r:8+Math.random()*12*(0.6+f.int*.4)});
+}
+function emitSpray(kind,tx,ty){
+  var nx=W-90,ny=H-210;
+  for(var i=0;i<(kind==='gas'||kind==='powder'?5:4);i++){
+    var dx=tx-nx,dy=ty-ny,d=Math.hypot(dx,dy)||1,sp=kind==='water'?16:kind==='foam'?12:10,spread=kind==='water'?.06:.16;
+    var a=Math.atan2(dy,dx)+(Math.random()-.5)*spread*2;
+    SP.push({k:kind,x:nx,y:ny,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:0,max:d/sp+(kind==='gas'||kind==='powder'?18:4),r:kind==='water'?3:kind==='foam'?6:10});
+  }
+}
+
+/* ---------------- drawing the rooms ---------------- */
+function rect(c,x,y,w,h){cx.fillStyle=c;cx.fillRect(x,y,w,h)}
+function rr(c,x,y,w,h,r){cx.fillStyle=c;cx.beginPath();cx.roundRect(x,y,w,h,r);cx.fill()}
+function drawOffice(){
+  rect('#E9E2D6',0,0,W,520);rect('#CFC4B2',0,500,W,20);rect('#9C8F7B',0,520,W,200);
+  rr('#BFD9E8',90,90,240,200,6);rect('#E9E2D6',205,90,10,200);rect('#E9E2D6',90,185,240,10);
+  rr('#7C6A55',560,380,300,22,4);rect('#5E4F3E',580,402,14,140);rect('#5E4F3E',826,402,14,140);
+  rr('#2B2B33',640,270,150,100,8);rect('#56C2F0',652,282,126,76);rect('#2B2B33',705,370,20,12);
+  rr('#3A6E5A',60,470,60,70,8);cx.fillStyle='#4F9A6E';cx.beginPath();cx.arc(90,440,44,0,7);cx.fill();
+  rr('#6B6F7A',F.x-44,F.y,88,76,8);rr('#585C66',F.x-50,F.y-6,100,12,5);cx.fillStyle='rgba(0,0,0,.18)';cx.beginPath();cx.ellipse(F.x,F.y+80,62,8,0,0,7);cx.fill();
+  drawWall(780,150,'ext');
+}
+function drawDesk(){
+  rect('#DDE3EA',0,0,W,540);rect('#B9C1CC',0,520,W,20);rect('#7D8696',0,540,W,180);
+  rr('#C2A27E',140,300,620,24,4);rect('#A0815F',160,324,18,280);rect('#A0815F',722,324,18,280);
+  rr('#22252C',330,170,240,140,10);rect('#3D8FD6',342,182,216,112);rect('#22252C',440,300,20,14);
+  cx.strokeStyle='#222';cx.lineWidth=5;cx.beginPath();cx.moveTo(450,316);cx.bezierCurveTo(440,420,400,520,F.x-40,F.y-6);cx.stroke();
+  cx.beginPath();cx.moveTo(600,320);cx.bezierCurveTo(610,460,520,560,F.x+40,F.y-6);cx.stroke();
+  rr('#F4F4F4',F.x-62,F.y-14,124,22,6);for(var i=0;i<5;i++)rr('#333',F.x-52+i*22,F.y-9,12,10,2);
+  rr('#E8E8E8',820,440,40,60,4);rr('#C9C9C9',830,454,20,14,2);
+  drawWall(70,140,'ext');
+}
+function drawKitchen(){
+  for(var y=0;y<470;y+=40)for(var x=0;x<W;x+=40){cx.fillStyle=((x+y)/40)%2?'#F1ECE2':'#E8E1D3';cx.fillRect(x,y,40,40)}
+  rr('#B7BCC4',360,40,200,90,10);rect('#9AA0A9',380,130,160,22);
+  rr('#5D6470',0,468,W,26,0);rect('#8C7A64',0,494,W,226);rect('#7A6955',0,494,W,6);
+  rr('#2E3138',330,456,260,16,4);
+  cx.fillStyle=G&&!G.heat?'#7E8590':'#FF5A2A';cx.beginPath();cx.ellipse(F.x,458,72,8,0,0,7);cx.fill();
+  rr('#3B3F47',F.x-80,F.y,160,24,6);rr('#55575E',F.x+80,F.y+6,90,10,4);
+  cx.fillStyle='#222';cx.beginPath();cx.arc(560,500,16,0,7);cx.fill();cx.fillStyle=G&&!G.heat?'#8D96A3':'#FF5A2A';cx.fillRect(555,486,10,16);
+  if(G&&G.phase==='blanket'&&G.heat){cx.strokeStyle='rgba(255,213,74,'+(.5+.5*Math.sin(Date.now()/180))+')';cx.lineWidth=4;cx.beginPath();cx.arc(560,500,26,0,7);cx.stroke()}
+  drawWall(760,150,'blanket');
+}
+function drawStore(){
+  rect('#3B3530',0,0,W,560);rect('#2C2723',0,560,W,160);
+  for(var s=0;s<3;s++){rect('#5A4E42',60+s*290,120,14,440);rect('#5A4E42',250+s*290,120,14,440);for(var k=0;k<4;k++)rect('#6C5E50',60+s*290,180+k*110,204,10)}
+  for(var b=0;b<9;b++)rr('#A07A4E',80+(b%3)*290+((b*37)%60),120+Math.floor(b/3)*110,90,60,4);
+  rect('#1D1915',0,0,40,H);rect('#1D1915',W-40,0,40,H);
+}
+function drawWall(x,y,k){rr('rgba(0,0,0,.12)',x-6,y-6,72,112,8);if(k==='ext'){rr('#D7263D',x+14,y+10,32,84,12)}else{rr('#D7263D',x+6,y+20,48,60,6)}}
+
+/* ---------------- main loop ---------------- */
+var last=performance.now();
+function loop(t){
+  var dt=Math.min(2,(t-last)/16.7);last=t;
+  var s=SCENES[G.i];
+  cx.save();
+  if(shake>0){cx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.9;if(shake<.4)shake=0}
+  s.draw();
+  if(!F.out||extra.length){var fl=.8+Math.random()*.2,R=(160+F.int*170)*(F.out?.4:(.35+.65*F.hp/100));
+    var lg=cx.createRadialGradient(F.x,F.y-60,10,F.x,F.y-60,R);lg.addColorStop(0,'rgba(255,150,50,'+(.42*fl)+')');lg.addColorStop(1,'rgba(255,120,40,0)');
+    cx.fillStyle=lg;cx.fillRect(0,0,W,H);}
+  var vg=cx.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.95);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(10,6,4,.45)');cx.fillStyle=vg;cx.fillRect(0,0,W,H);
+
+  // spraying
+  if(G.phase==='spray'&&mouse.down&&G.charge>0){
+    emitSpray(G.opt.spray,mouse.x,mouse.y);
+    G.charge=Math.max(0,G.charge-.19*dt);
+    var base=Math.abs(mouse.y-F.y)<48&&Math.abs(mouse.x-F.x)<F.w/2+26;
+    var high=!base&&Math.abs(mouse.x-F.x)<F.w/2+40&&mouse.y<F.y-48&&mouse.y>F.y-260;
+    var sweep=Math.abs(mouse.x-mouse.px)>1.6;
+    if(base){F.hp-=(.32+(sweep?.42:0))*dt;highHint=0;stillHint=sweep?0:stillHint+dt}
+    else if(high){F.hp-=.03*dt;highHint+=dt}
+    if(highHint>50)tip('Aim lower: at the base of the fire, not the flames.');
+    else if(stillHint>70)tip('Sweep side to side across the base.');
+    else if(base)tip('');
+    if(F.hp<=0){F.hp=0;extinguished()}
+    else if(G.charge<=0){tip('');G.phase='anim';mark('meh');setTimeout(function(){result({h:'Empty.',p:'The extinguisher ran out before the fire did. Aim at the base, where the fuel is, and sweep: spraying the flames themselves does almost nothing.',rule:'Pull, aim at the base, squeeze, sweep.'},'bad')},300)}
+  } else if(G.phase==='spray'&&!F.out){F.hp=Math.min(100,F.hp+.04*dt)}
+  mouse.px=mouse.x;
+
+  // consequence animations
+  if(anim){anim.t+=dt;runAnim(anim,dt)}
+
+  if(!F.out)emitFire(F);
+  extra.forEach(function(e){emitFire(e,.6)});
+  drawParticles(dt);
+
+  // smoke layer
+  if(smoke>0){var g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'rgba(30,26,24,'+Math.min(.95,smoke+.2)+')');g.addColorStop(Math.min(.98,.2+smoke*.8),'rgba(40,35,32,'+smoke*.8+')');g.addColorStop(1,'rgba(40,35,32,0)');cx.fillStyle=g;cx.fillRect(0,0,W,H)}
+  cx.restore();
+  if(flash>0){cx.fillStyle='rgba('+flashCol+','+flash+')';cx.fillRect(0,0,W,H);flash*=.9;if(flash<.02)flash=0}
+
+  // meters
+  if(G.phase==='spray'){$('#fireBar').style.width=F.hp+'%';$('#fireTxt').textContent=Math.ceil(F.hp)+'%';$('#chgBar').style.width=G.charge+'%';$('#chgTxt').textContent=Math.ceil(G.charge)+'%'}
+  requestAnimationFrame(loop);
+}
+
+function runAnim(a,dt){
+  var nx=W-90,ny=H-210;
+  if(a.type==='reignite'){
+    if(a.t<60){emitSpray('gas',F.x+(Math.sin(a.t/6)*40),F.y-10);F.hp=Math.max(6,100-a.t*1.6)}
+    else{F.hp=Math.min(100,F.hp+1.2*dt);F.int=Math.min(1.1,F.int+.004*dt)}
+  }
+  if(a.type==='zap'){
+    if(a.t<40)emitSpray(a.spray,F.x,F.y-6);
+    if(a.t>30&&a.t<110){
+      if(!a.hit){a.hit=1;flash=.85;flashCol='190,225,255';shake=18}
+      cx.strokeStyle='rgba(160,215,255,'+(0.6+Math.random()*.4)+')';cx.lineWidth=3+Math.random()*3;cx.shadowColor='#8fd3ff';cx.shadowBlur=20;
+      for(var k=0;k<3;k++){cx.beginPath();cx.moveTo(F.x,F.y);var x=F.x,y=F.y;for(var j=1;j<=10;j++){x=F.x+(nx-F.x)*j/10+(Math.random()-.5)*40;y=F.y+(ny+120-F.y)*j/10+(Math.random()-.5)*40;cx.lineTo(x,y)}cx.stroke()}
+      cx.shadowBlur=0;
+    }
+  }
+  if(a.type==='fireball'){
+    if(a.t<24)emitSpray(a.spray,F.x,F.y-10);
+    if(a.t>=24){
+      if(!a.hit){a.hit=1;shake=26;flash=.7;flashCol='255,140,30'}
+      var k2=Math.min(1,(a.t-24)/34),fade=a.t>80?Math.max(0,1-(a.t-80)/50):1;
+      var R=60+k2*520,g=cx.createRadialGradient(F.x,F.y-120,10,F.x,F.y-120*(1+k2),R);
+      g.addColorStop(0,'rgba(255,245,180,'+.95*fade+')');g.addColorStop(.35,'rgba(255,160,40,'+.85*fade+')');g.addColorStop(.75,'rgba(220,50,10,'+.55*fade+')');g.addColorStop(1,'rgba(120,20,0,0)');
+      cx.fillStyle=g;cx.fillRect(0,0,W,H);F.int=1.6;
+    }
+  }
+  if(a.type==='splash'){
+    if(a.t<30)emitSpray(a.spray,F.x,F.y-8);
+    if(a.t>=30&&!a.hit){a.hit=1;shake=12;extra=[{x:F.x-190,y:F.y+10,w:70,int:.7,hp:100},{x:F.x+200,y:F.y+12,w:90,int:.8,hp:100},{x:F.x+60,y:F.y+40,w:50,int:.5,hp:100}];
+      for(var i=0;i<60;i++)P.push({x:F.x,y:F.y-10,vx:(Math.random()-.5)*16,vy:-Math.random()*9,life:0,max:40+Math.random()*30,r:5+Math.random()*6,g:1})}
+  }
+  if(a.type==='smoke'){
+    if(a.t<150)emitSpray(a.spray,F.x+Math.sin(a.t/8)*80,F.y-20);
+    smoke=Math.min(.92,smoke+.0045*dt);F.int=Math.min(3,F.int+.006*dt);F.w=Math.min(520,F.w+.6*dt);
+  }
+  if(a.type==='evac'){
+    var on=Math.floor(a.t/14)%2===0;
+    cx.fillStyle='rgba(20,16,14,'+Math.min(.92,a.t/60)+')';cx.fillRect(0,0,Math.min(W,a.t*14),H);
+    if(on){cx.fillStyle='rgba(255,40,40,.28)';cx.fillRect(0,0,W,H)}
+    rr('#D7263D',W/2-60,60,120,70,12);cx.fillStyle='#fff';cx.font='700 22px Atkinson Hyperlegible, sans-serif';cx.textAlign='center';cx.fillText('FIRE',W/2,104);cx.textAlign='left';
+  }
+  if(a.type==='blanket'){
+    var p=Math.min(1,a.t/40);
+    cx.save();cx.globalAlpha=1;
+    var bx=F.x,by=-140+(F.y-30+140)*p;
+    rr('#E7D8B5',bx-110,by-60,220,140,10);cx.strokeStyle='#C9B48A';cx.lineWidth=3;cx.strokeRect(bx-100,by-50,200,120);
+    cx.restore();
+    if(p>=1&&!F.out){F.out=true;P=P.filter(function(q){return q.y<F.y-80})}
+  }
+}
+
+function drawParticles(dt){
+  // smoke rising above the flames
+  if(!F.out&&Math.random()<.55)SM.push({x:F.x+(Math.random()-.5)*F.w*.6,y:F.y-60-F.int*60,vx:(Math.random()-.5)*.6,vy:-(0.8+Math.random()),r:14+Math.random()*12,life:0,max:120});
+  for(var m=SM.length-1;m>=0;m--){var o=SM[m];o.life+=dt;o.x+=o.vx*dt;o.y+=o.vy*dt;o.r+=.35*dt;var kq=o.life/o.max;if(kq>=1||o.y<-80){SM.splice(m,1);continue}
+    cx.fillStyle='rgba(60,54,52,'+(.22*(1-kq))+')';cx.beginPath();cx.arc(o.x,o.y,o.r,0,7);cx.fill();}
+  cx.globalCompositeOperation='lighter';
+  for(var i=P.length-1;i>=0;i--){var q=P[i];q.life+=dt;q.x+=q.vx*dt;q.y+=q.vy*dt;if(q.g){q.vy+=.35*dt;if(q.y>F.y+60){q.vy*=-.2;q.vx*=.5}}
+    var k=q.life/q.max;if(k>=1){P.splice(i,1);continue}
+    var r=q.r*(1-k*.6),col=k<.18?'255,214,110':k<.45?'255,128,24':k<.75?'226,58,12':'150,24,8';
+    var g=cx.createRadialGradient(q.x,q.y,0,q.x,q.y,r);g.addColorStop(0,'rgba('+col+','+(0.62*(1-k*.7))+')');g.addColorStop(1,'rgba('+col+',0)');
+    cx.fillStyle=g;cx.beginPath();cx.arc(q.x,q.y,r,0,7);cx.fill();}
+  cx.globalCompositeOperation='source-over';
+  // smoke wisps
+  for(var j=SP.length-1;j>=0;j--){var s=SP[j];s.life+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;
+    if(s.k==='gas'||s.k==='powder'){s.vx*=.94;s.vy*=.94;s.r+=.9*dt}
+    var kk=s.life/s.max;if(kk>=1){SP.splice(j,1);continue}
+    var col=s.k==='water'?'120,190,255':s.k==='foam'?'255,255,245':s.k==='gas'?'235,240,245':'225,232,250';
+    var al=s.k==='water'?.85:s.k==='foam'?.9:.32*(1-kk);
+    cx.fillStyle='rgba('+col+','+al+')';cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fill();}
+}
+
+/* ---------------- wiring ---------------- */
+$('#start').addEventListener('click',function(){$('#intro').hidden=true});
+$('#restart').addEventListener('click',function(){$('#end').hidden=true;newGame()});
+$('#again').addEventListener('click',function(){$('#end').hidden=true;newGame()});
+newGame();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

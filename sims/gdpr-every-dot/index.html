@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Every dot is a person: a GDPR simulation</title>
+<meta name="viewport" content="width=1280">
+<link rel="stylesheet" href="../../vendor/fonts/fonts.css">
+<style>
+:root{--paper:#F6F2EA;--ink:#13202F;--mut:#5F6B78;--line:#E2DACB;--teal:#14B8A6;--teal-d:#0E7C70;--coral:#FF5A4E;--amber:#F5A524;--night:#0E1A2A;--navy:#14263B}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:1280px;height:720px;overflow:hidden;background:var(--night);font-family:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;color:var(--ink)}
+#stage{position:absolute;left:0;top:0;width:1280px;height:720px;overflow:hidden;transform-origin:0 0;background:var(--paper)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+h1,h2,h3{font-family:"Baloo 2","Atkinson Hyperlegible",sans-serif;margin:0;line-height:1.1}
+
+.top{height:56px;display:flex;align-items:center;gap:16px;padding:0 20px;background:var(--night);color:#E8EEF5}
+.top h1{font-size:22px;color:#fff}
+.top .sub{color:#8FA3B8;font-size:14px}
+.ctrs{margin-left:auto;display:flex;gap:10px}
+.ctr{background:var(--navy);border-radius:10px;padding:6px 12px;font-size:13px;color:#8FA3B8;display:flex;align-items:baseline;gap:7px}
+.ctr b{font-size:18px;color:#fff;font-variant-numeric:tabular-nums}
+.ctr.hot b{color:#FF8A80}.ctr.ok b{color:#5EEAD4}
+.restart{border:1px solid #2A3F57;background:transparent;color:#8FA3B8;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer}
+
+.main{display:grid;grid-template-columns:540px 740px;height:664px}
+.left{padding:20px 26px 18px;display:flex;flex-direction:column;overflow:hidden}
+.prog{display:flex;gap:6px;align-items:center;font-size:13px;font-weight:700;color:var(--mut);margin-bottom:12px}
+.prog i{width:28px;height:7px;border-radius:4px;background:var(--line);display:block}
+.prog i.cur{background:var(--ink)}.prog i.good{background:var(--teal)}.prog i.bad{background:var(--coral)}.prog i.meh{background:var(--amber)}
+.left h2{font-size:27px;margin-bottom:6px}
+.sit{font-size:15.5px;line-height:1.5;color:#3C4754;margin:0 0 12px}
+
+/* artefacts */
+.art{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13.5px;margin-bottom:14px;box-shadow:0 2px 0 var(--line)}
+.art .row{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #F0EBE1;align-items:baseline}
+.art .row:last-child{border-bottom:0}
+.art .k{color:var(--mut);width:58px;flex:none}
+.art .v{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill{display:inline-block;background:#EEF4FB;border-radius:6px;padding:1px 6px;margin-right:4px;font-size:12.5px}
+.pill.more{background:#FFE7E3;color:#B4261B;font-weight:700}
+.file{display:flex;gap:12px;align-items:center}
+.file i{width:40px;height:48px;border-radius:6px;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700;font-size:11px;flex:none}
+.file b{display:block;font-size:14.5px}
+.file span{color:var(--mut);font-size:13px}
+.note{margin-top:8px;background:#FFF5CF;border-radius:8px;padding:6px 10px;font-size:13px;color:#6A5300;transform:rotate(-.6deg)}
+.letter{font-size:14px;line-height:1.5;color:#2B3542}
+.letter p{margin:0 0 6px}
+
+/* choices */
+.choices{display:grid;gap:9px}
+.ch{text-align:left;background:#fff;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15.5px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;gap:12px;align-items:center;transition:border-color .15s,transform .08s}
+.ch:hover:not(:disabled){border-color:var(--ink)}
+.ch:active:not(:disabled){transform:translateY(2px)}
+.ch b{width:26px;height:26px;border-radius:8px;background:var(--paper);display:grid;place-items:center;flex:none;font-size:13px}
+.ch:disabled{cursor:default;opacity:.45}
+.ch.pick{opacity:1}
+.ch.pick.bad{border-color:var(--coral);background:#FFF0EE}.ch.pick.good{border-color:var(--teal);background:#E8FAF7}.ch.pick.meh{border-color:var(--amber);background:#FFF7E6}
+
+.fb{display:none;margin-top:12px;border-radius:14px;padding:13px 16px;border-left:6px solid}
+.fb.show{display:block;animation:pop .35s cubic-bezier(.3,1.4,.5,1)}
+.fb.good{background:#E6F8F5;border-color:var(--teal)}.fb.bad{background:#FFECE9;border-color:var(--coral)}.fb.meh{background:#FFF4DD;border-color:var(--amber)}
+.fb h3{font-size:19px;margin-bottom:4px}
+.fb p{margin:0 0 6px;font-size:14.5px;line-height:1.45}
+.fb .rule{font-weight:700;font-size:13.5px;color:#334}
+.next{margin-top:8px;background:var(--ink);color:#fff;border:0;border-radius:11px;padding:10px 18px;font-size:15px;font-weight:700;cursor:pointer}
+@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+.right{position:relative;background:var(--night)}
+canvas{display:block;width:740px;height:664px}
+
+.ov{position:absolute;inset:0;background:rgba(9,16,27,.78);display:grid;place-items:center;z-index:40}
+.ov[hidden]{display:none}
+.card{background:var(--paper);border-radius:24px;padding:32px 38px;width:660px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.card h1{font-size:40px;margin-bottom:10px}
+.card p{font-size:16.5px;line-height:1.55;color:#3A4552;margin:0 0 14px}
+.go{background:var(--ink);color:#fff;border:0;border-radius:12px;padding:13px 22px;font-size:17px;font-weight:700;cursor:pointer}
+.sc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px}
+.sc div{background:#fff;border-radius:12px;padding:10px 14px}
+.sc b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.sc span{font-size:13px;color:var(--mut)}
+.rules{list-style:none;padding:0;margin:0 0 20px;display:grid;gap:6px;font-size:14.5px}
+.rules li{background:#fff;border-radius:10px;padding:7px 12px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <header class="top">
+    <h1>Every dot is a person</h1><span class="sub">Personal data at work</span>
+    <div class="ctrs">
+      <div class="ctr" id="cPeople"><b>0</b>people affected</div>
+      <div class="ctr" id="cComp"><b>0</b>complaints</div>
+      <div class="ctr ok" id="cRight"><b>0/6</b>right calls</div>
+    </div>
+    <button class="restart" id="restart" type="button">Restart</button>
+  </header>
+  <div class="main">
+    <section class="left" aria-live="polite">
+      <div class="prog" id="prog"></div>
+      <h2 id="title"></h2>
+      <p class="sit" id="sit"></p>
+      <div class="art" id="art"></div>
+      <div class="choices" id="choices"></div>
+      <div class="fb" id="fb"></div>
+    </section>
+    <section class="right"><canvas id="cv" width="740" height="664" role="img" aria-label="The people whose data is involved, one dot per person"></canvas></section>
+  </div>
+
+  <div class="ov" id="intro"><div class="card">
+    <h1>Every dot is a person</h1>
+    <p>Six ordinary moments from a working week. Each one involves personal data: customers, colleagues, job applicants.</p>
+    <p>On the right, every person involved is a dot inside your company. Make the call, and watch where their data ends up.</p>
+    <button class="go" id="start" type="button">Start the week</button>
+  </div></div>
+
+  <div class="ov" id="end" hidden><div class="card">
+    <h1 id="endH"></h1>
+    <div class="sc" id="endSc"></div>
+    <ul class="rules">
+      <li>Share personal data only with people who need it. Bulk email goes through the mailing tool.</li>
+      <li>Keep it in company systems, never personal email or USB sticks.</li>
+      <li>Access requests are free and due within one month. Check who's asking.</li>
+      <li>Tell your data protection lead about a breach straight away. The clock is 72 hours.</li>
+      <li>Marketing email needs consent. An unsubscribe link isn't consent.</li>
+      <li>Don't keep data longer than you need it. Data you delete can't leak.</li>
+    </ul>
+    <button class="go" id="again" type="button">Play again</button>
+  </div></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+var cv=$('#cv'),cx=cv.getContext('2d'),W=740,H=664;
+var C={coral:'#FF5A4E',teal:'#14B8A6',amber:'#F5A524',dot:'#7FA3C7',line:'#2A3F57',txt:'#C9D6E4',mut:'#7F93A8'};
+
+function fit(){var s=Math.min(innerWidth/1280,innerHeight/720),st=$('#stage');
+  st.style.transform='scale('+s+')';st.style.left=Math.max(0,(innerWidth-1280*s)/2)+'px';st.style.top=Math.max(0,(innerHeight-720*s)/2)+'px';
+  document.body.style.width=innerWidth+'px';document.body.style.height=innerHeight+'px';}
+addEventListener('resize',fit);fit();
+
+/* ------------------------- the six situations ------------------------- */
+var CHIPS={
+  email:['anna.k@web.de','j.meyer@gmx.net','tom.b@outlook.com','lea.s@gmail.com','m.rossi@libero.it','ben88@yahoo.de','k.nowak@wp.pl','sara.l@icloud.com'],
+  cust:['Anna Kraus, Berlin','+49 151 2387 …','Order #48812','IBAN DE89 3704 …','Born 14.03.1987','Leipziger Str. 12','Order history (34)','j.meyer@gmx.net'],
+  sal:['Salary €52,400','Salary €71,000','Bonus €6,000','Salary €38,900','Sick days: 14','Tax class III'],
+  lead:['UNSUBSCRIBE','Who gave you my email?','Reported as spam','Complaint'],
+  cv:['CV_Kowalski.pdf','Born 1991','Reference: …','Salary expectation €48k','Home address','Photo.jpg']
+};
+var SC=[
+ {title:'The spring newsletter',n:240,label:'240 newsletter subscribers',chips:'email',
+  sit:'Marketing is off sick, so you’re sending the spring newsletter. You’ve pasted the subscriber list into a normal email.',
+  art:'<div class="row"><span class="k">To</span><span class="v"><span class="pill">anna.k@web.de</span><span class="pill">j.meyer@gmx.net</span><span class="pill">tom.b@outlook.com</span><span class="pill more">+237 more</span></span></div><div class="row"><span class="k">Subject</span><span class="v">Spring newsletter: 20% off this week</span></div>',
+  ch:[
+   {t:'Send it. It’s only a newsletter.',r:'bad',anim:'scatter',dest:'239 other inboxes',aff:240,comp:3,h:'Everyone can see everyone.',p:'All 240 customers now have each other’s email addresses. That’s a personal data breach, and three customers have already written in to complain.',rule:'Bulk email goes through the mailing tool, never the To field.'},
+   {t:'Move everyone to BCC, then send.',r:'meh',anim:'wobble',h:'Nobody sees the list. This time.',p:'BCC hides the addresses, but it’s one slip away from a breach: paste into the wrong field, or someone hits Reply all from an old thread.',rule:'Bulk email goes through the mailing tool.'},
+   {t:'Send it through the newsletter tool.',r:'good',anim:'lock',h:'Right call.',p:'Each customer gets their own copy, with an unsubscribe link, and nobody sees anyone else’s address.',rule:'Share personal data only with people who need it.'}]},
+ {title:'Finishing it at home',n:1800,label:'1,800 customer records',chips:'cust',
+  sit:'You need to clean up the customer export before tomorrow’s 9:00 meeting. Your work laptop is staying at the office tonight.',
+  art:'<div class="file"><i style="background:#1D7044">XLSX</i><div><b>customers_export.xlsx</b><span>1,800 rows: names, addresses, phone numbers, order history, bank details</span></div></div><div class="note">Meeting tomorrow 9:00. Need this cleaned up!</div>',
+  ch:[
+   {t:'Email it to my personal Gmail.',r:'bad',anim:'leak',dest:'Personal Gmail',dx:640,dy:150,aff:1800,comp:0,h:'1,800 people just left the building.',p:'Their data is now in an account your company can’t see, secure or delete from. If that account is ever hacked, it’s your company’s breach.',rule:'Keep personal data in company systems.'},
+   {t:'Copy it to a USB stick.',r:'bad',anim:'leak',dest:'USB stick, lost on the train',dx:560,dy:620,aff:1800,comp:0,h:'Lost on the train.',p:'The stick fell out of your bag on the way home. It wasn’t encrypted. Anyone who picks it up has 1,800 people’s bank details.',rule:'Keep personal data in company systems.'},
+   {t:'Open it at home through the company cloud.',r:'good',anim:'lock',h:'Right call.',p:'You worked on it from home, but the file never left the company’s systems. If your laptop is lost, nothing is on it.',rule:'Keep personal data in company systems.'}]},
+ {title:'“What do you know about me?”',n:1,label:'Maria Rossi, customer since 2019',chips:'cust',
+  sit:'This email arrived in the support inbox three days ago. Nobody has answered it.',
+  art:'<div class="letter"><p><b>From:</b> m.rossi@libero.it</p><p>Hello, under the GDPR I would like a copy of all the personal data you hold about me, please. Thank you, Maria Rossi</p></div>',
+  ch:[
+   {t:'Leave it for now. Support is swamped.',r:'bad',anim:'clock',clock:'month',aff:1,comp:1,h:'A month passed. She complained.',p:'Access requests have to be answered within one month. Maria complained to the data protection authority, which now wants to know why you ignored her.',rule:'Access requests are due within one month.'},
+   {t:'Reply that there’s a €25 admin fee.',r:'bad',anim:'stamp',aff:1,comp:1,h:'You can’t charge for this.',p:'A first access request is free. Asking for a fee is itself a breach of her rights, and her complaint is now with the authority.',rule:'Access requests are free.'},
+   {t:'Check it’s really her, log it, reply within a month.',r:'good',anim:'gather',h:'Right call.',p:'You confirmed it was her email address on file, logged the request with your data protection lead, and sent her a copy of her data in two weeks. Free, on time, and to the right person.',rule:'Access requests: free, within one month, check who’s asking.'}]},
+ {title:'The wrong Alex',n:60,label:'60 colleagues whose salaries were in the file',chips:'sal',exposed:true,
+  sit:'You meant to send the salary spreadsheet to Alex Wu in HR. Autocomplete picked Alex Wood, at a partner company. It went out ten minutes ago.',
+  art:'<div class="row"><span class="k">Sent to</span><span class="v"><span class="pill more">alex.wood@partnerfirm.com</span></span></div><div class="row"><span class="k">Meant</span><span class="v"><span class="pill">alex.wu@lumenco.com</span></span></div><div class="row"><span class="k">Attached</span><span class="v">salaries_2025.xlsx (60 people)</span></div>',
+  ch:[
+   {t:'Ask Alex to delete it, and keep quiet.',r:'bad',anim:'clock',clock:'72',aff:60,comp:2,h:'It came out anyway.',p:'Three weeks later it surfaced in an audit. Your company missed the 72-hour deadline for telling the authority, and the 60 colleagues found out from someone else.',rule:'Tell your data protection lead straight away.'},
+   {t:'Wait until Monday and see if anything happens.',r:'bad',anim:'clock',clock:'72',aff:60,comp:2,h:'The 72 hours ran out over the weekend.',p:'The clock started when you noticed, not on Monday. By the time you mentioned it, the deadline for reporting to the authority had passed.',rule:'The breach clock is 72 hours, weekends included.'},
+   {t:'Tell the data protection lead right now.',r:'good',anim:'contain',h:'Right call.',p:'Within an hour the partner confirmed deletion in writing, the lead decided whether the authority needed to know, and the 60 colleagues heard it from you first.',rule:'Tell your data protection lead straight away.'}]},
+ {title:'The bought list',n:412,outside:5000,label:'412 customers who opted in, and 5,000 strangers',chips:'lead',
+  sit:'Sales bought a list of 5,000 email addresses for €900 and wants the new product launch to go out today.',
+  art:'<div class="file"><i style="background:#6C5CE7">CSV</i><div><b>leads_5000.csv</b><span>Bought from DataLeadz. Names and email addresses, no record of consent.</span></div></div>',
+  ch:[
+   {t:'Send the launch email to all 5,000.',r:'bad',anim:'spam',aff:5000,comp:340,h:'340 complaints by lunchtime.',p:'None of these people agreed to hear from you. Marketing email needs consent, and buying a list doesn’t buy their consent.',rule:'Marketing email needs consent.'},
+   {t:'Add an unsubscribe link, then send.',r:'bad',anim:'spam',aff:5000,comp:280,h:'An unsubscribe link isn’t consent.',p:'It lets people leave after the fact. They never agreed to join, and 280 of them complained.',rule:'Marketing email needs consent before you send it.'},
+   {t:'Only email the 412 customers who opted in.',r:'good',anim:'optin',h:'Right call.',p:'Fewer emails, but every one went to someone who asked for it. Your open rate was four times the industry average.',rule:'Marketing email needs consent.'}]},
+ {title:'Old applications',n:300,label:'300 applicants from 2019',chips:'cv',
+  sit:'Tidying the HR drive, you find a folder of CVs from people who applied for jobs in 2019 and weren’t hired.',
+  art:'<div class="file"><i style="background:#B45309">DIR</i><div><b>HR / Applicants / 2019</b><span>300 CVs: addresses, birth dates, photos, references</span></div></div><div class="note">Retention policy: applicant data is kept for 6 months.</div>',
+  ch:[
+   {t:'Keep them. We might call someone back.',r:'bad',anim:'leak',dest:'Ransomware on the old HR drive',dx:640,dy:560,aff:300,comp:4,h:'Data you keep can leak.',p:'A year later ransomware hit the old HR drive. 300 people who applied once, years ago, got a letter saying their data was stolen.',rule:'Don’t keep data longer than you need it.'},
+   {t:'Move them to the shared drive.',r:'bad',anim:'spread',aff:300,comp:1,h:'Now 480 colleagues can read them.',p:'The shared drive is open to everyone at the company. Anyone can now see these people’s addresses, birth dates and references.',rule:'Share personal data only with people who need it.'},
+   {t:'Delete them, as the retention policy says.',r:'good',anim:'fade',h:'Right call.',p:'Six months was the agreed limit. Data you don’t keep can’t be stolen, lost or misused.',rule:'Don’t keep data longer than you need it.'}]}
+];
+
+/* ------------------------- state ------------------------- */
+var G,D=[],OUT=[],CH=[],A=null,lockT=0,clock=null,labelDest=null,stamp=null;
+var BOX={x:40,y:96,w:660,h:520};
+
+function newGame(){G={i:0,people:0,comp:0,right:0,res:[]};$('#end').hidden=true;load()}
+function load(){
+  var s=SC[G.i];
+  $('#title').textContent=s.title;$('#sit').textContent=s.sit;$('#art').innerHTML=s.art;
+  $('#choices').innerHTML=s.ch.map(function(c,k){return '<button class="ch" type="button" data-k="'+k+'"><b>'+'ABC'[k]+'</b>'+c.t+'</button>'}).join('');
+  var fb=$('#fb');fb.className='fb';fb.innerHTML='';
+  prog();
+  A=null;clock=null;labelDest=null;stamp=null;lockT=0;CH=[];
+  BOX=s.outside?{x:30,y:96,w:300,h:520}:{x:40,y:96,w:660,h:520};
+  D=layout(s.n,s.exposed?{x:BOX.x,y:BOX.y,w:BOX.w-180,h:BOX.h}:BOX,s.exposed?'exp':'home');
+  OUT=s.outside?layout(s.outside,{x:360,y:96,w:350,h:520},'stranger'):[];
+}
+function layout(n,b,state){
+  var pad=26,w=b.w-pad*2,h=b.h-pad*2-20,cell=Math.sqrt(w*h/n);
+  if(n===1)cell=200;
+  var cols=Math.max(1,Math.floor(w/cell)),rows=Math.ceil(n/cols),cw=w/cols,chh=Math.min(cell*1.0,h/rows);
+  var ox=b.x+pad+(w-cols*cw)/2,oy=b.y+pad+24+(h-rows*chh)/2,arr=[];
+  for(var i=0;i<n;i++){var c=i%cols,r=Math.floor(i/cols),x=ox+c*cw+cw/2,y=oy+r*chh+chh/2;
+    arr.push({hx:x,hy:y,x:x,y:y,s:Math.min(cw,chh),st:state,t:0,d:Math.random()*.6,tx:0,ty:0,jx:(Math.random()-.5),jy:(Math.random()-.5),a:1});}
+  return arr;
+}
+function prog(){
+  $('#prog').innerHTML=SC.map(function(s,i){return '<i class="'+(i===G.i?'cur ':'')+(G.res[i]||'')+'"></i>'}).join('')+'<span>Situation '+(G.i+1)+' of '+SC.length+'</span>';
+  $('#cRight b').textContent=G.right+'/'+SC.length;
+}
+
+$('#choices').addEventListener('click',function(e){
+  var b=e.target.closest('.ch');if(!b||b.disabled)return;
+  var s=SC[G.i],c=s.ch[+b.getAttribute('data-k')];
+  document.querySelectorAll('.ch').forEach(function(x){x.disabled=true});
+  b.classList.add('pick',c.r);
+  G.res[G.i]=c.r;if(c.r==='good')G.right++;
+  prog();
+  play(c,s);
+  var delay={scatter:1700,leak:1900,clock:2600,stamp:900,spam:2200,spread:1500}[c.anim]||700;
+  setTimeout(function(){
+    if(c.aff)bump('people',c.aff);if(c.comp)bump('comp',c.comp);
+    var fb=$('#fb');fb.className='fb show '+c.r;
+    var last=G.i===SC.length-1;
+    fb.innerHTML='<h3>'+c.h+'</h3><p>'+c.p+'</p><p class="rule">'+c.rule+'</p><button class="next" id="next" type="button">'+(last?'See your week':'Next situation')+'</button>';
+    $('#next').focus();
+    $('#next').addEventListener('click',function(){if(last)finish();else{G.i++;load()}});
+  },delay);
+});
+
+function bump(k,n){
+  var from=G[k];G[k]+=n;var el=k==='people'?$('#cPeople'):$('#cComp');el.classList.add('hot');
+  var b=el.querySelector('b'),t0=performance.now();
+  (function st(t){var p=Math.min(1,(t-t0)/900);b.textContent=Math.round(from+(G[k]-from)*(1-Math.pow(1-p,3))).toLocaleString('en');if(p<1)requestAnimationFrame(st)})(t0);
+}
+
+/* ------------------------- consequence animations ------------------------- */
+function play(c,s){
+  A={type:c.anim,t:0,c:c,s:s};
+  if(c.anim==='leak'){labelDest={x:c.dx,y:c.dy,t:c.dest};D.forEach(function(d){d.st='fly';d.t=-d.d;d.tx=c.dx+d.jx*120;d.ty=c.dy+d.jy*70})}
+  if(c.anim==='scatter'){labelDest={x:W/2,y:44,t:c.dest};D.forEach(function(d){d.st='fly';d.t=-d.d;var a=Math.random()*Math.PI*2;d.tx=W/2+Math.cos(a)*(W/2+30);d.ty=H/2+Math.sin(a)*(H/2+30)})}
+  if(c.anim==='spread'){labelDest={x:W/2,y:44,t:'Shared drive: everyone at the company'};D.forEach(function(d){d.st='fly';d.t=-d.d;d.tx=BOX.x+20+Math.random()*(BOX.w-40);d.ty=BOX.y+40+Math.random()*(BOX.h-60)})}
+  if(c.anim==='clock'){clock={kind:c.clock,p:0,end:1.25,col:C.coral}}
+  if(c.anim==='contain'){clock={kind:'72',p:0,end:1/72,col:C.teal}}
+  if(c.anim==='stamp'){stamp={t:'COMPLAINT FILED',a:0}}
+  if(c.anim==='spam'){OUT.forEach(function(d){d.st='angry';d.t=-d.d*1.6})}
+  if(c.anim==='optin'){D.forEach(function(d){d.st='mail';d.t=-d.d})}
+  if(c.anim==='fade'){D.forEach(function(d){d.st='fade';d.t=-d.d})}
+  if(c.anim==='lock'||c.anim==='gather'||c.anim==='contain'){lockT=0.001}
+  if(c.anim==='wobble'){D.forEach(function(d){d.st='wob';d.t=-d.d*.3})}
+}
+
+function spawnChip(x,y){
+  var list=CHIPS[SC[G.i].chips];if(CH.length>18)return;
+  CH.push({x:x,y:y,t:list[Math.floor(Math.random()*list.length)],vy:-(0.5+Math.random()*.6),vx:(Math.random()-.5)*.6,a:1,life:0});
+}
+
+/* ------------------------- drawing ------------------------- */
+function rr(x,y,w,h,r){cx.beginPath();cx.roundRect(x,y,w,h,r)}
+function lerp(a,b,t){return a+(b-a)*t}
+function mix(c1,c2,t){var a=parseInt(c1.slice(1),16),b=parseInt(c2.slice(1),16);
+  var r=Math.round(lerp(a>>16,b>>16,t)),g=Math.round(lerp(a>>8&255,b>>8&255,t)),bl=Math.round(lerp(a&255,b&255,t));return 'rgb('+r+','+g+','+bl+')'}
+function person(x,y,s,col,alpha){
+  cx.globalAlpha=alpha;cx.fillStyle=col;
+  if(s<9){cx.beginPath();cx.arc(x,y,Math.max(1.4,s*.34),0,7);cx.fill();cx.globalAlpha=1;return}
+  var u=s*.42;cx.beginPath();cx.arc(x,y-u*.55,u*.42,0,7);cx.fill();
+  cx.beginPath();cx.ellipse(x,y+u*.55,u*.7,u*.5,0,Math.PI,0);cx.fill();cx.globalAlpha=1;
+}
+
+var last=performance.now();
+function loop(t){
+  var dt=Math.min(2,(t-last)/16.7);last=t;
+  var s=SC[G.i];
+  cx.fillStyle='#0E1A2A';cx.fillRect(0,0,W,H);
+  // company boundary
+  cx.strokeStyle=C.line;cx.lineWidth=2;cx.setLineDash([8,7]);rr(BOX.x,BOX.y,BOX.w,BOX.h,22);cx.stroke();cx.setLineDash([]);
+  cx.fillStyle='rgba(42,63,87,.18)';rr(BOX.x,BOX.y,BOX.w,BOX.h,22);cx.fill();
+  cx.fillStyle=C.mut;cx.font='700 13px Atkinson Hyperlegible, sans-serif';cx.textAlign='left';cx.fillText('INSIDE LUMEN & CO',BOX.x+16,BOX.y+22);
+  if(s.outside){cx.fillText('OUTSIDE: PEOPLE YOU’VE NEVER MET',372,BOX.y+22)}
+  cx.fillStyle='#fff';cx.font='700 19px "Baloo 2", sans-serif';cx.fillText(s.label,24,34);
+  cx.fillStyle=C.mut;cx.font='14px Atkinson Hyperlegible, sans-serif';cx.fillText(s.n===1?'One person, and everything you hold about her.':'Each dot is one person.',24,56);
+
+  if(A)A.t+=dt;
+
+  // single person (access request)
+  if(s.n===1)drawMaria(dt);
+  else D.forEach(function(d){drawDot(d,dt)});
+  OUT.forEach(function(d){drawDot(d,dt)});
+
+  // destination label
+  if(labelDest&&A&&A.t>20){var lt=labelDest.t;cx.font='700 15px Atkinson Hyperlegible, sans-serif';var lw=cx.measureText(lt).width+28,lx=Math.min(W-lw-12,Math.max(12,labelDest.x-lw/2)),ly=Math.min(H-40,Math.max(70,labelDest.y-(labelDest.y>H/2?60:-40)));
+    cx.fillStyle=C.coral;rr(lx,ly,lw,32,10);cx.fill();cx.fillStyle='#14202F';cx.fillText(lt,lx+14,ly+21)}
+
+  // chips
+  for(var i=CH.length-1;i>=0;i--){var c=CH[i];c.life+=dt;c.x+=c.vx*dt;c.y+=c.vy*dt;c.a=Math.max(0,1-c.life/110);if(c.a<=0){CH.splice(i,1);continue}
+    cx.globalAlpha=c.a;cx.font='700 12px Atkinson Hyperlegible, sans-serif';var w=cx.measureText(c.t).width+14;cx.fillStyle='#2A1520';rr(c.x-w/2,c.y-11,w,22,7);cx.fill();cx.strokeStyle=C.coral;cx.lineWidth=1.5;cx.stroke();cx.fillStyle='#FFB4AD';cx.textAlign='center';cx.fillText(c.t,c.x,c.y+4);cx.textAlign='left';cx.globalAlpha=1}
+
+  if(clock)drawClock(dt);
+  if(lockT>0)drawLock(dt);
+  if(stamp){stamp.a=Math.min(1,stamp.a+.05*dt);cx.save();cx.translate(W/2,H/2+120);cx.rotate(-.12);cx.globalAlpha=stamp.a;cx.strokeStyle=C.coral;cx.lineWidth=5;rr(-170,-34,340,68,10);cx.stroke();cx.fillStyle=C.coral;cx.font='800 30px "Baloo 2", sans-serif';cx.textAlign='center';cx.fillText(stamp.t,0,11);cx.restore();cx.textAlign='left';cx.globalAlpha=1}
+  requestAnimationFrame(loop);
+}
+
+function drawDot(d,dt){
+  var col=C.dot,al=1,x=d.hx,y=d.hy;
+  if(d.st==='exp'){col=C.amber}
+  if(d.st==='fly'){d.t+=dt/70;var p=Math.max(0,Math.min(1,d.t)),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+    x=lerp(d.hx,d.tx,e)+Math.sin(p*Math.PI)*d.jx*60;y=lerp(d.hy,d.ty,e)-Math.sin(p*Math.PI)*40;col=mix('#7FA3C7','#FF5A4E',Math.min(1,p*3));
+    if(p>0&&p<.6&&Math.random()<.0025*(SC[G.i].n>500?1:6))spawnChip(x,y);
+    if(A&&A.c.anim==='scatter')al=1-Math.max(0,p-.7)/.3;
+    if(A&&A.c.anim==='spread'){col=mix('#7FA3C7','#FF5A4E',p)}}
+  if(d.st==='wob'){d.t+=dt/40;var q=Math.max(0,Math.min(1,d.t));x+=Math.sin(q*Math.PI*6)*3*(1-q);col=mix('#F5A524','#7FA3C7',q)}
+  if(d.st==='fade'){d.t+=dt/60;var f=Math.max(0,Math.min(1,d.t));al=1-f;y-=f*14}
+  if(d.st==='mail'){d.t+=dt/50;var m=Math.max(0,Math.min(1,d.t));col=mix('#7FA3C7','#14B8A6',m)}
+  if(d.st==='stranger'){col='#3E556E'}
+  if(d.st==='angry'){d.t+=dt/90;var g=Math.max(0,Math.min(1,d.t));col=mix('#3E556E','#FF5A4E',g);x+=Math.sin(d.t*30)*g*1.2;
+    if(g>0&&g<.9&&Math.random()<.0006)spawnChip(x,y)}
+  if(A&&(A.c.anim==='lock'||A.c.anim==='gather'))col=mix('#7FA3C7','#14B8A6',Math.min(1,A.t/30));
+  if(A&&A.c.anim==='contain')col=mix('#F5A524','#14B8A6',Math.min(1,A.t/50));
+  if(A&&A.c.anim==='clock'&&SC[G.i].exposed&&clock&&clock.p>1)col=C.coral;
+  d.x=x;d.y=y;
+  if(al>0.01)person(x,y,d.s,col,al);
+}
+
+function drawMaria(dt){
+  var x=BOX.x+BOX.w/2,y=BOX.y+BOX.h/2+10,good=A&&A.c.anim==='gather',bad=A&&A.c.r==='bad';
+  var col=good?C.teal:bad&&A.t>40?C.coral:'#7FA3C7';
+  person(x,y,190,col,1);
+  cx.fillStyle='#fff';cx.font='700 18px "Baloo 2", sans-serif';cx.textAlign='center';cx.fillText('Maria Rossi',x,y+88);cx.textAlign='left';
+  var items=['Name and address','m.rossi@libero.it','12 orders since 2019','3 support calls (recorded)','Card ending 4471','Newsletter: opted in'];
+  items.forEach(function(it,i){
+    var a=i/items.length*Math.PI*2-Math.PI/2,R=210,px=x+Math.cos(a)*R,py=y+Math.sin(a)*R*.78;
+    var ga=1;if(good){var p=Math.min(1,Math.max(0,(A.t-i*6)/50));px=lerp(px,x+160,p);py=lerp(py,y-166,p);ga=1-Math.max(0,p-.75)/.25}
+    if(ga<=0.01)return;cx.globalAlpha=ga;
+    cx.font='700 13px Atkinson Hyperlegible, sans-serif';var w=cx.measureText(it).width+18;
+    cx.fillStyle=good?'#0F3B37':'#17304A';rr(px-w/2,py-14,w,28,8);cx.fill();cx.strokeStyle=good?C.teal:'#35577A';cx.lineWidth=1.5;cx.stroke();
+    cx.fillStyle='#DCE7F2';cx.textAlign='center';cx.fillText(it,px,py+5);cx.textAlign='left';cx.globalAlpha=1;
+  });
+  if(good&&A.t>60){cx.fillStyle=C.teal;rr(x+80,y-190,160,48,12);cx.fill();cx.fillStyle='#0E1A2A';cx.font='700 15px Atkinson Hyperlegible, sans-serif';cx.textAlign='center';cx.fillText('Sent to Maria, day 14',x+160,y-160);cx.textAlign='left'}
+}
+
+function drawClock(dt){
+  var month=clock.kind==='month',cxp=W-110,cyp=150,R=62;
+  clock.p=Math.min(clock.end,clock.p+(clock.end>.5?.0085:.002)*dt);
+  var over=clock.p>1;
+  cx.fillStyle='rgba(14,26,42,.92)';cx.beginPath();cx.arc(cxp,cyp,R+18,0,7);cx.fill();
+  cx.lineWidth=12;cx.strokeStyle='#22364D';cx.beginPath();cx.arc(cxp,cyp,R,0,7);cx.stroke();
+  cx.strokeStyle=over?C.coral:clock.col;cx.beginPath();cx.arc(cxp,cyp,R,-Math.PI/2,-Math.PI/2+Math.PI*2*Math.min(1,clock.p));cx.stroke();
+  cx.fillStyle='#fff';cx.textAlign='center';cx.font='800 26px "Baloo 2", sans-serif';
+  var v=month?Math.round(clock.p*30)+'d':Math.round(clock.p*72)+'h';cx.fillText(v,cxp,cyp+6);
+  cx.font='700 12px Atkinson Hyperlegible, sans-serif';cx.fillStyle=over?'#FF8A80':C.mut;
+  cx.fillText(over?(month?'Deadline missed':'72 hours passed'):(month?'of 1 month':'of 72 hours'),cxp,cyp+26);cx.textAlign='left';
+  if(clock.col===C.teal&&clock.p>=clock.end){cx.fillStyle=C.teal;cx.font='700 13px Atkinson Hyperlegible, sans-serif';cx.textAlign='center';cx.fillText('Reported in time',cxp,cyp+R+40);cx.textAlign='left'}
+}
+
+function drawLock(dt){
+  lockT=Math.min(1,lockT+.03*dt);var x=BOX.x+BOX.w-56,y=BOX.y+20,s=lockT;
+  cx.save();cx.translate(x,y+20);cx.scale(.6+.4*s,.6+.4*s);cx.globalAlpha=s;
+  cx.fillStyle=C.teal;rr(-22,-4,44,34,8);cx.fill();cx.strokeStyle=C.teal;cx.lineWidth=6;cx.beginPath();cx.arc(0,-6,13,Math.PI,0);cx.stroke();
+  cx.fillStyle='#0E1A2A';cx.beginPath();cx.arc(0,10,5,0,7);cx.fill();cx.restore();cx.globalAlpha=1;
+}
+
+function finish(){
+  var r=G.right;
+  $('#endH').textContent=r===6?'A clean week.':r>=4?'A good week, with some close calls.':'A rough week for '+G.people.toLocaleString('en')+' people.';
+  $('#endSc').innerHTML='<div><b>'+r+'/6</b><span>right calls</span></div><div><b style="color:'+(G.people?'#D93A2F':'#0E7C70')+'">'+G.people.toLocaleString('en')+'</b><span>people affected</span></div><div><b style="color:'+(G.comp?'#D93A2F':'#0E7C70')+'">'+G.comp.toLocaleString('en')+'</b><span>complaints</span></div>';
+  $('#end').hidden=false;$('#again').focus();
+}
+
+$('#start').addEventListener('click',function(){$('#intro').hidden=true;$('.ch').focus()});
+$('#restart').addEventListener('click',function(){$('#cPeople').classList.remove('hot');$('#cComp').classList.remove('hot');$('#cPeople b').textContent='0';$('#cComp b').textContent='0';newGame()});
+$('#again').addEventListener('click',function(){$('#restart').click()});
+newGame();requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

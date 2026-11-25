@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Report or click? A phishing simulation</title>
+<meta name="viewport" content="width=1280">
+<link rel="stylesheet" href="../../vendor/fonts/fonts.css">
+<style>
+:root{
+  --bg:#EEF1F7;--card:#fff;--ink:#18202F;--mut:#5E6B82;--line:#DCE2EC;--blue:#2F6FEB;--blue-l:#E7EFFE;
+  --net:#0D1424;--net2:#16213A;--node:#2C3B5C;--node-s:#4A5D86;--bad:#FF4D5E;--good:#2FD58B;--warn:#FFB224;--sky:#5CC8FF;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:1280px;height:720px;overflow:hidden;background:var(--net);font-family:"Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;color:var(--ink)}
+#stage{position:absolute;left:0;top:0;width:1280px;height:720px;overflow:hidden;background:var(--bg);transform-origin:0 0}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* top bar */
+.top{height:56px;display:flex;align-items:center;gap:18px;padding:0 20px;background:#fff;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:18px}
+.logo i{width:26px;height:26px;border-radius:7px;background:var(--blue);display:grid;place-items:center}
+.clock{color:var(--mut);font-size:15px}
+.counters{margin-left:auto;display:flex;gap:10px}
+.ctr{display:flex;align-items:baseline;gap:7px;padding:6px 12px;border-radius:10px;background:var(--bg);font-size:13px;color:var(--mut)}
+.ctr b{font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ctr.hot{background:#FFE5E8}.ctr.hot b{color:#C8102E}
+.ctr.ok b{color:#0E8A55}
+.restart{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--mut)}
+
+.main{display:grid;grid-template-columns:312px 1fr 400px;height:664px}
+
+/* inbox list */
+.list{background:#fff;border-right:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+.list h2{font-size:14px;margin:0;padding:14px 18px 10px;color:var(--mut);font-weight:700}
+.mail{all:unset;box-sizing:border-box;display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:11px 18px 11px 22px;border-bottom:1px solid var(--line);cursor:pointer;position:relative;width:100%}
+.mail:hover{background:#F6F8FC}
+.mail.sel{background:var(--blue-l)}
+.mail.unread::before{content:"";position:absolute;left:9px;top:17px;width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.mail .who{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail .t{font-size:12px;color:var(--mut)}
+.mail .s{grid-column:1/-1;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail .p{grid-column:1/-1;font-size:12.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail .st{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;align-self:center}
+.st.good{background:#DDF7EA;color:#0E7A4B}.st.bad{background:#FFE1E5;color:#B5122B}.st.meh{background:#FFF1D6;color:#8A5A00}
+.mail.done .who,.mail.done .s{color:var(--mut)}
+
+/* reader */
+.reader{display:flex;flex-direction:column;overflow:hidden;position:relative}
+.bar{display:flex;gap:10px;padding:12px 22px;border-bottom:1px solid var(--line);background:#fff}
+.tb{border:0;border-radius:10px;padding:10px 15px;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.tb-report{background:#FFE5E8;color:#B5122B}.tb-report:hover{background:#FFD2D8}
+.tb-fine{background:var(--bg);color:var(--ink)}.tb-fine:hover{background:#E2E7F0}
+.tb:disabled{opacity:.4;cursor:default}
+.tb-next{margin-left:auto;background:var(--blue);color:#fff}
+.msg{padding:20px 26px 12px;overflow:auto;flex:1}
+.msg h1{font-size:21px;margin:0 0 14px;line-height:1.25}
+.hdr{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;flex:none}
+.hdr .nm{font-weight:700;font-size:15px}
+.hdr .ad{font-size:13.5px;color:var(--mut)}
+.hdr .tm{margin-left:auto;font-size:13px;color:var(--mut)}
+.body{font-size:15.5px;line-height:1.55;max-width:560px}
+.body p{margin:0 0 12px}
+.mlink{color:var(--blue);text-decoration:underline;cursor:pointer;background:none;border:0;padding:0;font:inherit}
+.cta{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:8px;padding:10px 18px;font-weight:700;font-size:15px;cursor:pointer;margin:4px 0 12px}
+.attach{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;cursor:pointer;font:inherit;font-size:14px;margin:2px 0 12px}
+.attach:hover{border-color:var(--blue)}
+.attach i{width:30px;height:34px;border-radius:5px;display:grid;place-items:center;color:#fff;font-style:normal;font-size:10px;font-weight:700}
+.quick{display:inline-block;border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:18px;padding:7px 14px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;margin:4px 0 12px}
+.quick:hover{background:var(--blue-l)}
+.sig{color:var(--mut);font-size:14px}
+.status{height:30px;display:flex;align-items:center;gap:8px;padding:0 14px;font-size:13px;color:var(--mut);background:#fff;border-top:1px solid var(--line);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.status b{color:var(--ink)}
+.status .dom{background:#FFF1D6;color:#7A4D00;border-radius:4px;padding:1px 4px}
+
+/* red flags */
+.flag{position:relative;border-radius:4px;transition:background .3s,box-shadow .3s}
+.rev .flag{box-shadow:0 0 0 2px var(--fc);background:var(--fb)}
+.rev .flag::after{content:attr(data-f);position:absolute;top:-11px;right:-11px;width:20px;height:20px;border-radius:50%;background:var(--fc);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;font-style:normal;line-height:1}
+.rev.ok{--fc:#0E9F62;--fb:#E2F8EE}
+.rev.no{--fc:#E0243F;--fb:#FFE4E8}
+
+/* feedback */
+.fb{margin:6px 26px 16px;border-radius:14px;padding:16px 18px;display:none;border-left:6px solid}
+.fb.show{display:block;animation:pop .35s cubic-bezier(.3,1.4,.5,1)}
+.fb.good{background:#E6F8EF;border-color:#16B26B}
+.fb.bad{background:#FFE9EC;border-color:#E0243F}
+.fb.meh{background:#FFF4DC;border-color:#E8A400}
+.fb h3{margin:0 0 6px;font-size:17px}
+.fb p{margin:0 0 8px;font-size:14.5px;line-height:1.5}
+.fb ol{margin:6px 0 0;padding-left:22px;font-size:14px;line-height:1.5}
+.fb li{margin-bottom:3px}
+@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+
+/* network panel */
+.net{background:var(--net);color:#DCE6FA;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.net h2{margin:0;padding:16px 20px 4px;font-size:16px}
+.net .sub{padding:0 20px;font-size:13px;color:#8EA0C4;margin:0}
+.net svg{display:block;margin:6px auto 0}
+.edge{stroke:#2A3A5E;stroke-width:3;transition:stroke .4s}
+.edge.hit{stroke:var(--bad)}
+.node .ring{fill:var(--net2);stroke:var(--node-s);stroke-width:2.5;transition:fill .4s,stroke .4s}
+.node .ic{fill:#9FB2D8;transition:fill .4s}
+.node text{fill:#B8C6E4;font-size:12.5px;font-weight:700;text-anchor:middle}
+.node.inf .ring{fill:#4A1020;stroke:var(--bad)}
+.node.inf .ic{fill:var(--bad)}
+.node.inf text{fill:#FF9DA8}
+.node.hub .ring{fill:#1C2846}
+.node .pulse{fill:none;stroke:var(--bad);stroke-width:3;opacity:0}
+.node.inf .pulse{animation:ring 1.2s ease-out}
+.node .shield{opacity:0;transition:opacity .3s}
+.node.blk .shield{opacity:1;animation:ring2 1.1s ease-out}
+@keyframes ring{from{opacity:1;r:20}to{opacity:0;r:46}}
+@keyframes ring2{0%{transform:scale(.6);opacity:0}40%{opacity:1}100%{transform:scale(1)}}
+.packet{fill:var(--bad);filter:drop-shadow(0 0 6px var(--bad))}
+.netlog{margin:auto 16px 16px;background:var(--net2);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.45;min-height:84px;color:#C6D3EE}
+.netlog b{color:#fff}
+.netlog .r{color:#FF8592}
+.netlog .g{color:#6BE3AE}
+.legend{display:flex;gap:16px;padding:6px 20px 0;font-size:12px;color:#8EA0C4}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:block}
+.flash{position:absolute;inset:0;background:var(--bad);opacity:0;pointer-events:none}
+.flash.go{animation:flash .6s ease-out}
+@keyframes flash{0%{opacity:.35}100%{opacity:0}}
+
+/* overlays */
+.ov{position:absolute;inset:0;background:rgba(9,14,28,.74);display:grid;place-items:center;z-index:50}
+.ov[hidden]{display:none}
+.card{background:#fff;border-radius:22px;padding:34px 38px;width:620px;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.card h1{margin:0 0 10px;font-size:32px;letter-spacing:-.01em}
+.card p{font-size:16.5px;line-height:1.55;color:#3B475E;margin:0 0 14px}
+.card ul{margin:0 0 20px;padding-left:20px;font-size:15.5px;line-height:1.6;color:#3B475E}
+.go{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:14px 24px;font-size:17px;font-weight:700;cursor:pointer}
+.go:hover{background:#245ED0}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 18px}
+.score div{background:var(--bg);border-radius:12px;padding:12px 14px}
+.score b{display:block;font-size:24px}
+.score span{font-size:13px;color:var(--mut)}
+.score .r b{color:#C8102E}.score .g b{color:#0E8A55}
+</style>
+</head>
+<body>
+<div id="stage">
+  <header class="top">
+    <div class="logo"><i><svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 4h12v8H2z" fill="none" stroke="#fff" stroke-width="1.8"/><path d="M2 4l6 5 6-5" fill="none" stroke="#fff" stroke-width="1.8"/></svg></i>Lumen Mail</div>
+    <span class="clock">Monday, 08:57</span>
+    <div class="counters">
+      <div class="ctr ok" id="cRep"><b>0/5</b>phish reported</div>
+      <div class="ctr" id="cDev"><b>0/10</b>devices infected</div>
+      <div class="ctr" id="cRec"><b>0</b>records exposed</div>
+      <div class="ctr" id="cMoney"><b>€0</b>lost</div>
+    </div>
+    <button class="restart" id="restart" type="button">Restart</button>
+  </header>
+
+  <div class="main">
+    <nav class="list" aria-label="Inbox">
+      <h2>Inbox · <span id="left">8</span> to deal with</h2>
+      <div id="mails"></div>
+    </nav>
+
+    <section class="reader" aria-live="polite">
+      <div class="bar">
+        <button class="tb tb-report" id="bReport" type="button"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 2v13M3 2h9l-2 3 2 3H3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Report phishing</button>
+        <button class="tb tb-fine" id="bFine" type="button"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 8l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Looks fine, done</button>
+        <button class="tb tb-next" id="bNext" type="button" hidden>Next email</button>
+      </div>
+      <div class="msg" id="msg"></div>
+      <div class="fb" id="fb"></div>
+      <div class="status" id="status">Tip: point at a link to see where it really goes.</div>
+    </section>
+
+    <aside class="net" aria-label="Office network">
+      <h2>Office network</h2>
+      <p class="sub">Every device that can reach your laptop.</p>
+      <div class="legend"><span><i style="background:#4A5D86"></i>Healthy</span><span><i style="background:var(--bad)"></i>Infected</span><span><i style="background:var(--good)"></i>Blocked for everyone</span></div>
+      <svg id="netsvg" width="380" height="390" viewBox="0 0 380 390"></svg>
+      <div class="netlog" id="netlog">All quiet. 10 devices online.</div>
+      <div class="flash" id="flash"></div>
+    </aside>
+  </div>
+
+  <div class="ov" id="intro">
+    <div class="card">
+      <h1>Report or click?</h1>
+      <p>It's Monday morning and eight emails are waiting. Some of them are phishing. You can't tell which by guessing, but you can by looking.</p>
+      <ul>
+        <li><b>Report phishing</b> sends a fake to IT and blocks it for everyone.</li>
+        <li><b>Looks fine, done</b> files a real email away.</li>
+        <li>Links and attachments work. Point at a link first to see where it really goes.</li>
+      </ul>
+      <p>The office network on the right shows what each decision does.</p>
+      <button class="go" id="start" type="button">Open the inbox</button>
+    </div>
+  </div>
+
+  <div class="ov" id="end" hidden>
+    <div class="card">
+      <h1 id="endH">Inbox done</h1>
+      <p id="endP"></p>
+      <div class="score" id="endScore"></div>
+      <button class="go" id="again" type="button">Play again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(s){return document.querySelector(s)};
+
+/* ------------ fit the 1280x720 stage to any window ------------ */
+function fit(){
+  var s=Math.min(innerWidth/1280,innerHeight/720),st=$('#stage');
+  st.style.transform='scale('+s+')';
+  st.style.left=Math.max(0,(innerWidth-1280*s)/2)+'px';
+  st.style.top=Math.max(0,(innerHeight-720*s)/2)+'px';
+  document.body.style.width=innerWidth+'px';document.body.style.height=innerHeight+'px';
+}
+addEventListener('resize',fit);fit();
+
+/* ------------ the office network ------------ */
+var NODES={
+  you:{x:62,y:196,t:'You',k:'pc'},
+  mia:{x:62,y:72,t:'Mia · Sales',k:'pc'},
+  ben:{x:62,y:322,t:'Ben · Sales',k:'pc'},
+  tom:{x:178,y:40,t:'Tom · Training',k:'pc'},
+  mail:{x:178,y:342,t:'Mail server',k:'srv',rec:3100},
+  sw1:{x:160,y:196,t:'',k:'hub'},
+  sw2:{x:258,y:196,t:'',k:'hub'},
+  lea:{x:312,y:62,t:'Lea · HR',k:'pc'},
+  hr:{x:336,y:146,t:'HR files',k:'srv',rec:2400},
+  fin:{x:336,y:254,t:'Finance DB',k:'srv',rec:12800},
+  anna:{x:262,y:340,t:'Anna · Finance',k:'pc'},
+  omar:{x:340,y:350,t:'Omar',k:'pc'}
+};
+var EDGES=[['you','sw1'],['mia','sw1'],['ben','sw1'],['tom','sw1'],['mail','sw1'],['sw1','sw2'],['lea','sw2'],['hr','sw2'],['fin','sw2'],['anna','sw2'],['omar','fin'],['omar','anna']];
+var PC_REC=150;
+var DEVICES=Object.keys(NODES).filter(function(k){return NODES[k].k!=='hub'}).length;
+
+function icon(k){
+  if(k==='pc')return '<path class="ic" d="M-11 -8h22v14h-22z M-15 8h30v3h-30z"/>';
+  if(k==='srv')return '<path class="ic" d="M-10 -12h20v7h-20z M-10 -3h20v7h-20z M-10 6h20v7h-20z"/>';
+  return '<circle class="ic" r="4"/>';
+}
+function drawNet(){
+  var h='';
+  EDGES.forEach(function(e){var a=NODES[e[0]],b=NODES[e[1]];h+='<line class="edge" id="e-'+e[0]+'-'+e[1]+'" x1="'+a.x+'" y1="'+a.y+'" x2="'+b.x+'" y2="'+b.y+'"/>'});
+  Object.keys(NODES).forEach(function(k){var n=NODES[k],r=n.k==='hub'?11:22;
+    h+='<g class="node'+(n.k==='hub'?' hub':'')+'" id="n-'+k+'" transform="translate('+n.x+' '+n.y+')">'+
+      '<circle class="pulse" r="20"/>'+
+      '<circle class="ring" r="'+r+'"/>'+icon(n.k)+
+      (n.k==='srv'&&k==='mail'?'<g class="shield"><circle r="30" fill="none" stroke="#2FD58B" stroke-width="3"/></g>':'')+
+      (n.t?'<text y="'+(r+16)+'">'+n.t+'</text>':'')+'</g>';
+  });
+  $('#netsvg').innerHTML=h;
+}
+function edgeEl(a,b){return document.getElementById('e-'+a+'-'+b)||document.getElementById('e-'+b+'-'+a)}
+function nbrs(k){var o=[];EDGES.forEach(function(e){if(e[0]===k)o.push(e[1]);if(e[1]===k)o.push(e[0])});return o}
+
+/* ------------ the emails ------------ */
+var EMAILS=[
+{id:'pw',phish:true,who:'IT Service Desk',addr:'it-support@lumenco-helpdesk.com',addrFlag:1,av:'#6B7A99',ini:'IT',time:'08:41',
+ subj:'Action required: your password expires today',prev:'Your Lumen password expires in 2 hours. Keep your current password…',
+ body:'<p>Dear colleague,</p><p>Your Lumen account password <span class="flag" data-f="2">expires in 2 hours</span>. To keep your current password and avoid losing access to email and files, confirm it now:</p>'+
+  '<p><button class="mlink flag" data-f="3" data-url="https://lumenco-helpdesk.com/login.php?id=8812">https://lumenco.com/password/keep</button></p><p class="sig">IT Service Desk<br>Lumen &amp; Co</p>',
+ flags:['It comes from <b>lumenco-helpdesk.com</b>, not lumenco.com. Anyone can register a domain like that.','A deadline of <b>2 hours</b> is there to rush you past checking.','The link text says lumenco.com, but it really goes to <b>lumenco-helpdesk.com</b>. Pointing at it shows that.'],
+ act:{kind:'infect',from:'you',hops:2,title:'You gave away your password.',text:'The page looked like your company login, so you typed your password in. The attacker logged in as you a minute later and moved through the network.'},
+ fine:{kind:'infect',from:'mia',hops:2,title:'Mia from Sales clicked it.',text:'You didn’t click, but you didn’t report it either, so it stayed in everyone’s inbox. Mia typed her password in.'}},
+
+{id:'lunch',phish:false,who:'Priya Shah (HR)',addr:'priya.shah@lumenco.com',av:'#D9488F',ini:'PS',time:'08:30',
+ subj:'Team lunch on Thursday: vote for the place',prev:'Hi all, three options for Thursday. Vote by Wednesday noon…',
+ body:'<p>Hi all,</p><p>As promised in Friday’s team meeting, here are three options for Thursday’s lunch. Vote by Wednesday noon and I’ll book a table:</p>'+
+  '<p><button class="mlink" data-url="https://lumenco.com/intranet/forms/lunch-poll">Lunch poll on the intranet</button></p><p>Priya</p>',
+ good:'The poll opened on the real company intranet. Thai food is winning.',
+ report:'False alarm. IT checked: it came from Priya’s real address inside the company, about something she mentioned in a meeting. Reporting when you’re unsure is still better than clicking, but this one was safe.'},
+
+{id:'ceo',phish:true,who:'Daniel Brandt (CEO)',addr:'d.brandt.ceo@gmail.com',addrFlag:1,av:'#2D3A55',ini:'DB',time:'08:22',
+ subj:'Quick favour, confidential',prev:'Are you at your desk? I need you to handle something for me…',
+ body:'<p>Are you at your desk? I’m in back-to-back meetings with investors and need you to handle something for me. <span class="flag" data-f="2">Please keep this between us for now.</span></p>'+
+  '<p>Buy <span class="flag" data-f="3">5 gift cards of €500</span> for client thank-yous and reply with the codes. I’ll sort out the expense claim with you later.</p>'+
+  '<p><button class="quick" data-act="reply">Reply: “On it, codes in 10 minutes”</button></p><p class="sig">Daniel<br>Sent from my phone</p>',
+ flags:['Your CEO writing from a <b>gmail.com</b> address. The display name can say anything.','<b>Secrecy</b> stops you from checking with anyone.','<b>Gift cards</b> are untraceable cash. No company pays clients that way.'],
+ act:{kind:'money',amount:2500,title:'€2,500 gone.',text:'You bought the gift cards and sent the codes. They were spent within minutes, and gift cards can’t be traced or refunded.'},
+ fine:{kind:'money',amount:2500,title:'Omar in Finance paid it.',text:'Nobody reported it, so the attacker tried the same message on Omar. He bought the gift cards.'}},
+
+{id:'exp',phish:false,who:'Finance',addr:'finance@lumenco.com',av:'#1F9D74',ini:'F',time:'08:15',
+ subj:'Expense claim #4471 approved',prev:'Your claim for the Munich workshop travel has been approved…',
+ body:'<p>Hello,</p><p>Your expense claim <b>#4471</b> (Munich workshop, train and hotel, €386.40) has been approved and will be paid with your next salary.</p>'+
+  '<p><button class="mlink" data-url="https://lumenco.com/finance/expenses/4471">View claim #4471</button></p><p class="sig">Finance team<br>Lumen &amp; Co</p>',
+ good:'The claim opened on the real finance portal. €386.40, as expected.',
+ report:'False alarm. It’s from the company’s own domain, it names a claim you actually made, and the link stays on lumenco.com.'},
+
+{id:'dhl',phish:true,who:'DHL Express',addr:'noreply@dhl-parcel-track.info',addrFlag:1,av:'#E8B400',ini:'DHL',time:'07:58',
+ subj:'Delivery failed: customs fee of €1.99 due',prev:'We tried to deliver your parcel today. A customs fee is outstanding…',
+ body:'<p><span class="flag" data-f="2">Dear customer,</span></p><p>We tried to deliver your parcel today but a customs fee of <b>€1.99</b> is outstanding. Pay it within 24 hours or the parcel returns to the sender.</p>'+
+  '<p><button class="cta flag" data-f="3" data-url="https://dhl-parcel-track.info/pay?ref=DE88213">Pay €1.99 and reschedule</button></p><p class="sig">DHL Express Customer Service</p>',
+ flags:['<b>dhl-parcel-track.info</b> isn’t DHL. Their emails come from dhl.com or dhl.de.','<b>“Dear customer”</b>: a real courier knows your name.','A tiny fee is the hook. The page asks for your <b>full card details</b>.'],
+ act:{kind:'infect',from:'you',hops:2,title:'Your card details, and your laptop.',text:'The “customs” page took your card details and installed malware on your work laptop while you typed.'},
+ fine:{kind:'infect',from:'ben',hops:2,title:'Ben was expecting a parcel.',text:'You let it sit in the inbox. Ben in Sales was waiting for a delivery and clicked.'}},
+
+{id:'inv',phish:true,who:'Accounts Payable',addr:'accounts@lumenco.co',addrFlag:1,av:'#7A5AF8',ini:'AP',time:'07:44',
+ subj:'OVERDUE: invoice 88213, late fees apply',prev:'Please find attached the overdue invoice. Late fees start tomorrow…',
+ body:'<p>Hello,</p><p>Please find the overdue invoice attached. <span class="flag" data-f="3">Late fees of 15% apply from tomorrow</span> if not settled.</p>'+
+  '<p><button class="attach flag" data-f="2" data-act="open"><i style="background:#7A5AF8">ZIP</i>Invoice_88213.zip <span style="color:#5E6B82">48 KB</span></button></p><p class="sig">Accounts Payable</p>',
+ flags:['<b>lumenco.co</b>, not lumenco.com. One letter short.','An <b>invoice you weren’t expecting, in a zip file</b>. Zips hide programs.','<b>Late fees tomorrow</b>: pressure again.'],
+ act:{kind:'infect',from:'you',hops:4,ransom:true,title:'Ransomware.',text:'The zip held a program, not an invoice. It started encrypting every shared file it could reach, and it reached a lot.'},
+ fine:{kind:'infect',from:'lea',hops:3,ransom:true,title:'Lea in HR opened the zip.',text:'It stayed in the inbox because nobody reported it. Lea opened the “invoice” and ransomware started spreading from HR.'}},
+
+{id:'slides',phish:false,who:'Tom Fischer',addr:'tom.fischer@lumenco.com',av:'#E8590C',ini:'TF',time:'07:30',
+ subj:'Re: Slides for Friday’s workshop',prev:'As we discussed on Tuesday, here are the slides. Shout if…',
+ body:'<p>Hi,</p><p>As we discussed on Tuesday, here are the slides for Friday. I’ve added your two exercises at the end. Shout if anything’s missing.</p>'+
+  '<p><button class="attach" data-act="open"><i style="background:#D24726">PPT</i>Workshop_slides.pptx <span style="color:#5E6B82">2.4 MB</span></button></p><p>Tom</p>',
+ good:'The slides opened. Your two exercises are at the end, just as Tom said.',
+ report:'False alarm. It’s Tom’s real address, it replies to a conversation you had, and a .pptx is what you were expecting.'},
+
+{id:'share',phish:true,who:'SharePoint',addr:'share@lumenc0.com',addrFlag:1,av:'#0F7B8A',ini:'SP',time:'07:12',
+ subj:'Anna shared “Salary review 2025” with you',prev:'Anna Kowalski shared a file with you: Salary review 2025.xlsx…',
+ body:'<p><b>Anna Kowalski</b> shared a file with you.</p><p style="background:#F3F6FB;border-radius:10px;padding:12px 14px">📄 <span class="flag" data-f="2">Salary review 2025.xlsx</span></p>'+
+  '<p><button class="cta flag" data-f="3" data-url="https://lumenc0-share.com/auth/microsoft">Open in SharePoint</button></p><p class="sig">This link works for people in Lumen &amp; Co.</p>',
+ flags:['<b>lumenc0.com</b> with a zero instead of an o.','<b>Salary review</b>: a file name chosen so you’ll want to look.','“Open” leads to <b>lumenc0-share.com</b>, a fake login page.'],
+ act:{kind:'infect',from:'you',hops:2,title:'Curiosity got you.',text:'There was no spreadsheet. The “SharePoint” login page took your password, and the attacker was inside within minutes.'},
+ fine:{kind:'infect',from:'anna',hops:2,title:'Anna’s colleagues clicked.',text:'You didn’t report it. Others in Finance couldn’t resist a file called “Salary review”, and the attacker got in through Anna’s team.'}}
+];
+
+/* ------------ state ------------ */
+var S;
+function reset(){
+  S={sel:0,done:{},infected:{},records:0,money:0,reported:0,falseAlarms:0,busy:false,blocked:false};
+  drawNet();renderList();select(0);updateCounters();
+  $('#netlog').innerHTML='All quiet. '+DEVICES+' devices online.';
+  $('#end').hidden=true;
+}
+
+function renderList(){
+  $('#mails').innerHTML=EMAILS.map(function(m,i){
+    var d=S.done[m.id];
+    return '<button class="mail'+(i===S.sel?' sel':'')+(d?' done':' unread')+'" data-i="'+i+'" type="button">'+
+      '<span class="who">'+m.who+'</span>'+(d?'<span class="st '+d.tone+'">'+d.tag+'</span>':'<span class="t">'+m.time+'</span>')+
+      '<span class="s">'+m.subj+'</span><span class="p">'+m.prev+'</span></button>';
+  }).join('');
+  var left=EMAILS.filter(function(m){return !S.done[m.id]}).length;
+  $('#left').textContent=left;
+}
+
+function select(i){
+  S.sel=i;var m=EMAILS[i],d=S.done[m.id];
+  renderList();
+  $('#msg').innerHTML='<h1>'+m.subj+'</h1>'+
+    '<div class="hdr"><div class="av" style="background:'+m.av+'">'+m.ini+'</div><div><div class="nm">'+m.who+'</div>'+
+    '<div class="ad">&lt;'+(m.addrFlag?'<span class="flag" data-f="'+m.addrFlag+'">'+m.addr+'</span>':m.addr)+'&gt; to me</div></div><div class="tm">Today, '+m.time+'</div></div>'+
+    '<div class="body">'+m.body+'</div>';
+  $('#msg').classList.remove('rev','ok','no');
+  var fb=$('#fb');fb.className='fb';fb.innerHTML='';
+  $('#status').innerHTML='Tip: point at a link to see where it really goes.';
+  if(d){showResult(m,d,true)}
+  setButtons();
+}
+function setButtons(){
+  var d=S.done[EMAILS[S.sel].id];
+  $('#bReport').disabled=$('#bFine').disabled=!!d||S.busy;
+  var left=EMAILS.some(function(m){return !S.done[m.id]});
+  $('#bNext').hidden=!d||!left;
+}
+
+/* hover a link: show where it goes */
+$('#msg').addEventListener('mouseover',function(e){
+  var a=e.target.closest('[data-url]');if(!a)return;
+  var u=a.getAttribute('data-url'),m=u.match(/^https:\/\/([^\/]+)(.*)$/);
+  $('#status').innerHTML='Link goes to: <b>https://<span class="dom">'+m[1]+'</span>'+m[2]+'</b>';
+});
+$('#msg').addEventListener('mouseout',function(e){if(e.target.closest('[data-url]'))$('#status').innerHTML='Tip: point at a link to see where it really goes.'});
+$('#msg').addEventListener('focusin',function(e){var a=e.target.closest('[data-url]');if(a)a.dispatchEvent(new MouseEvent('mouseover',{bubbles:true}))});
+
+/* engaging with the email: click link, open attachment, reply */
+$('#msg').addEventListener('click',function(e){
+  var a=e.target.closest('[data-url],[data-act]');if(!a)return;
+  var m=EMAILS[S.sel];if(S.done[m.id]||S.busy)return;
+  if(m.phish)resolve(m,'act');else resolve(m,'goodAct');
+});
+$('#bReport').addEventListener('click',function(){var m=EMAILS[S.sel];if(!S.done[m.id])resolve(m,'report')});
+$('#bFine').addEventListener('click',function(){var m=EMAILS[S.sel];if(!S.done[m.id])resolve(m,'fine')});
+$('#bNext').addEventListener('click',nextOpen);
+$('#mails').addEventListener('click',function(e){var b=e.target.closest('.mail');if(b&&!S.busy)select(+b.getAttribute('data-i'))});
+$('#restart').addEventListener('click',reset);
+$('#start').addEventListener('click',function(){$('#intro').hidden=true;$('#mails .mail').focus()});
+$('#again').addEventListener('click',reset);
+
+function nextOpen(){
+  for(var k=1;k<=EMAILS.length;k++){var j=(S.sel+k)%EMAILS.length;if(!S.done[EMAILS[j].id]){select(j);return}}
+}
+
+/* ------------ outcomes ------------ */
+function resolve(m,how){
+  var d;
+  if(m.phish&&how==='report'){S.reported++;d={tone:'good',tag:'Reported',res:'good'};blockForAll()}
+  else if(m.phish){var o=how==='act'?m.act:m.fine;d={tone:'bad',tag:how==='act'?'You fell for it':'Missed',res:'bad',o:o};consequence(o)}
+  else if(how==='report'){S.falseAlarms++;d={tone:'meh',tag:'False alarm',res:'meh'}}
+  else d={tone:'good',tag:'Handled',res:'good',act:how==='goodAct'};
+  S.done[m.id]=d;
+  renderList();showResult(m,d,false);setButtons();updateCounters();
+  if(EMAILS.every(function(x){return S.done[x.id]}))setTimeout(finish,S.busy?4200:1600);
+}
+
+function showResult(m,d,quiet){
+  var body=$('#msg');
+  var fb=$('#fb'),h='',fl='';
+  if(m.phish){
+    body.classList.add('rev');body.classList.toggle('ok',d.res==='good');body.classList.toggle('no',d.res!=='good');
+    fl='<ol>'+m.flags.map(function(f){return '<li>'+f+'</li>'}).join('')+'</ol>';
+  } else body.classList.remove('rev','ok','no');
+  if(m.phish&&d.res==='good')h='<h3>Reported. Blocked for everyone.</h3><p>IT pulled it from every inbox before anyone clicked. You spotted it because of these red flags:</p>'+fl;
+  else if(m.phish)h='<h3>'+d.o.title+'</h3><p>'+d.o.text+'</p><p><b>The red flags were there:</b></p>'+fl;
+  else if(d.res==='meh')h='<h3>False alarm, no harm done</h3><p>'+m.report+'</p>';
+  else h='<h3>'+(d.act?'Safe to open':'Filed. It was genuine.')+'</h3><p>'+(d.act?m.good:'No red flags: a real colleague, the company’s own address, and something you were expecting.')+'</p>';
+  fb.className='fb show '+d.res;fb.innerHTML=h;
+  if(quiet)fb.style.animation='none';else fb.style.animation='';
+}
+
+function blockForAll(){
+  var n=document.getElementById('n-mail');n.classList.remove('blk');void n.getBBox();n.classList.add('blk');
+  log('<span class="g">Blocked.</span> IT removed the email from all 10 inboxes. Nobody else can click it now.');
+}
+
+function consequence(o){
+  var fl=$('#flash');fl.classList.remove('go');void fl.offsetWidth;fl.classList.add('go');
+  if(o.kind==='money'){
+    var from=S.money;S.money+=o.amount;countUp('#cMoney b',from,S.money,'€');
+    log('<span class="r">€'+o.amount.toLocaleString('en')+' lost.</span> No device was infected. This one went straight for the money.');
+    return;
+  }
+  spread(o.from,o.hops,o.ransom);
+}
+
+function spread(from,maxHops,ransom){
+  S.busy=true;setButtons();
+  var seen={},q=[[from,0,null]],newly=0,rec0=S.records,order=[];
+  seen[from]=1;
+  while(q.length){var c=q.shift();order.push(c);if(c[1]>=maxHops)continue;
+    nbrs(c[0]).forEach(function(n){if(!seen[n]){seen[n]=1;q.push([n,c[1]+1,c[0]])}});}
+  var t0=0;
+  order.forEach(function(c){
+    var delay=c[1]*520;
+    setTimeout(function(){
+      if(c[2]){packet(c[2],c[0]);var ed=edgeEl(c[2],c[0]);if(ed)ed.classList.add('hit')}
+      setTimeout(function(){
+        var k=c[0],n=NODES[k],el=document.getElementById('n-'+k);
+        if(!S.infected[k]){
+          S.infected[k]=1;el.classList.add('inf');
+          if(n.k!=='hub'){newly++;var add=n.rec||PC_REC;var f=S.records;S.records+=add;countUp('#cRec b',f,S.records,'')}
+          updateCounters(true);
+        }
+      },c[2]?420:0);
+    },delay);
+    t0=Math.max(t0,delay);
+  });
+  log('<span class="r">'+(ransom?'Ransomware':'Attacker')+' inside.</span> Spreading from '+NODES[from].t.split(' ·')[0]+'’s '+(NODES[from].k==='pc'?'laptop':'machine')+'…');
+  setTimeout(function(){
+    S.busy=false;setButtons();
+    log('<span class="r">'+newly+' new device'+(newly===1?'':'s')+' hit, '+(S.records-rec0).toLocaleString('en')+' records exposed.</span> IT cut the network to stop it. '+(ransom?'Encrypted files stay locked.':'Passwords for the whole team must be reset.'));
+  },t0+900);
+}
+
+function packet(a,b){
+  var A=NODES[a],B=NODES[b],svg=$('#netsvg');
+  var c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('r','6');c.setAttribute('class','packet');svg.appendChild(c);
+  var t0=performance.now(),D=420;
+  (function step(t){var p=Math.min(1,(t-t0)/D);c.setAttribute('cx',A.x+(B.x-A.x)*p);c.setAttribute('cy',A.y+(B.y-A.y)*p);
+    if(p<1)requestAnimationFrame(step);else c.remove()})(t0);
+}
+
+function countUp(sel,from,to,pre){
+  var el=$(sel),t0=performance.now(),D=900;
+  (function step(t){var p=Math.min(1,(t-t0)/D),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));
+    el.textContent=pre+v.toLocaleString('en');if(p<1)requestAnimationFrame(step)})(t0);
+}
+
+function updateCounters(skipNums){
+  var inf=Object.keys(S.infected).filter(function(k){return NODES[k].k!=='hub'}).length;
+  $('#cRep b').textContent=S.reported+'/5';
+  $('#cDev b').textContent=inf+'/'+DEVICES;
+  $('#cDev').classList.toggle('hot',inf>0);
+  $('#cRec').classList.toggle('hot',S.records>0);
+  $('#cMoney').classList.toggle('hot',S.money>0);
+  if(!skipNums){$('#cRec b').textContent=S.records.toLocaleString('en');$('#cMoney b').textContent='€'+S.money.toLocaleString('en')}
+}
+
+function log(h){$('#netlog').innerHTML=h}
+
+function finish(){
+  var inf=Object.keys(S.infected).filter(function(k){return NODES[k].k!=='hub'}).length;
+  var perfect=S.reported===5&&S.falseAlarms===0;
+  $('#endH').textContent=perfect?'Clean inbox. Nobody got in.':S.reported>=4&&!inf&&!S.money?'Nearly perfect.':S.reported===0?'The attackers had a good Monday.':'Some got through.';
+  $('#endP').textContent=perfect?'You reported all five fakes and trusted the three real emails. Every red flag you used is one your whole team can learn.':
+    'Every email you missed or clicked had red flags you could have seen: the real sender address, where the link really goes, pressure and secrecy. Play again and look for them before you decide.';
+  $('#endScore').innerHTML='<div class="'+(S.reported===5?'g':'')+'"><b>'+S.reported+'/5</b><span>phishing emails reported</span></div>'+
+    '<div><b>'+S.falseAlarms+'</b><span>false alarms</span></div>'+
+    '<div class="'+(inf?'r':'g')+'"><b>'+inf+'/'+DEVICES+'</b><span>devices infected</span></div>'+
+    '<div class="'+(S.records?'r':'g')+'"><b>'+S.records.toLocaleString('en')+'</b><span>records exposed</span></div>'+
+    '<div class="'+(S.money?'r':'g')+'"><b>€'+S.money.toLocaleString('en')+'</b><span>lost to fraud</span></div>';
+  $('#end').hidden=false;$('#again').focus();
+}
+
+reset();
+})();
+</script>
+</body>
+</html>

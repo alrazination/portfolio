@@ -77,6 +77,75 @@
       "page": "work/cleanroom-gowning.html"
     },
     {
+      "slug": "phishing-inbox",
+      "on": true,
+      "feature": false,
+      "series": "",
+      "title": "Report or click?",
+      "tagline": "Eight emails, five of them fake. One careless click and the office network turns red.",
+      "chips": [
+        {
+          "label": "Judgment",
+          "tone": "sky"
+        },
+        {
+          "label": "Cyber security",
+          "tone": ""
+        }
+      ],
+      "sticker": "One bad click and the network turns red",
+      "thumbStart": "img/thumbs/phishing-inbox-start.webp",
+      "thumbStartAlt": "An email inbox next to a map of the office network",
+      "thumbMistake": "img/thumbs/phishing-inbox.webp",
+      "page": "work/phishing-inbox.html"
+    },
+    {
+      "slug": "fire-extinguisher",
+      "on": true,
+      "feature": false,
+      "series": "",
+      "title": "Fight or get out?",
+      "tagline": "Four fires, five things on the wall. Choose wrong and you see why.",
+      "chips": [
+        {
+          "label": "Safety",
+          "tone": "hot"
+        },
+        {
+          "label": "Every workplace",
+          "tone": ""
+        }
+      ],
+      "sticker": "Water on burning fat: fireball",
+      "thumbStart": "img/thumbs/fire-extinguisher-start.webp",
+      "thumbStartAlt": "An office with a burning waste bin and extinguishers on the wall",
+      "thumbMistake": "img/thumbs/fire-extinguisher.webp",
+      "page": "work/fire-extinguisher.html"
+    },
+    {
+      "slug": "gdpr-every-dot",
+      "on": true,
+      "feature": true,
+      "series": "",
+      "title": "Every dot is a person",
+      "tagline": "GDPR in six everyday calls. Get one wrong and watch real people’s data leave the building.",
+      "chips": [
+        {
+          "label": "Judgment",
+          "tone": "sky"
+        },
+        {
+          "label": "GDPR",
+          "tone": ""
+        }
+      ],
+      "sticker": "Email the export home and 1,800 people leave the building",
+      "thumbStart": "img/thumbs/gdpr-every-dot-start.webp",
+      "thumbStartAlt": "A newsletter email beside a wall of 240 dots, one per person",
+      "thumbMistake": "img/thumbs/gdpr-every-dot.webp",
+      "page": "work/gdpr-every-dot.html"
+    },
+    {
       "slug": "close-the-loop",
       "on": true,
       "feature": false,
@@ -254,6 +323,24 @@
         }
       ],
       "text": "Piloted in Year 8 geography with a short pre and post quiz."
+    },
+    "phishing-inbox": {
+      "on": false,
+      "sample": false,
+      "stats": [],
+      "text": ""
+    },
+    "fire-extinguisher": {
+      "on": false,
+      "sample": false,
+      "stats": [],
+      "text": ""
+    },
+    "gdpr-every-dot": {
+      "on": false,
+      "sample": false,
+      "stats": [],
+      "text": ""
     }
   }
 }

@@ -25,7 +25,8 @@ data/site.json          Content edited by the admin panel
 admin/                  The admin panel
 img/thumbs/             <slug>-start = opening screen, <slug> = the "consequence" moment
 img/og/                 1200x630 link-preview images
-css/style.css           All site styles
+css/style.css           Site-wide styles
+css/sections.css        Home page sections: hero, slide vs simulation, problem switcher, delivery, roadmap, FAQ
 js/site.js              Renders data/site.json: project grid, filters, quick play, proof, contact, form
 js/fx.js                Interaction layer: pop-in reveals, progress bar, card tilt, hero grid, phone menu, gowning mini-game, project picker, achievements
 js/play.js              Loads a sim on "Press start" and scales it; phone preview

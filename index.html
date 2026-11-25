@@ -39,8 +39,8 @@
 
   <section class="hero">
     <div class="wrap">
-      <div>
-        <h1>Training that plays like a game and works like the job.</h1>
+      <h1>Training that plays like a game and works like the job.</h1>
+      <div class="hero__copy">
         <p class="hero__lede">I design e-learning, simulations and training activities where people make real decisions, get it wrong safely, and see the consequences instead of reading about them.</p>
         <p class="hero__for">For anyone who wants to level up their learning offer. Delivered to any LMS, or hosted for you.</p>
         <div class="hero__actions">
@@ -49,21 +49,45 @@
         </div>
       </div>
 
-      <aside class="player" aria-label="About Razin">
-        <span class="player__tag">Player 1</span>
-        <div class="player__photo">
-          <img src="img/razin.webp" alt="Razin Abdullah" width="720" height="720">
-          <span class="player__badge">Ready</span>
+      <div class="yc" data-yourmove>
+        <div class="yc__head">
+          <span class="yc__tag">Your move</span>
+          <p class="yc__q">Flat tire on a quiet road. What do you do first?</p>
         </div>
-        <p class="player__name">Razin Abdullah</p>
-        <p class="player__class">Learning experience designer</p>
-        <ul class="player__stats">
-          <li><span>Specialty</span><b>Visual simulations</b></li>
-          <li><span>Trained at</span><b>M.Ed., TU Munich</b></li>
-          <li><span>Experience</span><b>4+ years</b></li>
-          <li><span>Builds in</span><b>HTML5, Storyline, 3D</b></li>
-        </ul>
-      </aside>
+        <svg class="yc__scene" viewBox="0 0 640 330" role="img" aria-label="A red car with a flat rear tire parked on a road. The parking brake is off.">
+          <rect width="640" height="330" class="yc__sky"/>
+          <rect y="292" width="640" height="38" fill="#2A1757"/>
+          <g fill="#4B3290"><rect x="30" y="310" width="70" height="5" rx="2.5"/><rect x="170" y="310" width="70" height="5" rx="2.5"/><rect x="310" y="310" width="70" height="5" rx="2.5"/><rect x="450" y="310" width="70" height="5" rx="2.5"/><rect x="590" y="310" width="70" height="5" rx="2.5"/></g>
+          <g class="yc__brake">
+            <rect x="24" y="22" width="150" height="44" rx="14" class="yc__brake-bg"/>
+            <circle cx="47" cy="44" r="13" class="yc__brake-dot"/>
+            <text x="47" y="50" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">P</text>
+            <path class="yc__brake-slash" d="M37 55 L57 33" stroke="#FFF6EA" stroke-width="3" stroke-linecap="round"/>
+            <text x="70" y="50" class="yc__brake-txt" font-family="Figtree, sans-serif" font-weight="700" font-size="16" fill="#FFF6EA">Brake off</text>
+          </g>
+          <g class="yc__jack">
+            <rect x="216" y="286" width="68" height="8" rx="3" fill="#8A7BB0"/>
+            <polygon points="250,240 276,264 250,286 224,264" fill="none" stroke="#FFB224" stroke-width="7" stroke-linejoin="round"/>
+            <line x1="224" y1="264" x2="276" y2="264" stroke="#FFF6EA" stroke-width="3"/>
+            <rect x="230" y="232" width="40" height="8" rx="3" fill="#8A7BB0"/>
+          </g>
+          <g class="yc__car">
+            <path d="M150 250 L150 214 Q150 200 166 198 L230 194 L268 150 Q276 140 292 140 L392 140 Q408 140 418 152 L450 192 L500 198 Q520 202 520 220 L520 250 Z" fill="#FF4F6D"/>
+            <path d="M278 190 L298 156 L344 156 L344 190Z M354 156 L400 156 L426 190 L354 190Z" fill="#66D9FF" opacity=".85"/>
+            <rect x="508" y="208" width="12" height="12" rx="3" fill="#FFC94D"/>
+            <g class="yc__wheel"><ellipse cx="210" cy="270" rx="33" ry="22" fill="#0B0418"/><circle cx="210" cy="266" r="12" fill="#8A7BB0"/><g class="yc__nuts" fill="#14082B"><circle cx="210" cy="259" r="2.6"/><circle cx="217" cy="266" r="2.6"/><circle cx="210" cy="273" r="2.6"/><circle cx="203" cy="266" r="2.6"/></g></g>
+            <circle cx="460" cy="262" r="30" fill="#0B0418"/><circle cx="460" cy="262" r="13" fill="#8A7BB0"/>
+          </g>
+          <g class="yc__badge yc__badge--bad"><rect x="404" y="22" width="212" height="44" rx="14" fill="#FF4F6D"/><text x="510" y="50" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B" data-badge>Car rolled off</text></g>
+          <g class="yc__badge yc__badge--good"><rect x="434" y="22" width="182" height="44" rx="14" fill="#C6FF3D"/><text x="525" y="50" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">Can't roll</text></g>
+        </svg>
+        <div class="yc__choices" role="group" aria-label="Choose your first step">
+          <button type="button" class="yc__choice" data-move="jack">Jack up the car</button>
+          <button type="button" class="yc__choice" data-move="swap">Swap the tire</button>
+          <button type="button" class="yc__choice" data-move="brake">Set the parking brake</button>
+        </div>
+        <div class="yc__result" aria-live="polite"></div>
+      </div>
     </div>
   </section>
 
@@ -75,7 +99,7 @@
     <div class="wrap">
       <div class="section__head">
         <h2><span data-level-count>Five simulations.</span> All playable.</h2>
-        <p>Hover over any of them to see what happens when you get it wrong.</p>
+        <p>Each one is built around a mistake. Hover over a picture to see what happens when you make it.</p>
       </div>
 
       <div class="levels" data-levels>
@@ -419,11 +443,21 @@
           <p>People learn the most at the moment they get something wrong, as long as it's safe and they can see why. That's the moment I design for.</p>
           <p>I'm Razin Abdullah, a learning experience designer with an M.Ed. from the Technical University of Munich. For more than four years I've designed and evaluated learning for international teams and learners, from step-by-step procedures in high-stakes workplaces to games for classrooms and language beginners.</p>
         </div>
-        <ul class="facts">
-          <li><b>M.Ed.</b><span>Technical University of Munich</span></li>
-          <li><b>4+ years</b><span>Learning design and evaluation</span></li>
-          <li><b>Builds with</b><span>HTML5, JavaScript, three.js, Articulate Storyline</span></li>
-        </ul>
+        <aside class="player" aria-label="About Razin">
+          <span class="player__tag">Player 1</span>
+          <div class="player__photo">
+          <img src="img/razin.webp" alt="Razin Abdullah" width="720" height="720">
+          <span class="player__badge">Ready</span>
+          </div>
+          <p class="player__name">Razin Abdullah</p>
+          <p class="player__class">Learning experience designer</p>
+          <ul class="player__stats">
+          <li><span>Specialty</span><b>Visual simulations</b></li>
+          <li><span>Trained at</span><b>M.Ed., TU Munich</b></li>
+          <li><span>Experience</span><b>4+ years</b></li>
+          <li><span>Builds in</span><b>HTML5, Storyline, 3D</b></li>
+          </ul>
+        </aside>
       </div>
     </div>
   </section>

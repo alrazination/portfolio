@@ -28,7 +28,10 @@
       "thumbStart": "img/thumbs/wo-ist-der-loeffel-start.webp",
       "thumbStartAlt": "A 3D kitchen with teal cabinets",
       "thumbMistake": "img/thumbs/wo-ist-der-loeffel.webp",
-      "page": "work/wo-ist-der-loeffel.html"
+      "page": "work/wo-ist-der-loeffel.html",
+      "topic": "Language",
+      "simPath": "sims/wo-ist-der-loeffel/index.html",
+      "fixed": false
     },
     {
       "slug": "flat-tire",
@@ -51,7 +54,10 @@
       "thumbStart": "img/thumbs/flat-tire-start.webp",
       "thumbStartAlt": "A red car with a flat rear tire beside a trunk of tools",
       "thumbMistake": "img/thumbs/flat-tire.webp",
-      "page": "work/flat-tire.html"
+      "page": "work/flat-tire.html",
+      "topic": "Safety",
+      "simPath": "sims/flat-tire/index.html",
+      "fixed": true
     },
     {
       "slug": "cleanroom-gowning",
@@ -74,7 +80,10 @@
       "thumbStart": "img/thumbs/cleanroom-gowning-start.webp",
       "thumbStartAlt": "A technician in street clothes beside a rack of cleanroom garments",
       "thumbMistake": "img/thumbs/cleanroom-gowning.webp",
-      "page": "work/cleanroom-gowning.html"
+      "page": "work/cleanroom-gowning.html",
+      "topic": "Safety",
+      "simPath": "sims/cleanroom-gowning/index.html",
+      "fixed": true
     },
     {
       "slug": "phishing-inbox",
@@ -97,7 +106,10 @@
       "thumbStart": "img/thumbs/phishing-inbox-start.webp",
       "thumbStartAlt": "An email inbox next to a map of the office network",
       "thumbMistake": "img/thumbs/phishing-inbox.webp",
-      "page": "work/phishing-inbox.html"
+      "page": "work/phishing-inbox.html",
+      "topic": "Compliance",
+      "simPath": "sims/phishing-inbox/index.html",
+      "fixed": true
     },
     {
       "slug": "fire-extinguisher",
@@ -120,7 +132,10 @@
       "thumbStart": "img/thumbs/fire-extinguisher-start.webp",
       "thumbStartAlt": "An office with a burning waste bin and extinguishers on the wall",
       "thumbMistake": "img/thumbs/fire-extinguisher.webp",
-      "page": "work/fire-extinguisher.html"
+      "page": "work/fire-extinguisher.html",
+      "topic": "Safety",
+      "simPath": "sims/fire-extinguisher/index.html",
+      "fixed": true
     },
     {
       "slug": "gdpr-every-dot",
@@ -143,7 +158,10 @@
       "thumbStart": "img/thumbs/gdpr-every-dot-start.webp",
       "thumbStartAlt": "A newsletter email beside a wall of 240 dots, one per person",
       "thumbMistake": "img/thumbs/gdpr-every-dot.webp",
-      "page": "work/gdpr-every-dot.html"
+      "page": "work/gdpr-every-dot.html",
+      "topic": "Compliance",
+      "simPath": "sims/gdpr-every-dot/index.html",
+      "fixed": true
     },
     {
       "slug": "close-the-loop",
@@ -166,7 +184,10 @@
       "thumbStart": "img/thumbs/close-the-loop-start.webp",
       "thumbStartAlt": "Waste on a conveyor belt heading for an incinerator",
       "thumbMistake": "img/thumbs/close-the-loop.webp",
-      "page": "work/close-the-loop.html"
+      "page": "work/close-the-loop.html",
+      "topic": "Sustainability",
+      "simPath": "sims/close-the-loop/index.html",
+      "fixed": true
     },
     {
       "slug": "eco-party",
@@ -189,7 +210,10 @@
       "thumbStart": "img/thumbs/eco-party-start.webp",
       "thumbStartAlt": "An empty school gym ready to be decorated, next to a balance scale",
       "thumbMistake": "img/thumbs/eco-party.webp",
-      "page": "work/eco-party.html"
+      "page": "work/eco-party.html",
+      "topic": "Sustainability",
+      "simPath": "sims/eco-party/index.html",
+      "fixed": true
     }
   ],
   "clients": [

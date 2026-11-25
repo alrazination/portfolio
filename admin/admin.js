@@ -233,7 +233,7 @@
     return '<div class="grid2">' + inp(b + 'title', 'Title', p.title) + inp(b + 'tagline', 'One-line description', p.tagline) + '</div>' +
       inp(b + 'sticker', '"Get it wrong" sticker', p.sticker, { hint: 'What happens when you make the key mistake' }) +
       '<div class="grid3">' + inp(b + 'chips.0.label', 'Main tag', p.chips[0].label) + toneSel(b + 'chips.0.tone', p.chips[0].tone) + inp(b + 'chips.1.label', 'Second tag', p.chips[1].label) + '</div>' +
-      '<div class="grid2">' + inp(b + 'series', 'Series heading', p.series, { hint: 'optional, groups cards under a heading' }) + inp(b + 'thumbStartAlt', 'Image description', p.thumbStartAlt, { hint: 'for screen readers' }) + '</div>' +
+      '<div class="grid3">' + inp(b + 'topic', 'Topic', p.topic, { hint: 'filter button, e.g. Safety' }) + inp(b + 'series', 'Series heading', p.series, { hint: 'optional' }) + inp(b + 'thumbStartAlt', 'Image description', p.thumbStartAlt, { hint: 'for screen readers' }) + '</div>' +
       (custom
         ? '<details class="more"><summary>Case study page text</summary>' +
             inp(b + 'lede', 'Intro paragraph', p.lede, { area: true }) +
@@ -261,7 +261,10 @@
         '<label class="field">Start screen image * <small>any size, cropped to 16:9</small><input type="file" name="imgStart" accept="image/*" required></label>' +
         '<label class="field">"Mistake" image <small>shown on hover, optional</small><input type="file" name="imgMistake" accept="image/*"></label>' +
       '</div>' +
-      '<label class="field">Image description <small>for screen readers</small><input name="alt"></label>' +
+      '<div class="grid2">' +
+        '<label class="field">Topic <small>its filter button on the home page, e.g. Safety, Compliance</small><input name="topic"></label>' +
+        '<label class="field">Image description <small>for screen readers</small><input name="alt"></label>' +
+      '</div>' +
       '<div class="card" style="background:var(--deep)">' +
         '<p class="a-help" style="margin-bottom:10px"><b style="color:var(--cream)">The project itself.</b> Upload a playable HTML file, a whole folder (it must contain index.html), or give a link instead (a video, a SCORM Cloud preview, anything).</p>' +
         '<div class="grid3">' +
@@ -470,6 +473,7 @@
       chips: [{ label: String(fd.get('chip0') || '').trim(), tone: String(fd.get('tone0') || '') }, { label: String(fd.get('chip1') || '').trim(), tone: '' }],
       sticker: String(fd.get('sticker') || '').trim(),
       thumbStartAlt: String(fd.get('alt') || '').trim(),
+      topic: String(fd.get('topic') || '').trim(),
       lede: String(fd.get('lede') || '').trim(), audience: String(fd.get('audience') || '').trim(),
       topic: String(fd.get('topic') || '').trim(), mechanic: String(fd.get('mechanic') || '').trim(),
       builtWith: String(fd.get('builtWith') || '').trim(), howToPlay: String(fd.get('howToPlay') || '').trim(),

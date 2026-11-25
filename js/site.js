@@ -57,37 +57,133 @@
   }
 
   /* ---------- project grid on the home page ---------- */
+  var PROJECTS = [];
   function levels(list) {
     var box = $('[data-levels]');
     if (!box) return;
     var shown = list.filter(on);
+    PROJECTS = shown;
     var lastSeries = '';
     box.innerHTML = shown.map(function (p) {
       var note = '';
-      if (p.series && p.series !== lastSeries) note = '<p class="series-note">' + esc(p.series) + '</p>';
+      if (p.series && p.series !== lastSeries) note = '<p class="series-note" data-series>' + esc(p.series) + '</p>';
       lastSeries = p.series || '';
       var chips = (p.chips || []).map(function (ch) {
         return '<span class="chip' + (ch.tone ? ' chip--' + esc(ch.tone) : '') + '">' + esc(ch.label) + '</span>';
       }).join('');
       var href = p.page || ('work/project.html?p=' + encodeURIComponent(p.slug));
       return note +
-        '<a class="level' + (p.feature ? ' level--feature' : '') + '" href="' + esc(url(href)) + '">' +
+        '<article class="level' + (p.feature ? ' level--feature' : '') + '" data-topic="' + esc(p.topic || '') + '">' +
           '<div class="level__img">' +
             '<img src="' + esc(url(p.thumbStart)) + '" alt="' + esc(p.thumbStartAlt || '') + '" loading="lazy" width="1280" height="720">' +
             (p.thumbMistake ? '<img class="level__alt" src="' + esc(url(p.thumbMistake)) + '" alt="" loading="lazy" width="1280" height="720">' : '') +
             (p.sticker ? '<span class="sticker"><b>Get it wrong</b> ' + esc(p.sticker) + '</span>' : '') +
+            '<span class="level__glare" aria-hidden="true"></span>' +
+            (p.simPath ? '<button class="qp" type="button" data-qp="' + esc(p.slug) + '"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3.5v13l11-6.5z" fill="currentColor"/></svg>Quick play</button>' : '') +
           '</div>' +
           '<div class="level__body">' +
             '<div class="chips">' + chips + '</div>' +
-            '<h3>' + esc(p.title) + '</h3>' +
+            '<h3><a class="level__link" href="' + esc(url(href)) + '">' + esc(p.title) + '</a></h3>' +
             '<p>' + esc(p.tagline) + '</p>' +
-            '<span class="level__go">Play it</span>' +
+            '<span class="level__go" aria-hidden="true">See how it works</span>' +
           '</div>' +
-        '</a>';
+        '</article>';
     }).join('');
-    var count = $('[data-level-count]');
-    var words = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
-    if (count) count.textContent = (words[shown.length] || shown.length) + (shown.length === 1 ? ' simulation.' : ' simulations.');
+    filters(shown, box);
+  }
+
+  /* Topic filters: cards pop out, the matching ones pop back in. */
+  function filters(shown, box) {
+    var bar = $('[data-filters]');
+    if (!bar) return;
+    var topics = [];
+    shown.forEach(function (p) { if (p.topic && topics.indexOf(p.topic) < 0) topics.push(p.topic); });
+    if (topics.length < 2) { bar.hidden = true; return; }
+    bar.innerHTML = ['All'].concat(topics).map(function (t, i) {
+      var n = t === 'All' ? shown.length : shown.filter(function (p) { return p.topic === t; }).length;
+      return '<button type="button" class="filter' + (i ? '' : ' is-on') + '" data-filter="' + esc(t) + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + esc(t) + '<span>' + n + '</span></button>';
+    }).join('');
+    var busy = false;
+    bar.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-filter]');
+      if (!b || busy || b.classList.contains('is-on')) return;
+      $$('[data-filter]').forEach(function (x) { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', x === b); });
+      var t = b.getAttribute('data-filter'), kids = Array.prototype.slice.call(box.children);
+      var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+      busy = true;
+      kids.forEach(function (el) { if (!el.hidden) el.classList.add('is-leaving'); });
+      setTimeout(function () {
+        var k = 0;
+        kids.forEach(function (el) {
+          var show = t === 'All' || el.getAttribute('data-topic') === t;
+          if (el.hasAttribute('data-series')) show = t === 'All';
+          el.classList.remove('is-leaving', 'is-entering');
+          el.hidden = !show;
+          if (show) { el.classList.add('is-popped'); el.style.setProperty('--d', (k++ * 70) + 'ms'); void el.offsetWidth; el.classList.add('is-entering'); }
+        });
+        busy = false;
+      }, reduce ? 0 : 230);
+    });
+  }
+
+  /* Quick play: open a simulation in a pop-up without leaving the page. */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-qp]');
+    if (!b) return;
+    var p = PROJECTS.filter(function (x) { return x.slug === b.getAttribute('data-qp'); })[0];
+    if (p) quickPlay(p, b);
+  });
+  /* The picture sits above the card's link layer (so Quick play is clickable);
+     a click anywhere else on the picture still opens the case study. */
+  document.addEventListener('click', function (e) {
+    var img = e.target.closest('.level__img');
+    if (!img || e.target.closest('[data-qp]')) return;
+    var a = img.parentNode.querySelector('.level__link');
+    if (a) a.click();
+  });
+  var QP;
+  function quickPlay(p, trigger) {
+    if (!QP) {
+      QP = document.createElement('div');
+      QP.className = 'qp-modal';
+      QP.hidden = true;
+      QP.setAttribute('role', 'dialog');
+      QP.setAttribute('aria-modal', 'true');
+      QP.setAttribute('aria-labelledby', 'qp-title');
+      QP.innerHTML = '<div class="qp-backdrop" data-qp-close></div><div class="qp-panel">' +
+        '<div class="qp-head"><h2 id="qp-title"></h2><a class="btn btn--sm btn--panel" data-qp-more href="#">How it was designed</a>' +
+        '<button class="qp-close" type="button" data-qp-close aria-label="Close">×</button></div>' +
+        '<div class="qp-stage"></div><p class="qp-note">Built for laptop screens. On a phone, turn it sideways.</p></div>';
+      document.body.appendChild(QP);
+      QP.addEventListener('click', function (e) { if (e.target.closest('[data-qp-close]')) closeQP(); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !QP.hidden) closeQP(); });
+      if ('ResizeObserver' in window) new ResizeObserver(fitQP).observe(QP.querySelector('.qp-stage'));
+      else window.addEventListener('resize', fitQP);
+    }
+    QP._trigger = trigger;
+    QP.querySelector('#qp-title').textContent = p.title;
+    QP.querySelector('[data-qp-more]').href = url(p.page || ('work/project.html?p=' + encodeURIComponent(p.slug)));
+    var stage = QP.querySelector('.qp-stage');
+    stage.classList.toggle('is-fixed', !!p.fixed);
+    stage.innerHTML = '<iframe src="' + esc(url(p.simPath)) + '" title="' + esc(p.title) + ' simulation" allow="autoplay; fullscreen"></iframe>';
+    QP.hidden = false;
+    document.documentElement.classList.add('qp-lock');
+    void QP.offsetWidth;
+    QP.classList.add('is-open');
+    fitQP();
+    QP.querySelector('.qp-close').focus();
+    document.dispatchEvent(new CustomEvent('achieve', { detail: 'quickplay' }));
+  }
+  function fitQP() {
+    if (!QP || QP.hidden) return;
+    var st = QP.querySelector('.qp-stage'), f = st.querySelector('iframe');
+    if (f && st.classList.contains('is-fixed')) f.style.transform = 'scale(' + (st.clientWidth / 1280) + ')';
+  }
+  function closeQP() {
+    QP.classList.remove('is-open');
+    document.documentElement.classList.remove('qp-lock');
+    setTimeout(function () { QP.hidden = true; QP.querySelector('.qp-stage').innerHTML = ''; }, 260);
+    if (QP._trigger) QP._trigger.focus();
   }
 
   /* ---------- proof: client names, testimonials, outcomes ---------- */
@@ -155,6 +251,7 @@
         f.reset();
         status.className = 'form__status is-ok';
         status.textContent = 'Thanks! Your message is on its way. I reply within one working day.';
+        document.dispatchEvent(new CustomEvent('form:sent'));
       }).catch(function () {
         status.className = 'form__status is-err';
         status.innerHTML = 'That didn\'t send. Please email me directly at <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>.';
@@ -188,6 +285,8 @@
       reset();
       void box.offsetWidth; // restart the animation
       box.className = 'yc is-' + k + (o.ok ? ' is-good' : ' is-bad');
+      document.dispatchEvent(new CustomEvent('yc:result', { detail: { ok: o.ok, move: k } }));
+      document.dispatchEvent(new CustomEvent('achieve', { detail: o.ok ? 'brake' : 'rolled' }));
       btn.setAttribute('aria-pressed', 'true');
       Array.prototype.forEach.call(choices, function (c) { if (c !== btn) c.disabled = true; });
       if (o.badge) badge.textContent = o.badge;

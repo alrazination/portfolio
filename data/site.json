@@ -3,7 +3,7 @@
     "email": "razin@greenmindlearning.eu",
     "linkedin": "https://www.linkedin.com/in/razin-abdullah/",
     "calendar": "",
-    "web3formsKey": "",
+    "web3formsKey": "d9b61fef-000e-4c53-9433-96181e14181c",
     "goatcounter": ""
   },
   "projects": [
@@ -14,7 +14,16 @@
       "series": "",
       "title": "Wo ist der Löffel?",
       "tagline": "Learn 58 German words by finding them in a kitchen you can walk around.",
-      "chips": [{ "label": "3D world", "tone": "sky" }, { "label": "German A1", "tone": "" }],
+      "chips": [
+        {
+          "label": "3D world",
+          "tone": "sky"
+        },
+        {
+          "label": "German A1",
+          "tone": ""
+        }
+      ],
       "sticker": "You hear what you clicked, with its article",
       "thumbStart": "img/thumbs/wo-ist-der-loeffel-start.webp",
       "thumbStartAlt": "A 3D kitchen with teal cabinets",
@@ -28,7 +37,16 @@
       "series": "",
       "title": "Changing a flat tire",
       "tagline": "Four tools, one car. The order is everything.",
-      "chips": [{ "label": "Procedure", "tone": "hot" }, { "label": "Drivers", "tone": "" }],
+      "chips": [
+        {
+          "label": "Procedure",
+          "tone": "hot"
+        },
+        {
+          "label": "Drivers",
+          "tone": ""
+        }
+      ],
       "sticker": "Skip the brake and the car rolls off the jack",
       "thumbStart": "img/thumbs/flat-tire-start.webp",
       "thumbStartAlt": "A red car with a flat rear tire beside a trunk of tools",
@@ -42,7 +60,16 @@
       "series": "",
       "title": "Cleanroom gowning",
       "tagline": "Gown a technician while a particle counter watches.",
-      "chips": [{ "label": "Procedure", "tone": "hot" }, { "label": "Semiconductor fab", "tone": "" }],
+      "chips": [
+        {
+          "label": "Procedure",
+          "tone": "hot"
+        },
+        {
+          "label": "Semiconductor fab",
+          "tone": ""
+        }
+      ],
       "sticker": "Dust falls on the clean suit: 10,000 particles",
       "thumbStart": "img/thumbs/cleanroom-gowning-start.webp",
       "thumbStartAlt": "A technician in street clothes beside a rack of cleanroom garments",
@@ -56,7 +83,16 @@
       "series": "Circular economy series",
       "title": "Close the loop",
       "tagline": "Rescue waste from the belt before it reaches the fire.",
-      "chips": [{ "label": "Arcade", "tone": "lime" }, { "label": "Upcycling", "tone": "" }],
+      "chips": [
+        {
+          "label": "Arcade",
+          "tone": "lime"
+        },
+        {
+          "label": "Upcycling",
+          "tone": ""
+        }
+      ],
       "sticker": "Too slow and the material burns",
       "thumbStart": "img/thumbs/close-the-loop-start.webp",
       "thumbStartAlt": "Waste on a conveyor belt heading for an incinerator",
@@ -70,7 +106,16 @@
       "series": "Circular economy series",
       "title": "Eco-Party Planner",
       "tagline": "Balance party fun against planet waste.",
-      "chips": [{ "label": "Puzzle", "tone": "lime" }, { "label": "Greenwashing", "tone": "" }],
+      "chips": [
+        {
+          "label": "Puzzle",
+          "tone": "lime"
+        },
+        {
+          "label": "Greenwashing",
+          "tone": ""
+        }
+      ],
       "sticker": "The \"compostable\" cups are a trap",
       "thumbStart": "img/thumbs/eco-party-start.webp",
       "thumbStartAlt": "An empty school gym ready to be decorated, next to a balance scale",
@@ -79,11 +124,31 @@
     }
   ],
   "clients": [
-    { "name": "Northwind Manufacturing", "on": false, "sample": true },
-    { "name": "Helix Semiconductor", "on": false, "sample": true },
-    { "name": "Städtisches Gymnasium Nord", "on": false, "sample": true },
-    { "name": "BrightPath Academy", "on": false, "sample": true },
-    { "name": "Verde Training GmbH", "on": false, "sample": true }
+    {
+      "name": "Northwind Manufacturing",
+      "on": false,
+      "sample": true
+    },
+    {
+      "name": "Helix Semiconductor",
+      "on": false,
+      "sample": true
+    },
+    {
+      "name": "Städtisches Gymnasium Nord",
+      "on": false,
+      "sample": true
+    },
+    {
+      "name": "BrightPath Academy",
+      "on": false,
+      "sample": true
+    },
+    {
+      "name": "Verde Training GmbH",
+      "on": false,
+      "sample": true
+    }
   ],
   "testimonials": [
     {
@@ -118,31 +183,76 @@
     "flat-tire": {
       "on": false,
       "sample": true,
-      "stats": [{ "value": "92%", "label": "got the order right on the second try" }, { "value": "6 min", "label": "average time to complete" }],
+      "stats": [
+        {
+          "value": "92%",
+          "label": "got the order right on the second try"
+        },
+        {
+          "value": "6 min",
+          "label": "average time to complete"
+        }
+      ],
       "text": "Play-tested with 25 learner drivers. Most made the parking-brake mistake once, and almost none made it twice."
     },
     "cleanroom-gowning": {
       "on": false,
       "sample": true,
-      "stats": [{ "value": "−38%", "label": "gowning errors in the first month" }, { "value": "120", "label": "technicians trained" }],
+      "stats": [
+        {
+          "value": "−38%",
+          "label": "gowning errors in the first month"
+        },
+        {
+          "value": "120",
+          "label": "technicians trained"
+        }
+      ],
       "text": "Rolled out to new starters as part of onboarding, replacing a slide deck and a video."
     },
     "wo-ist-der-loeffel": {
       "on": false,
       "sample": true,
-      "stats": [{ "value": "41 of 58", "label": "words recalled after one session, on average" }, { "value": "4.7/5", "label": "learner rating" }],
+      "stats": [
+        {
+          "value": "41 of 58",
+          "label": "words recalled after one session, on average"
+        },
+        {
+          "value": "4.7/5",
+          "label": "learner rating"
+        }
+      ],
       "text": "Tested with A1 learners at an adult education centre alongside their regular class."
     },
     "close-the-loop": {
       "on": false,
       "sample": true,
-      "stats": [{ "value": "3 classes", "label": "played it in the pilot" }, { "value": "87%", "label": "could name an upcycled product afterwards" }],
+      "stats": [
+        {
+          "value": "3 classes",
+          "label": "played it in the pilot"
+        },
+        {
+          "value": "87%",
+          "label": "could name an upcycled product afterwards"
+        }
+      ],
       "text": "Used as a lesson starter in a secondary school sustainability unit."
     },
     "eco-party": {
       "on": false,
       "sample": true,
-      "stats": [{ "value": "2×", "label": "more students spotted greenwashing claims" }, { "value": "45 min", "label": "one lesson, with teacher notes" }],
+      "stats": [
+        {
+          "value": "2×",
+          "label": "more students spotted greenwashing claims"
+        },
+        {
+          "value": "45 min",
+          "label": "one lesson, with teacher notes"
+        }
+      ],
       "text": "Piloted in Year 8 geography with a short pre and post quiz."
     }
   }

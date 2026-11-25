@@ -20,7 +20,8 @@
     rolled: ['Learned the hard way', 'You watched the car roll. That one sticks.'],
     gowned: ['Cleanroom ready', 'Dressed top to bottom, in the right order.'],
     quickplay: ['Hands on', 'You played a simulation.'],
-    fit: ['Mission planned', 'You found your setup.']
+    fit: ['Mission planned', 'You picked a starting point.'],
+    road: ['Road tripper', 'You followed the build to the finish flag.']
   };
   var got = store.get('rz-ach') || {};
   var toasts = document.createElement('div');
@@ -59,8 +60,9 @@
   window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
   /* ---------------- pop-in reveals ---------------- */
-  var POP = ['.hero h1', '.hero__copy > *', '.section__head h2', '.section__head p', '.fit', '.filters', '.level', '.series-note', '.versus__words', '.versus__vs', '.versus__picture',
-    '.principles li', '.service', '.package', '.deliver li', '.step', '.player', '.about__text', '.faq details', '.quote',
+  var POP = ['.hero h1', '.hero__copy > *', '.section__head h2', '.section__head p', '.filters', '.level', '.series-note',
+    '.flip', '.sw__list', '.sw__stage', '.package', '.dv__tabs', '.dv__pane:not([hidden])', '.dv__always', '.road__map', '.road__card:not([hidden])',
+    '.player', '.about__text', '.faq details', '.quote',
     '.contact h2', '.contact p', '.form', '.cs-meta div', '.cs-sec', '.decision', '.flow__row', '.stat', '.yc'];
   var io = !RM && 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
     es.forEach(function (e) {
@@ -224,7 +226,7 @@
       $$('.gw-b', svg).forEach(function (b) { b.classList.remove('is-done', 'is-wrong'); });
       svg.setAttribute('class', '');
       reset.hidden = true;
-      say('Your turn: tap the garments in the order you’d put them on.');
+      say('Hint: think about which way dust falls.');
       $('.gw-b', svg).focus();
     });
   })();
@@ -310,5 +312,126 @@
         setTimeout(function (el) { el.parentNode && el.parentNode.removeChild(el); }, 1300, s);
       }
     });
+  })();
+
+  /* ---------------- shared: tabs that pop their panel in ---------------- */
+  // Arrow keys move between tabs (WAI-ARIA tabs pattern); the shown panel pops in.
+  function popIn(el) {
+    if (!el || RM) return;
+    el.classList.remove('is-entering'); el.classList.add('is-popped');
+    el.setAttribute('data-pop', 'done');
+    el.style.setProperty('--d', '0ms');
+    void el.offsetWidth; el.classList.add('is-entering');
+  }
+  function tabs(list, onSelect) {
+    var t = $$('[role=tab]', list);
+    t.forEach(function (b, i) {
+      b.addEventListener('click', function () { select(i, false); });
+      b.addEventListener('keydown', function (e) {
+        var k = e.key, n = null;
+        if (k === 'ArrowRight' || k === 'ArrowDown') n = (i + 1) % t.length;
+        if (k === 'ArrowLeft' || k === 'ArrowUp') n = (i - 1 + t.length) % t.length;
+        if (k === 'Home') n = 0;
+        if (k === 'End') n = t.length - 1;
+        if (n !== null) { e.preventDefault(); select(n, true); }
+      });
+    });
+    function select(i, focus) {
+      t.forEach(function (b, j) {
+        b.setAttribute('aria-selected', i === j);
+        b.tabIndex = i === j ? 0 : -1;
+      });
+      if (focus) t[i].focus();
+      onSelect(i, t[i]);
+    }
+    return select;
+  }
+
+  /* ---------------- slide vs simulation ---------------- */
+  (function () {
+    var box = $('[data-flip]');
+    if (!box) return;
+    var views = ['slide', 'sim'];
+    var select = tabs($('.flip__bar', box), function (i) {
+      box.setAttribute('data-view', views[i]);
+      $$('[data-pane]', box).forEach(function (p) {
+        var on = p.getAttribute('data-pane') === views[i];
+        if (on && p.hidden) { p.hidden = false; popIn(p); }
+        else if (!on) p.hidden = true;
+      });
+    });
+    box.setAttribute('data-view', 'sim');
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-view]:not([role=tab])');
+      if (b) select(views.indexOf(b.getAttribute('data-view')), true);
+    });
+  })();
+
+  /* ---------------- services: "what's going wrong?" switcher ---------------- */
+  (function () {
+    var box = $('[data-switch]');
+    if (!box) return;
+    tabs($('.sw__list', box), function (i) {
+      $$('[data-card]', box).forEach(function (c) {
+        var on = +c.getAttribute('data-card') === i;
+        if (on && c.hidden) { c.hidden = false; popIn(c); }
+        else if (!on) c.hidden = true;
+      });
+    });
+    box.addEventListener('click', function (e) {
+      var a = e.target.closest('[data-start]');
+      if (!a) return;
+      var f = $('[data-contact-form]'); if (!f) return;
+      var sv = $('select[name=service]', f), pk = $('select[name=package]', f), m = $('textarea[name=message]', f);
+      Array.prototype.forEach.call(sv.options, function (o) { if (o.text === a.getAttribute('data-start')) sv.value = o.value; });
+      Array.prototype.forEach.call(pk.options, function (o) { if (o.text.indexOf(a.getAttribute('data-pkg')) === 0) pk.value = o.value; });
+      if (!m.value.trim()) m.value = 'What’s going wrong: ' + a.getAttribute('data-problem') + '.\n\n';
+      m.dispatchEvent(new Event('input', { bubbles: true }));
+      document.dispatchEvent(new CustomEvent('achieve', { detail: 'fit' }));
+    });
+  })();
+
+  /* ---------------- delivery: where do your learners work? ---------------- */
+  (function () {
+    var box = $('[data-deliver]');
+    if (!box) return;
+    tabs($('.dv__tabs', box), function (i) {
+      $$('[data-dvpane]', box).forEach(function (p) {
+        var on = +p.getAttribute('data-dvpane') === i;
+        if (on && p.hidden) { p.hidden = false; popIn(p); }
+        else if (!on) p.hidden = true;
+      });
+    });
+  })();
+
+  /* ---------------- process roadmap ---------------- */
+  (function () {
+    var box = $('[data-road]');
+    if (!box) return;
+    var stops = $$('.road__stop', box), token = $('.road__token', box), done = $('.road__done', box), seen = {};
+    function go(i, focus) {
+      stops.forEach(function (s, j) {
+        s.setAttribute('aria-pressed', i === j);
+        s.classList.toggle('is-passed', j < i);
+      });
+      token.style.setProperty('--x', stops[i].style.getPropertyValue('--x'));
+      token.style.setProperty('--y', stops[i].style.getPropertyValue('--y'));
+      token.classList.remove('is-hop'); void token.offsetWidth; token.classList.add('is-hop');
+      done.style.strokeDashoffset = 100 - i * 25;
+      $$('[data-rcard]', box).forEach(function (c) {
+        var on = +c.getAttribute('data-rcard') === i;
+        if (on && c.hidden) { c.hidden = false; popIn(c); }
+        else if (!on) c.hidden = true;
+      });
+      if (focus) stops[i].focus();
+      seen[i] = 1;
+      if (i === stops.length - 1) document.dispatchEvent(new CustomEvent('achieve', { detail: 'road' }));
+    }
+    stops.forEach(function (s, i) { s.addEventListener('click', function () { go(i); }); });
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-go]');
+      if (b && !b.disabled) go(+b.getAttribute('data-go'));
+    });
+    go(0);
   })();
 })();

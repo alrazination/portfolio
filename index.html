@@ -18,6 +18,7 @@
 <link rel="preload" href="fonts/unbounded.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/sections.css">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -41,11 +42,15 @@
     <div class="wrap">
       <h1>Training that plays like a game and works like the job.</h1>
       <div class="hero__copy">
-        <p class="hero__lede">I design e-learning, simulations and training activities where people make real decisions, get it wrong safely, and see the consequences instead of reading about them.</p>
-        <p class="hero__for">For anyone who wants to level up their learning offer. Delivered to any LMS, or hosted for you.</p>
+        <p class="hero__lede">Your people make the real decisions, get them wrong safely, and see what happens. So the right way sticks before it matters.</p>
+        <ul class="hero__points">
+          <li>Simulations, e-learning and live training</li>
+          <li>Ready for your LMS, or hosted for you</li>
+          <li>Live in 3 to 5 weeks, from &euro;500</li>
+        </ul>
         <div class="hero__actions">
           <a class="btn" href="#contact">Start a project</a>
-          <a class="btn btn--panel" href="#levels">Play my simulations</a>
+          <a class="btn btn--panel" href="#levels">See the simulations</a>
         </div>
       </div>
 
@@ -99,7 +104,7 @@
     <div class="wrap">
       <div class="section__head">
         <h2>Simulations you can play.</h2>
-        <p>Each one is built around a mistake. Hover a picture to see it happen, or press Quick play to try it right here.</p>
+        <p>Each one is built around a mistake your people could make. Hover to see it happen, or hit Quick play.</p>
       </div>
 
       <div class="filters" data-filters role="group" aria-label="Filter by topic"></div>
@@ -119,19 +124,34 @@
   <section class="section" id="visual">
     <div class="wrap">
       <div class="section__head">
-        <h2>I make learning visible.</h2>
-        <p>Most training explains. I'd rather let you try. Here's the same cleanroom rule, both ways.</p>
+        <h2>Your people won't read it. They'll play it.</h2>
+        <p>The same cleanroom rule, taught two ways. Flip the switch and try both.</p>
       </div>
-
-      <div class="versus">
-        <div class="versus__words">
-          <span class="versus__label">In words</span>
-          <p>Put on the hairnet first, then the hood so that it covers your head and neck. Next, step into the coverall. Put on the shoe covers before you cross the clean line. Finally, put on the gloves and pull them over your sleeves so they seal.</p>
+      <div class="flip" data-flip data-view="sim">
+        <div class="flip__bar" role="tablist" aria-label="How the rule is taught">
+          <span class="flip__thumb" aria-hidden="true"></span>
+          <button type="button" role="tab" id="flip-slide" aria-controls="pane-slide" aria-selected="false" tabindex="-1" data-view="slide">As a slide</button>
+          <button type="button" role="tab" id="flip-sim" aria-controls="pane-sim" aria-selected="true" data-view="sim">As a simulation</button>
         </div>
-        <div class="versus__vs" aria-hidden="true">vs</div>
-        <figure class="versus__picture gw" data-gowning>
-          <span class="versus__label versus__label--lime">In a simulation</span>
-          <svg viewBox="0 0 420 440" role="group" aria-label="Gowning mini-game. Choose the garments in the order you would put them on.">
+        <div class="flip__stage">
+          <div class="flip__pane flip__pane--slide" id="pane-slide" role="tabpanel" aria-labelledby="flip-slide" data-pane="slide" hidden>
+            <div class="slide">
+              <div class="slide__top"><span>Module 3: Cleanroom procedures</span><span>Slide 14 of 38</span></div>
+              <h3>Gowning procedure</h3>
+              <ol>
+                <li>Put on the hairnet first.</li>
+                <li>Put on the hood so that it covers your head and neck.</li>
+                <li>Step into the coverall.</li>
+                <li>Put on the shoe covers before crossing the clean line.</li>
+                <li>Put on the gloves and pull them over your sleeves.</li>
+              </ol>
+              <div class="slide__foot"><span>Please read carefully before continuing.</span><button type="button" class="slide__next" data-view="sim">Next</button></div>
+            </div>
+            <p class="flip__note">Correct, complete, and easy to click past. <button type="button" class="flip__link" data-view="sim">Now try it as a simulation</button></p>
+          </div>
+          <div class="flip__pane flip__pane--sim gw" id="pane-sim" role="tabpanel" aria-labelledby="flip-sim" data-pane="sim" data-gowning>
+            <div class="flip__game">
+              <svg viewBox="0 0 420 440" role="group" aria-label="Gowning mini-game. Choose the garments in the order you would put them on.">
             <defs><marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#FF4F6D"/></marker></defs>
             <path d="M44 40 V380" stroke="#FF4F6D" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round" marker-end="url(#arr)" fill="none" opacity=".55"/>
             <g class="gw-fig">
@@ -150,109 +170,90 @@
             <g class="gw-lines" stroke="#C6FF3D" stroke-width="2.5" stroke-dasharray="3 5" fill="none"><path d="M128 52 H174"/><path d="M302 92 H256"/><path d="M128 205 H160"/><path d="M302 270 H296"/><path d="M302 392 H256"/></g>
             <g class="gw-b" data-step="1" tabindex="0" role="button" aria-label="Hairnet" transform="translate(66 22)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M8 40C8 12 56 12 56 40C56 48 46 50 32 50C18 50 8 48 8 40Z" fill="#dbeafe" stroke="#3b82f6" stroke-width="2.5"/><path d="M12 38H52" stroke="#3b82f6" stroke-width="2" stroke-dasharray="3 4"/></svg><g class="gw-n"><circle cx="0" cy="0" r="13" fill="#C6FF3D"/><text x="0" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">1</text></g></g></g><g class="gw-b" data-step="2" tabindex="0" role="button" aria-label="Hood" transform="translate(302 62)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M32 4C16 4 12 20 14 34L5 56H59L50 34C52 20 48 4 32 4Z" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><ellipse cx="32" cy="28" rx="11" ry="14" fill="#16213a" stroke="#64748b" stroke-width="2.5"/></svg><g class="gw-n"><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">2</text></g></g></g><g class="gw-b" data-step="3" tabindex="0" role="button" aria-label="Coverall" transform="translate(66 174)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><path d="M22 4H42L59 17L53 34L46 29V60H35L32 40L29 60H18V29L11 34L5 17Z" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/></svg><g class="gw-n"><circle cx="0" cy="0" r="13" fill="#C6FF3D"/><text x="0" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">3</text></g></g></g><g class="gw-b" data-step="5" tabindex="0" role="button" aria-label="Gloves" transform="translate(302 240)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><g fill="#38bdf8" stroke="#0369a1" stroke-width="2.5"><rect x="17" y="30" width="30" height="26" rx="8"/><rect x="17" y="10" width="7" height="28" rx="3.5"/><rect x="25" y="5" width="7" height="32" rx="3.5"/><rect x="33" y="7" width="7" height="30" rx="3.5"/><rect x="41" y="13" width="7" height="26" rx="3.5"/></g></svg><g class="gw-n"><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">5</text></g></g></g><g class="gw-b" data-step="4" tabindex="0" role="button" aria-label="Shoe covers" transform="translate(302 362)"><g class="gw-in"><rect class="gw-box" width="62" height="62" rx="16"/><svg x="9" y="9" width="44" height="44" viewBox="0 0 64 64"><rect x="5" y="24" width="24" height="32" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><rect x="35" y="24" width="24" height="32" rx="10" fill="#f8fafc" stroke="#64748b" stroke-width="2.5"/><path d="M7 33H27M37 33H57" stroke="#3b82f6" stroke-width="3"/></svg><g class="gw-n"><circle cx="62" cy="0" r="13" fill="#C6FF3D"/><text x="62" y="5" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="800" font-size="14" fill="#14082B">4</text></g></g></g>
           </svg>
-          <figcaption class="gw-msg" role="status">Your turn: tap the garments in the order you'd put them on.</figcaption>
-          <button class="gw-reset" type="button" hidden>Try again</button>
-        </figure>
+            </div>
+            <div class="flip__side">
+              <p class="flip__task">Tap the garments in the order you'd put them on.</p>
+              <p class="gw-msg" role="status">Hint: think about which way dust falls.</p>
+              <button class="gw-reset" type="button" hidden>Try again</button>
+              <ul class="flip__why">
+                <li><b>Consequences you can see.</b> Dust falls, a car rolls, a counter jumps.</li>
+                <li><b>Feedback inside the scene.</b> The world reacts first, the explanation follows.</li>
+                <li><b>Mistakes are allowed.</b> That's where the learning happens.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <ul class="principles">
-        <li>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 18 L24 56 H40 Z" fill="#CBBDEB"/><path d="M8 14 L56 26" stroke="#FF4F6D" stroke-width="4" stroke-linecap="round"/><path d="M2 22 H18 Q16 32 10 32 Q4 32 2 22Z" fill="#C6FF3D"/><path d="M46 34 H62 Q60 46 54 46 Q48 46 46 34Z" fill="#FF4F6D"/><circle cx="32" cy="20" r="4" fill="#FFF6EA"/></svg>
-          <b>Consequences you can see</b>
-          <span>A scale tips. A car rolls. A counter jumps.</span>
-        </li>
-        <li>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="16" cy="32" r="11" fill="#1d63c9"/><circle cx="32" cy="32" r="11" fill="#cf2e3d"/><circle cx="48" cy="32" r="11" fill="#178a4c"/></svg>
-          <b>Colour that carries meaning</b>
-          <span>Der is blue, die is red, das is green. Every time.</span>
-        </li>
-        <li>
-          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="10" width="52" height="36" rx="10" fill="#66D9FF"/><path d="M18 46 L16 58 L30 46" fill="#66D9FF"/><circle cx="20" cy="28" r="4" fill="#14082B"/><circle cx="32" cy="28" r="4" fill="#14082B"/><circle cx="44" cy="28" r="4" fill="#14082B"/></svg>
-          <b>Feedback inside the scene</b>
-          <span>The world reacts first. The explanation follows.</span>
-        </li>
-      </ul>
     </div>
   </section>
 
   <section class="section section--deep" id="services">
     <div class="wrap">
       <div class="section__head">
-        <h2>What I can build for you</h2>
-        <p>For anyone who wants to level up their learning offer: L&amp;D teams, training providers, schools and course creators. Start with the problem; most projects combine two or three of these.</p>
+        <h2>What's going wrong?</h2>
+        <p>Pick the one that sounds like your team. You'll see what fixes it, what you get and what it costs.</p>
       </div>
-      <div class="fit" data-fit>
-        <div class="fit__q">
-          <p class="fit__label">What's going wrong?</p>
-          <div class="fit__opts" data-q="problem">
-            <button type="button" data-v="steps">People skip steps</button>
-            <button type="button" data-v="judgment">People make risky calls</button>
-            <button type="button" data-v="finish">Nobody finishes the course</button>
-            <button type="button" data-v="engage">Sessions fall flat</button>
-            <button type="button" data-v="measure">We can't tell if it works</button>
-            <button type="button" data-v="explain">An idea won't stick</button>
-          </div>
+      <div class="sw" data-switch>
+        <div class="sw__list" role="tablist" aria-label="Training problems" aria-orientation="vertical">
+          <button type="button" role="tab" id="sw-tab-steps" aria-controls="sw-card-steps" aria-selected="true" data-sw="0"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="6" fill="#FF4F6D"/><path d="M20 16 L32 22 L20 28Z" fill="#14082B"/><rect x="14" y="38" width="20" height="4" rx="2" fill="#CBBDEB"/></svg><span>People skip steps</span></button>
+          <button type="button" role="tab" id="sw-tab-risky" aria-controls="sw-card-risky" aria-selected="false" tabindex="-1" data-sw="1"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="8" width="26" height="18" rx="7" fill="#66D9FF"/><path d="M8 26 L6 34 L16 26" fill="#66D9FF"/><rect x="20" y="20" width="26" height="18" rx="7" fill="#C6FF3D"/><path d="M40 38 L42 46 L32 38" fill="#C6FF3D"/></svg><span>People make risky calls</span></button>
+          <button type="button" role="tab" id="sw-tab-finish" aria-controls="sw-card-finish" aria-selected="false" tabindex="-1" data-sw="2"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="6" fill="#C6FF3D"/><rect x="10" y="14" width="16" height="4" rx="2" fill="#14082B"/><rect x="10" y="22" width="24" height="4" rx="2" fill="#14082B"/><circle cx="36" cy="16" r="3" fill="#FF4F6D"/><rect x="14" y="38" width="20" height="4" rx="2" fill="#CBBDEB"/></svg><span>Nobody finishes the course</span></button>
+          <button type="button" role="tab" id="sw-tab-flat" aria-controls="sw-card-flat" aria-selected="false" tabindex="-1" data-sw="3"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="6" width="16" height="16" rx="4" fill="#66D9FF"/><rect x="26" y="6" width="16" height="16" rx="4" fill="#C6FF3D"/><rect x="6" y="26" width="16" height="16" rx="4" fill="#FF4F6D"/><rect x="26" y="26" width="16" height="16" rx="4" fill="#FFF6EA"/></svg><span>Workshops fall flat</span></button>
+          <button type="button" role="tab" id="sw-tab-trainers" aria-controls="sw-card-trainers" aria-selected="false" tabindex="-1" data-sw="4"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="14" r="7" fill="#FFF6EA"/><rect x="6" y="23" width="20" height="18" rx="8" fill="#FFF6EA"/><circle cx="35" cy="20" r="5" fill="#C6FF3D"/><rect x="28" y="27" width="14" height="14" rx="6" fill="#C6FF3D"/><path d="M26 10 h14 v6" stroke="#FF4F6D" stroke-width="3" fill="none" stroke-linecap="round"/></svg><span>Trainers lack confidence</span></button>
+          <button type="button" role="tab" id="sw-tab-stick" aria-controls="sw-card-stick" aria-selected="false" tabindex="-1" data-sw="5"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="10" width="30" height="28" rx="6" fill="#66D9FF"/><path d="M34 20 L44 14 V34 L34 28Z" fill="#66D9FF"/><path d="M15 18 L25 24 L15 30Z" fill="#14082B"/></svg><span>An idea won&rsquo;t stick</span></button>
+          <button type="button" role="tab" id="sw-tab-measure" aria-controls="sw-card-measure" aria-selected="false" tabindex="-1" data-sw="6"><svg class="sw__ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="6" width="40" height="36" rx="6" fill="#FFF6EA"/><rect x="11" y="26" width="6" height="10" rx="2" fill="#C6FF3D"/><rect x="21" y="18" width="6" height="18" rx="2" fill="#C6FF3D"/><rect x="31" y="30" width="6" height="6" rx="2" fill="#FF4F6D"/><circle cx="34" cy="16" r="5" fill="none" stroke="#14082B" stroke-width="3"/><path d="M37.5 19.5 L41 23" stroke="#14082B" stroke-width="3" stroke-linecap="round"/></svg><span>You can&rsquo;t tell if it works</span></button>
         </div>
-        <div class="fit__q" data-step2 hidden>
-          <p class="fit__label">Where should it run?</p>
-          <div class="fit__opts" data-q="where">
-            <button type="button" data-v="lms">In our LMS</button>
-            <button type="button" data-v="none">We don't have an LMS</button>
-            <button type="button" data-v="live">In live sessions</button>
-            <button type="button" data-v="web">On our website</button>
-          </div>
+        <div class="sw__stage">
+          <article class="sw__card" id="sw-card-steps" role="tabpanel" aria-labelledby="sw-tab-steps" data-card="0">
+            <p class="sw__kicker">Virtual simulation training</p>
+            <h3>Let them skip a step safely, and see what it causes.</h3>
+            <p class="sw__text">A simulation where every shortcut plays out, so the order explains itself.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>A playable simulation, ready for your LMS</dd></div><div><dt>Package</dt><dd><b>Build</b> from &euro;1,800, about 4 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="Virtual simulation training" data-pkg="Build" data-problem="People skip steps">Start with this</a><button type="button" class="sw__ex" data-qp="flat-tire">See an example</button></div>
+          </article>
+          <article class="sw__card" id="sw-card-risky" role="tabpanel" aria-labelledby="sw-tab-risky" data-card="1" hidden>
+            <p class="sw__kicker">Discussion-based learning</p>
+            <h3>Put the dilemma on the table before it happens for real.</h3>
+            <p class="sw__text">Scenarios that get your team talking through the grey areas, in the room or online.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>Scenario cards, prompts and a session plan</dd></div><div><dt>Package</dt><dd><b>Spark</b> from &euro;500, about 3 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="Discussion-based learning" data-pkg="Spark" data-problem="People make risky calls">Start with this</a><button type="button" class="sw__ex" data-qp="phishing-inbox">See an example</button></div>
+          </article>
+          <article class="sw__card" id="sw-card-finish" role="tabpanel" aria-labelledby="sw-tab-finish" data-card="2" hidden>
+            <p class="sw__kicker">E-learning development</p>
+            <h3>Rebuild it around decisions, not &ldquo;Next&rdquo; buttons.</h3>
+            <p class="sw__text">Self-paced modules where every screen asks your people to do something.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>A SCORM or xAPI module that runs in any LMS</dd></div><div><dt>Package</dt><dd><b>Build</b> from &euro;1,800, about 4 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="E-learning development" data-pkg="Build" data-problem="Nobody finishes the course">Start with this</a><button type="button" class="sw__ex" data-qp="gdpr-every-dot">See an example</button></div>
+          </article>
+          <article class="sw__card" id="sw-card-flat" role="tabpanel" aria-labelledby="sw-tab-flat" data-card="3" hidden>
+            <p class="sw__kicker">Training activity design</p>
+            <h3>Give your sessions activities people remember.</h3>
+            <p class="sw__text">Exercises, case studies and games, each aimed at a skill your people need on Monday.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>Ready-to-run activities with facilitator notes</dd></div><div><dt>Package</dt><dd><b>Spark</b> from &euro;500, about 3 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="Training activity design" data-pkg="Spark" data-problem="Workshops fall flat">Start with this</a><button type="button" class="sw__ex" data-qp="eco-party">See an example</button></div>
+          </article>
+          <article class="sw__card" id="sw-card-trainers" role="tabpanel" aria-labelledby="sw-tab-trainers" data-card="4" hidden>
+            <p class="sw__kicker">Train the trainer</p>
+            <h3>Make your trainers sure of themselves in front of a room.</h3>
+            <p class="sw__text">Facilitation techniques, practice rounds and honest feedback, in one workshop.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>A live workshop and a trainer toolkit</dd></div><div><dt>Package</dt><dd><b>Spark</b> from &euro;500, about 3 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="Train the trainer" data-pkg="Spark" data-problem="Trainers lack confidence">Start with this</a></div>
+          </article>
+          <article class="sw__card" id="sw-card-stick" role="tabpanel" aria-labelledby="sw-tab-stick" data-card="5" hidden>
+            <p class="sw__kicker">Video explainers</p>
+            <h3>One idea, one short video, built around the usual mistake.</h3>
+            <p class="sw__text">Scripted, animated and voiced for your audience.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>An MP4 with captions, plus an LMS-ready version</dd></div><div><dt>Package</dt><dd><b>Spark</b> from &euro;500, about 3 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="Video explainers" data-pkg="Spark" data-problem="An idea won’t stick">Start with this</a></div>
+          </article>
+          <article class="sw__card" id="sw-card-measure" role="tabpanel" aria-labelledby="sw-tab-measure" data-card="6" hidden>
+            <p class="sw__kicker">Learning evaluation and dashboards</p>
+            <h3>See where the gaps are, not just who clicked through.</h3>
+            <p class="sw__text">Measure what your people can actually do, then see it on one live dashboard.</p>
+            <dl class="sw__meta"><div><dt>You get</dt><dd>An evaluation plan and a live dashboard</dd></div><div><dt>Package</dt><dd><b>Programme</b> from &euro;3,900, about 5 weeks</dd></div></dl>
+            <div class="sw__actions"><a class="btn" href="#contact" data-start="Learning evaluation and dashboards" data-pkg="Programme" data-problem="You can’t tell if it works">Start with this</a></div>
+          </article>
         </div>
-        <div class="fit__result" data-fit-result aria-live="polite"></div>
-      </div>
-
-      <div class="services">
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="6" fill="#C6FF3D"/><rect x="10" y="14" width="16" height="4" rx="2" fill="#14082B"/><rect x="10" y="22" width="24" height="4" rx="2" fill="#14082B"/><circle cx="36" cy="16" r="3" fill="#FF4F6D"/><rect x="14" y="38" width="20" height="4" rx="2" fill="#CBBDEB"/></svg>
-          <h3>E-learning development</h3>
-          <p>Self-paced modules people actually finish, built around practice and decisions instead of slides and "next" buttons.</p>
-          <p class="get"><b>You get</b> a SCORM or xAPI module that runs in any LMS</p>
-        </div>
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="8" width="40" height="28" rx="6" fill="#FF4F6D"/><path d="M20 16 L32 22 L20 28Z" fill="#14082B"/><rect x="14" y="38" width="20" height="4" rx="2" fill="#CBBDEB"/></svg>
-          <h3>Virtual simulation training</h3>
-          <p>Safe practice for procedures, safety and judgment calls, where a mistake on the job is costly. 2D or 3D, right in the browser.</p>
-          <p class="get"><b>You get</b> a playable simulation, like the ones above</p>
-        </div>
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="6" width="16" height="16" rx="4" fill="#66D9FF"/><rect x="26" y="6" width="16" height="16" rx="4" fill="#C6FF3D"/><rect x="6" y="26" width="16" height="16" rx="4" fill="#FF4F6D"/><rect x="26" y="26" width="16" height="16" rx="4" fill="#FFF6EA"/></svg>
-          <h3>Training activity design</h3>
-          <p>Exercises, case studies, role-plays and games for your workshops, each one aimed at a skill people need to use on Monday.</p>
-          <p class="get"><b>You get</b> ready-to-run activities with facilitator notes</p>
-        </div>
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="8" width="26" height="18" rx="7" fill="#66D9FF"/><path d="M8 26 L6 34 L16 26" fill="#66D9FF"/><rect x="20" y="20" width="26" height="18" rx="7" fill="#C6FF3D"/><path d="M40 38 L42 46 L32 38" fill="#C6FF3D"/></svg>
-          <h3>Discussion-based learning</h3>
-          <p>Dilemmas and scenarios that get a group thinking and arguing productively, live in the room or online.</p>
-          <p class="get"><b>You get</b> scenario cards, prompts and a session plan</p>
-        </div>
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="14" r="7" fill="#FFF6EA"/><rect x="6" y="23" width="20" height="18" rx="8" fill="#FFF6EA"/><circle cx="35" cy="20" r="5" fill="#C6FF3D"/><rect x="28" y="27" width="14" height="14" rx="6" fill="#C6FF3D"/><path d="M26 10 h14 v6" stroke="#FF4F6D" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
-          <h3>Train the trainer</h3>
-          <p>Your trainers learn to run interactive sessions with confidence: facilitation techniques, practice rounds and honest feedback.</p>
-          <p class="get"><b>You get</b> a live workshop and a trainer toolkit</p>
-        </div>
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="10" width="30" height="28" rx="6" fill="#66D9FF"/><path d="M34 20 L44 14 V34 L34 28Z" fill="#66D9FF"/><path d="M15 18 L25 24 L15 30Z" fill="#14082B"/></svg>
-          <h3>Video explainers</h3>
-          <p>Short animated videos that make one idea stick, scripted around a common mistake and voiced for your audience.</p>
-          <p class="get"><b>You get</b> MP4 files, captions and an LMS-ready version</p>
-        </div>
-        <div class="service">
-          <svg class="service__icon" viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="6" width="40" height="36" rx="6" fill="#FFF6EA"/><rect x="11" y="26" width="6" height="10" rx="2" fill="#C6FF3D"/><rect x="21" y="18" width="6" height="18" rx="2" fill="#C6FF3D"/><rect x="31" y="30" width="6" height="6" rx="2" fill="#FF4F6D"/><circle cx="34" cy="16" r="5" fill="none" stroke="#14082B" stroke-width="3"/><path d="M37.5 19.5 L41 23" stroke="#14082B" stroke-width="3" stroke-linecap="round"/></svg>
-          <h3>Learning evaluation and dashboards</h3>
-          <p>Find out what people really learned. I measure it, then build a dashboard that shows where the gaps are and what to fix next.</p>
-          <p class="get"><b>You get</b> an evaluation plan and a live dashboard</p>
-        </div>
-        <a class="service service--cta" href="#contact">
-          <h3>Not sure which you need?</h3>
-          <p>Tell me where your people go wrong. I'll suggest the lightest thing that fixes it.</p>
-          <span class="level__go">Ask me</span>
-        </a>
       </div>
     </div>
   </section>
@@ -260,8 +261,8 @@
   <section class="section" id="pricing">
     <div class="wrap">
       <div class="section__head">
-        <h2>Packages</h2>
-        <p>Most projects take 3 to 5 weeks. Prices are starting points; you get a fixed quote before anything starts, so there are no surprises.</p>
+        <h2>Pick a starting point</h2>
+        <p>You get a fixed quote before anything starts. Most projects take 3 to 5 weeks.</p>
       </div>
       <div class="packages">
         <div class="package">
@@ -304,36 +305,118 @@
           <a class="btn btn--panel" href="#contact" data-package="Programme">Plan a programme</a>
         </div>
       </div>
-      <p class="packages__note">Prices exclude VAT. Need something else, like extra languages, an ongoing retainer or LMS hosting on its own? <a href="#contact">Ask me</a>.</p>
+      <p class="packages__note">Prices exclude VAT. Something else in mind, like extra languages or a retainer? <a href="#contact">Just ask</a>.</p>
     </div>
   </section>
 
   <section class="section section--deep" id="delivery">
     <div class="wrap">
       <div class="section__head">
-        <h2>Delivered the way you need it</h2>
-        <p>Whatever your setup, the training ends up where your learners already are. If you have no setup, I provide one.</p>
+        <h2>Where do your learners work?</h2>
+        <p>Pick one. That's where your training ends up, set up and tested.</p>
       </div>
-      <ul class="deliver">
-        <li><b>In your LMS</b><span>SCORM 1.2, SCORM 2004 or xAPI. I upload it and set it up in Moodle, TalentLMS, Cornerstone, SAP SuccessFactors, LearnWorlds or any other LMS, and test the tracking.</span></li>
-        <li><b>On my LMS, as a service</b><span>No LMS? Rent a ready platform from me, with learner accounts, completion tracking and reports. No setup on your side.</span></li>
-        <li><b>On the web</b><span>A link or an embed on your website or intranet. It runs in any modern browser, with nothing to install.</span></li>
-        <li><b>As video and print</b><span>MP4 explainers with captions, plus facilitator guides and handouts for live sessions.</span></li>
-        <li><b>Yours to keep</b><span>Source files are included, so your team can update the content later.</span></li>
-        <li><b>Accessible by design</b><span>Clear contrast, captions, readable fonts and keyboard support wherever the interaction allows it.</span></li>
-      </ul>
+      <div class="dv" data-deliver>
+        <div class="dv__tabs" role="tablist" aria-label="Where your learners work">
+          <button type="button" role="tab" id="dv-tab-lms" aria-controls="dv-pane-lms" aria-selected="true" data-dv="0">Your LMS</button>
+          <button type="button" role="tab" id="dv-tab-host" aria-controls="dv-pane-host" aria-selected="false" tabindex="-1" data-dv="1">No LMS yet</button>
+          <button type="button" role="tab" id="dv-tab-web" aria-controls="dv-pane-web" aria-selected="false" tabindex="-1" data-dv="2">Your website</button>
+          <button type="button" role="tab" id="dv-tab-room" aria-controls="dv-pane-room" aria-selected="false" tabindex="-1" data-dv="3">Training room</button>
+          <button type="button" role="tab" id="dv-tab-video" aria-controls="dv-pane-video" aria-selected="false" tabindex="-1" data-dv="4">Video</button>
+        </div>
+          <div class="dv__pane" id="dv-pane-lms" role="tabpanel" aria-labelledby="dv-tab-lms" data-dvpane="0">
+            <div class="mock" aria-hidden="true">
+              <div class="mock__bar"><i></i><i></i><i></i><span class="mock__url">yourcompany.lms.com/courses</span></div>
+              <div class="mock__body mock--lms">
+                  <div class="lms__nav"><i></i><i></i><i></i><i></i></div>
+                  <div class="lms__main">
+                    <div class="lms__course"><b>Cleanroom gowning</b><span class="tag">SCORM 2004</span></div>
+                    <div class="lms__row"><span>Anna K.</span><i style="--w:100%"></i><em class="ok">Passed</em></div>
+                    <div class="lms__row"><span>Ben M.</span><i style="--w:100%"></i><em class="ok">Passed</em></div>
+                    <div class="lms__row"><span>Lea S.</span><i style="--w:60%"></i><em>In progress</em></div>
+                    <div class="lms__row"><span>Omar T.</span><i style="--w:25%"></i><em>In progress</em></div>
+                  </div>
+                </div>
+            </div>
+            <div class="dv__text"><h3>Uploaded, set up and tested in your LMS</h3><p>SCORM 1.2, SCORM 2004 or xAPI, in Moodle, TalentLMS, Cornerstone, SuccessFactors or any other LMS. Completion and scores are tracked.</p></div>
+          </div>
+          <div class="dv__pane" id="dv-pane-host" role="tabpanel" aria-labelledby="dv-tab-host" data-dvpane="1" hidden>
+            <div class="mock" aria-hidden="true">
+              <div class="mock__bar"><i></i><i></i><i></i><span class="mock__url">academy.yourcompany.com</span></div>
+              <div class="mock__body mock--host">
+                  <p class="host__hi">Welcome back, Anna</p>
+                  <div class="host__tiles">
+                    <div class="host__tile"><img src="img/thumbs/cleanroom-gowning-start.webp" alt="" loading="lazy"><b>Cleanroom gowning</b><i style="--w:100%"></i></div>
+                    <div class="host__tile"><img src="img/thumbs/fire-extinguisher-start.webp" alt="" loading="lazy"><b>Fire safety</b><i style="--w:40%"></i></div>
+                    <div class="host__tile"><img src="img/thumbs/gdpr-every-dot-start.webp" alt="" loading="lazy"><b>Data protection</b><i style="--w:0%"></i></div>
+                  </div>
+                </div>
+            </div>
+            <div class="dv__text"><h3>Hosted for you on a ready platform</h3><p>Learner accounts, completion tracking and reports, with nothing to install or set up on your side.</p></div>
+          </div>
+          <div class="dv__pane" id="dv-pane-web" role="tabpanel" aria-labelledby="dv-tab-web" data-dvpane="2" hidden>
+            <div class="mock" aria-hidden="true">
+              <div class="mock__bar"><i></i><i></i><i></i><span class="mock__url">intranet.yourcompany.com/safety</span></div>
+              <div class="mock__body mock--web">
+                  <div class="web__text"><i></i><i></i><i style="width:60%"></i></div>
+                  <div class="web__embed"><img src="img/thumbs/flat-tire-start.webp" alt="" loading="lazy"><span class="web__play" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z" fill="currentColor"/></svg></span></div>
+                  <div class="web__text"><i style="width:80%"></i><i></i></div>
+                </div>
+            </div>
+            <div class="dv__text"><h3>Embedded on your website or intranet</h3><p>A link or an embed that runs in any modern browser, on any device, with nothing to install.</p></div>
+          </div>
+          <div class="dv__pane" id="dv-pane-room" role="tabpanel" aria-labelledby="dv-tab-room" data-dvpane="3" hidden>
+            <div class="mock" aria-hidden="true">
+              <div class="mock__bar"><i></i><i></i><i></i><span class="mock__url">Facilitator kit</span></div>
+              <div class="mock__body mock--room">
+                  <div class="room__plan"><b>Session plan</b><span>90 minutes</span><i></i><i></i><i style="width:70%"></i><i></i><i style="width:50%"></i></div>
+                  <div class="room__cards">
+                    <div class="room__card c1"><b>Scenario 1</b><span>A colleague props the fire door open. What do you say?</span></div>
+                    <div class="room__card c2"><b>Scenario 2</b><span>The deadline is today and the check takes ten minutes.</span></div>
+                    <div class="room__card c3"><b>Scenario 3</b><span>Your manager asks you to skip the sign-off.</span></div>
+                  </div>
+                </div>
+            </div>
+            <div class="dv__text"><h3>Ready for your trainers</h3><p>Session plans, scenario cards and handouts for live sessions, in the room or on a video call.</p></div>
+          </div>
+          <div class="dv__pane" id="dv-pane-video" role="tabpanel" aria-labelledby="dv-tab-video" data-dvpane="4" hidden>
+            <div class="mock" aria-hidden="true">
+              <div class="mock__bar"><i></i><i></i><i></i><span class="mock__url">explainer_fat-fires.mp4</span></div>
+              <div class="mock__body mock--video">
+                  <img src="img/thumbs/fire-extinguisher.webp" alt="" loading="lazy">
+                  <span class="vid__cap">Water on burning fat? Never.</span>
+                  <div class="vid__bar"><span class="web__play" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M6 3.5v13l11-6.5z" fill="currentColor"/></svg></span><i><em></em></i><small>0:24 / 1:10</small></div>
+                </div>
+            </div>
+            <div class="dv__text"><h3>As a short animated video</h3><p>An MP4 with captions for your LMS, intranet or social channels, scripted around one mistake.</p></div>
+          </div>
+        <ul class="dv__always"><li>Source files included</li><li>Accessible by design</li><li>Tested before handover</li></ul>
+      </div>
     </div>
   </section>
 
   <section class="section" id="process">
     <div class="wrap">
       <div class="section__head">
-        <h2>How I design a simulation</h2>
-        <p>Five steps, from the first question to a finished simulation.</p>
+        <h2>How your simulation gets built</h2>
+        <p>Five stops in 3 to 5 weeks. Tap a stop to see what happens there, and what you'll be asked for.</p>
       </div>
-      <ol class="steps">
-        <li class="step">
-          <svg class="anim ill" data-still="4.5" viewBox="0 0 640 360" role="img" aria-label="A magnifying glass scans the steps of a task and stops on the one step where people go wrong.">
+      <div class="road" data-road>
+        <div class="road__map">
+          <svg class="road__svg" viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true">
+            <path class="road__base" d="M60 172 C 170 172, 170 48, 280 48 S 390 172, 500 172 S 610 48, 720 48 S 830 172, 940 172"/>
+            <path class="road__dash" d="M60 172 C 170 172, 170 48, 280 48 S 390 172, 500 172 S 610 48, 720 48 S 830 172, 940 172"/>
+            <path class="road__done" pathLength="100" d="M60 172 C 170 172, 170 48, 280 48 S 390 172, 500 172 S 610 48, 720 48 S 830 172, 940 172"/>
+          </svg>
+          <button type="button" class="road__stop" style="--x:6%;--y:78%" data-stop="0" aria-pressed="true" aria-controls="road-card-0"><b>1</b><span>Find the moment</span><small>Week 1</small></button>
+          <button type="button" class="road__stop" style="--x:28%;--y:22%" data-stop="1" aria-pressed="false" aria-controls="road-card-1"><b>2</b><span>Sketch it</span><small>Week 1 to 2</small></button>
+          <button type="button" class="road__stop" style="--x:50%;--y:78%" data-stop="2" aria-pressed="false" aria-controls="road-card-2"><b>3</b><span>Design the mistakes</span><small>Week 2 to 3</small></button>
+          <button type="button" class="road__stop" style="--x:72%;--y:22%" data-stop="3" aria-pressed="false" aria-controls="road-card-3"><b>4</b><span>Build</span><small>Week 3 to 4</small></button>
+          <button type="button" class="road__stop" style="--x:94%;--y:78%" data-stop="4" aria-pressed="false" aria-controls="road-card-4"><b>5</b><span>Play-test</span><small>Week 4 to 5</small></button>
+          <span class="road__token" aria-hidden="true" style="--x:6%;--y:78%"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/><circle cx="14" cy="17" r="2.6"/><circle cx="26" cy="17" r="2.6"/><path d="M13 25 Q20 31 27 25" fill="none" stroke-width="3" stroke-linecap="round"/></svg></span>
+          <span class="road__flag" aria-hidden="true" style="--x:94%;--y:78%"><svg viewBox="0 0 30 40"><path d="M4 38V3" stroke-width="3" stroke-linecap="round"/><path d="M5 4h20l-5 6 5 6H5z"/></svg></span>
+        </div>
+          <div class="road__card" id="road-card-0" data-rcard="0">
+            <div class="road__art"><svg class="anim ill" data-still="4.5" viewBox="0 0 640 360" role="img" aria-label="A magnifying glass scans the steps of a task and stops on the one step where people go wrong.">
 <rect class="bg" width="640" height="360"/>
 <text x="60" y="110" class="f-mut" font-size="16">The task, step by step</text>
 <line x1="60" y1="180" x2="580" y2="180" class="s-mut" stroke-width="2"/>
@@ -346,14 +429,17 @@
 <g><animateTransform attributeName="transform" type="translate" values="80 180;560 180;400 180;400 180;80 180" keyTimes="0;.4;.55;.95;1" dur="6s" repeatCount="indefinite"/>
   <circle r="34" fill="none" class="s-ink" stroke-width="4"/><line x1="24" y1="24" x2="50" y2="50" class="s-ink" stroke-width="7"/>
 </g>
-</svg>
-          <div>
-            <h3>Find the moment that matters</h3>
-            <p>Not the topic. The decision where people go wrong.</p>
+</svg></div>
+            <div class="road__text">
+              <p class="road__wk">Stop 1 of 5, week 1</p>
+              <h3>We find the moment that matters</h3>
+              <p>Not the whole topic: the one decision where your people go wrong, found together in a kick-off call.</p>
+              <p class="road__part"><b>Your part:</b> A one-hour call, plus any material you already have.</p>
+              <div class="road__nav"><button type="button" class="road__prev" data-go="-1" disabled>Back</button><button type="button" class="btn btn--sm road__next" data-go="1">Next stop</button></div>
+            </div>
           </div>
-        </li>
-        <li class="step">
-          <svg class="anim ill" data-still="3.5" viewBox="0 0 640 360" role="img" aria-label="Choosing option A sends a signal into the scene: safety drops into the red while speed rises.">
+          <div class="road__card" id="road-card-1" data-rcard="1" hidden>
+            <div class="road__art"><svg class="anim ill" data-still="3.5" viewBox="0 0 640 360" role="img" aria-label="Choosing option A sends a signal into the scene: safety drops into the red while speed rises.">
 <rect class="bg" width="640" height="360"/>
 <text x="60" y="80" class="f-mut" font-size="16">Choice</text><text x="330" y="80" class="f-mut" font-size="16">Effect</text>
 <rect x="60" y="100" width="170" height="50" class="f-bg s-line2" stroke-width="2"/><text x="145" y="131" text-anchor="middle" class="f-ink" font-size="17" font-weight="600">Option A</text>
@@ -369,14 +455,17 @@
 <text x="352" y="210" class="f-ink" font-size="16" font-weight="600">Speed</text>
 <rect x="352" y="222" width="206" height="14" class="f-line"/>
 <rect x="352" y="222" height="14" width="80" fill="#C6FF3D"><animate attributeName="width" values="80;80;190;190;80" keyTimes="0;.27;.42;.95;1" dur="6s" repeatCount="indefinite"/></rect>
-</svg>
-          <div>
-            <h3>Make the consequence visible</h3>
-            <p>A mechanic that shows the effect, the way the real world would.</p>
+</svg></div>
+            <div class="road__text">
+              <p class="road__wk">Stop 2 of 5, week 1 to 2</p>
+              <h3>You see the consequence, sketched</h3>
+              <p>A quick mock-up of how the mistake will play out on screen, before anything gets built.</p>
+              <p class="road__part"><b>Your part:</b> A yes, or what to change.</p>
+              <div class="road__nav"><button type="button" class="road__prev" data-go="0">Back</button><button type="button" class="btn btn--sm road__next" data-go="2">Next stop</button></div>
+            </div>
           </div>
-        </li>
-        <li class="step">
-          <svg class="anim ill" data-still="2.4" viewBox="0 0 640 360" role="img" aria-label="A learner takes the wrong path, a feedback card explains why, they go back and take the right path.">
+          <div class="road__card" id="road-card-2" data-rcard="2" hidden>
+            <div class="road__art"><svg class="anim ill" data-still="2.4" viewBox="0 0 640 360" role="img" aria-label="A learner takes the wrong path, a feedback card explains why, they go back and take the right path.">
 <rect class="bg" width="640" height="360"/>
 <path d="M112 170 C 180 170, 200 90, 260 90" fill="none" class="s-line2" stroke-width="3"/><path d="M112 190 C 180 190, 200 270, 260 270" fill="none" class="s-line2" stroke-width="3"/>
 <rect x="68" y="158" width="44" height="44" class="f-ink"/><text x="90" y="188" text-anchor="middle" class="f-bg" font-size="22" font-weight="700">?</text>
@@ -398,14 +487,17 @@
 <circle r="8" class="f-acc"><animateMotion path="M112 170 C 180 170, 200 90, 260 90" keyPoints="0;0;1;1" keyTimes="0;.05;.22;1" calcMode="linear" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.22;.23;1" dur="6s" repeatCount="indefinite"/></circle>
 <circle r="8" class="f-acc" opacity="0"><animateMotion path="M112 190 C 180 190, 200 270, 260 270" keyPoints="0;0;1;1" keyTimes="0;.6;.78;1" calcMode="linear" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.59;.6;.78;.8;1" dur="6s" repeatCount="indefinite"/></circle>
 <text x="320" y="276" class="f-ink" font-size="17" font-weight="650" opacity="0">Right, and knows why<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.8;.83;.95;1" dur="6s" repeatCount="indefinite"/></text>
-</svg>
-          <div>
-            <h3>Design the mistakes</h3>
-            <p>Every wrong move plays out, and comes with a reason.</p>
+</svg></div>
+            <div class="road__text">
+              <p class="road__wk">Stop 3 of 5, week 2 to 3</p>
+              <h3>Every mistake gets designed</h3>
+              <p>Each wrong move plays out and comes with a reason, so your people learn from the slip.</p>
+              <p class="road__part"><b>Your part:</b> Your expert checks the facts.</p>
+              <div class="road__nav"><button type="button" class="road__prev" data-go="1">Back</button><button type="button" class="btn btn--sm road__next" data-go="3">Next stop</button></div>
+            </div>
           </div>
-        </li>
-        <li class="step">
-          <svg class="anim ill" data-still="0" viewBox="0 0 640 360" role="img" aria-label="The same simulation moves from a desktop screen to a tablet to a phone, fitting each one.">
+          <div class="road__card" id="road-card-3" data-rcard="3" hidden>
+            <div class="road__art"><svg class="anim ill" data-still="0" viewBox="0 0 640 360" role="img" aria-label="The same simulation moves from a desktop screen to a tablet to a phone, fitting each one.">
 <rect class="bg" width="640" height="360"/>
 <g opacity="1"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;.27;.3;.94;1" dur="6s" repeatCount="indefinite"/>
   <rect x="300" y="290" width="40" height="26" fill="#5B3FA8"/><rect x="250" y="314" width="140" height="8" fill="#5B3FA8"/>
@@ -421,14 +513,17 @@
 <text x="320" y="350" text-anchor="middle" class="f-mut" font-size="16" opacity="1">Desktop<animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;.27;.3;.94;1" dur="6s" repeatCount="indefinite"/></text>
 <text x="320" y="320" text-anchor="middle" class="f-mut" font-size="16" opacity="0">Tablet<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.31;.34;.58;.61;1" dur="6s" repeatCount="indefinite"/></text>
 <text x="320" y="270" text-anchor="middle" class="f-mut" font-size="16" opacity="0">Phone<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.64;.67;.92;.95;1" dur="6s" repeatCount="indefinite"/></text>
-</svg>
-          <div>
-            <h3>Build it to run anywhere</h3>
-            <p>Light HTML5 for the browser, Articulate Storyline or your LMS.</p>
+</svg></div>
+            <div class="road__text">
+              <p class="road__wk">Stop 4 of 5, week 3 to 4</p>
+              <h3>Built to run where your people are</h3>
+              <p>Light HTML5 for the browser, Storyline or your LMS, tested on the devices they actually use.</p>
+              <p class="road__part"><b>Your part:</b> Access to your LMS, if you want it uploaded.</p>
+              <div class="road__nav"><button type="button" class="road__prev" data-go="2">Back</button><button type="button" class="btn btn--sm road__next" data-go="4">Next stop</button></div>
+            </div>
           </div>
-        </li>
-        <li class="step">
-          <svg class="anim ill" data-still="5" viewBox="0 0 640 360" role="img" aria-label="Sliders for hints, difficulty and feedback are adjusted until learner success moves into the fair-challenge band.">
+          <div class="road__card" id="road-card-4" data-rcard="4" hidden>
+            <div class="road__art"><svg class="anim ill" data-still="5" viewBox="0 0 640 360" role="img" aria-label="Sliders for hints, difficulty and feedback are adjusted until learner success moves into the fair-challenge band.">
 <rect class="bg" width="640" height="360"/>
 <text x="60" y="92" class="f-ink" font-size="16" font-weight="600">Hints</text><line x1="60" y1="110" x2="280" y2="110" class="s-line2" stroke-width="4"/><rect y="100" width="20" height="20" class="f-acc"><animate attributeName="x" values="90;90;90;190;190;150;150;90" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></rect>
 <text x="60" y="172" class="f-ink" font-size="16" font-weight="600">Difficulty</text><line x1="60" y1="190" x2="280" y2="190" class="s-line2" stroke-width="4"/><rect y="180" width="20" height="20" class="f-acc"><animate attributeName="x" values="230;230;230;100;100;160;160;230" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></rect>
@@ -439,13 +534,16 @@
 <text x="356" y="142" fill="#C6FF3D" font-size="15" font-weight="650">Fair challenge</text>
 <polyline points="390,270 470,100 550,178" fill="none" class="s-mut" stroke-width="2" stroke-dasharray="4 5" opacity="0"><animate attributeName="opacity" values="0;0;.6;.6;0" keyTimes="0;.45;.5;.95;1" dur="6s" repeatCount="indefinite"/></polyline>
 <circle r="11"><animate attributeName="cx" values="390;390;390;470;470;550;550;390" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/><animate attributeName="cy" values="270;270;270;100;100;178;178;270" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill" values="#FF4F6D;#FF4F6D;#FF4F6D;#FF4F6D;#FF4F6D;#C6FF3D;#C6FF3D;#FF4F6D" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></circle>
-</svg>
-          <div>
-            <h3>Play-test and tune</h3>
-            <p>Hints, difficulty and feedback, adjusted until it feels fair.</p>
+</svg></div>
+            <div class="road__text">
+              <p class="road__wk">Stop 5 of 5, week 4 to 5</p>
+              <h3>Play-tested and tuned</h3>
+              <p>Real learners try it. Hints, difficulty and feedback get adjusted until it feels fair.</p>
+              <p class="road__part"><b>Your part:</b> A few learners for a 20-minute test.</p>
+              <div class="road__nav"><button type="button" class="road__prev" data-go="3">Back</button><button type="button" class="btn btn--sm road__next" data-go="0">Back to the start</button></div>
+            </div>
           </div>
-        </li>
-      </ol>
+      </div>
     </div>
   </section>
 
@@ -453,9 +551,9 @@
     <div class="wrap">
       <div class="about">
         <div class="about__text">
-          <h2 class="about__h">About</h2>
-          <p>People learn the most at the moment they get something wrong, as long as it's safe and they can see why. That's the moment I design for.</p>
-          <p>I'm Razin Abdullah, a learning experience designer with an M.Ed. from the Technical University of Munich. For more than four years I've designed and evaluated learning for international teams and learners, from step-by-step procedures in high-stakes workplaces to games for classrooms and language beginners.</p>
+          <h2 class="about__h">Who you&rsquo;ll work with</h2>
+          <p>People learn most at the moment they get something wrong, as long as it's safe and they can see why. Your training gets built around that moment.</p>
+          <p>Razin Abdullah, learning experience designer. M.Ed. from the Technical University of Munich, and more than four years of designing and evaluating training for international teams, from high-stakes procedures to classrooms.</p>
         </div>
         <aside class="player" aria-label="About Razin">
           <span class="player__tag">Player 1</span>
@@ -478,9 +576,10 @@
 
   <section class="section" id="faq">
     <div class="wrap">
-      <div class="section__head">
-        <h2>Questions people ask</h2>
-        <p>Something else on your mind? Ask it in the form below.</p>
+      <div class="faq-layout">
+      <div class="section__head faq-head">
+        <h2>Questions you might have</h2>
+        <p>Anything else? Ask in the form below.</p>
       </div>
       <div class="faq">
         <details><summary>Will it work in our LMS?</summary><p>Almost certainly. I deliver SCORM 1.2, SCORM 2004 or xAPI, and test the package in your LMS before handover. If you like, I upload and set it up for you. If you don't have an LMS, you can use mine as a service.</p></details>
@@ -490,6 +589,7 @@
         <details><summary>Does it work on phones?</summary><p>Videos, activities and most modules work on any device. Simulations with detailed drag-and-drop are designed for laptops and tablets first; I'll tell you upfront what fits your learners best.</p></details>
         <details><summary>How do payments work?</summary><p>A fixed quote up front, then 50% to start and 50% on delivery. For larger programmes we can split payments by milestone.</p></details>
       </div>
+      </div>
     </div>
   </section>
 
@@ -497,7 +597,7 @@
     <div class="wrap contact__grid">
       <div>
         <h2>Got a training problem? Let's make it playable.</h2>
-        <p>Tell me who it's for and where people go wrong. I'll reply within one working day with how I'd approach it.</p>
+        <p>Tell me who it's for and where your people go wrong. You'll get a reply within one working day, with a first idea of how to fix it.</p>
         <div class="contact__row" data-contact-actions></div>
       </div>
       <form class="form" data-contact-form novalidate>

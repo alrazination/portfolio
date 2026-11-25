@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wo ist der Löffel?</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+<link href="../../vendor/fonts/fonts.css" rel="stylesheet">
 <style>
 /* VOICE: friendly classroom game, calm and encouraging, never punishing
    IDEA: a real kitchen you stand in and search, like a hidden-object picture book
@@ -164,7 +163,7 @@ details li{margin:4px 0}
 <div id="review" class="overlay"><div class="panel" id="reviewin"></div></div>
 <div id="err"><p>Die 3D-Küche konnte nicht geladen werden. Bitte die Seite neu laden.<br><small>The 3D kitchen could not load. Please reload the page.</small></p></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="../../vendor/three-r128.min.js"></script>
 <script>
 {
 if(!window.THREE){document.getElementById('err').style.display='flex';throw new Error('three missing');}

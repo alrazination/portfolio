@@ -1,34 +1,177 @@
-/* ------------------------------------------------------------------
-   YOUR CONTACT DETAILS: fill these in before publishing.
-   Anything left empty is simply not shown (no "add address" text).
-   ------------------------------------------------------------------ */
-const CONTACT = {
-  email: '',      // e.g. 'hello@razinabdullah.com'
-  linkedin: '',   // e.g. 'https://www.linkedin.com/in/razinabdullah'
-  calendar: ''    // optional booking link, e.g. a Calendly URL
-};
-
+/* Renders the parts of the site that come from data/site.json:
+   contact details, the project grid, client names, testimonials,
+   outcomes on case studies, and the contact form.
+   Edit that file through the admin panel (/admin/), not by hand. */
 (function () {
-  const actions = document.querySelector('[data-contact-actions]');
-  const list = document.querySelector('[data-contact-list]');
-  if (!actions) return;
+  var BASE = new URL('../', document.currentScript.src).href;
+  var url = function (p) { return /^https?:/.test(p) ? p : BASE + p; };
+  var esc = function (s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+  var $ = function (sel) { return document.querySelector(sel); };
+  var $$ = function (sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); };
 
-  const subject = encodeURIComponent('A training problem to make playable');
-  const add = (html) => actions.insertAdjacentHTML('beforeend', html);
-  const item = (html) => list && list.insertAdjacentHTML('beforeend', `<li>${html}</li>`);
+  fetch(BASE + 'data/site.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(function (e) { console.warn('[site] Could not load data/site.json', e); });
 
-  if (CONTACT.email) {
-    add(`<a class="btn" href="mailto:${CONTACT.email}?subject=${subject}">Email me</a>`);
-    item(`Email: <a href="mailto:${CONTACT.email}">${CONTACT.email}</a>`);
+  function render(d) {
+    var c = d.contact || {};
+    contact(c);
+    levels(d.projects || []);
+    clients((d.clients || []).filter(on));
+    testimonials((d.testimonials || []).filter(on));
+    outcomes(d.outcomes || {});
+    form(c);
+    if (c.goatcounter) {
+      var s = document.createElement('script');
+      s.async = true; s.src = 'https://gc.zgo.at/count.js';
+      s.setAttribute('data-goatcounter', 'https://' + c.goatcounter + '.goatcounter.com/count');
+      document.body.appendChild(s);
+    }
+    document.dispatchEvent(new CustomEvent('site:data', { detail: d }));
   }
-  if (CONTACT.calendar) add(`<a class="btn btn--panel" href="${CONTACT.calendar}" rel="noopener">Book a 20-minute call</a>`);
-  if (CONTACT.linkedin) {
-    add(`<a class="btn btn--panel" href="${CONTACT.linkedin}" rel="noopener">Message me on LinkedIn</a>`);
+  function on(x) { return x && x.on; }
+
+  /* ---------- contact buttons + footer links ---------- */
+  function contact(c) {
+    var subject = encodeURIComponent('A training problem to make playable');
+    var actions = $('[data-contact-actions]');
+    if (actions) {
+      var h = '';
+      if (c.calendar) h += '<a class="btn" href="' + esc(c.calendar) + '" target="_blank" rel="noopener">Book a 20-minute call</a>';
+      if (c.email) h += '<a class="btn btn--panel" href="mailto:' + esc(c.email) + '?subject=' + subject + '">' + esc(c.email) + '</a>';
+      if (c.linkedin) h += '<a class="btn btn--panel" href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>';
+      actions.innerHTML = h;
+    }
+    $$('[data-foot-contact]').forEach(function (el) {
+      var h = '';
+      if (c.email) h += '<a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>';
+      if (c.linkedin) h += '<a href="' + esc(c.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>';
+      if (c.calendar) h += '<a href="' + esc(c.calendar) + '" target="_blank" rel="noopener">Book a call</a>';
+      el.innerHTML = h;
+    });
   }
-  if (!actions.children.length) {
-    console.warn('[site] No contact details set. Fill in CONTACT in js/site.js before publishing.');
+
+  /* ---------- project grid on the home page ---------- */
+  function levels(list) {
+    var box = $('[data-levels]');
+    if (!box) return;
+    var shown = list.filter(on);
+    var lastSeries = '';
+    box.innerHTML = shown.map(function (p) {
+      var note = '';
+      if (p.series && p.series !== lastSeries) note = '<p class="series-note">' + esc(p.series) + '</p>';
+      lastSeries = p.series || '';
+      var chips = (p.chips || []).map(function (ch) {
+        return '<span class="chip' + (ch.tone ? ' chip--' + esc(ch.tone) : '') + '">' + esc(ch.label) + '</span>';
+      }).join('');
+      var href = p.page || ('work/project.html?p=' + encodeURIComponent(p.slug));
+      return note +
+        '<a class="level' + (p.feature ? ' level--feature' : '') + '" href="' + esc(url(href)) + '">' +
+          '<div class="level__img">' +
+            '<img src="' + esc(url(p.thumbStart)) + '" alt="' + esc(p.thumbStartAlt || '') + '" loading="lazy" width="1280" height="720">' +
+            (p.thumbMistake ? '<img class="level__alt" src="' + esc(url(p.thumbMistake)) + '" alt="" loading="lazy" width="1280" height="720">' : '') +
+            (p.sticker ? '<span class="sticker"><b>Get it wrong</b> ' + esc(p.sticker) + '</span>' : '') +
+          '</div>' +
+          '<div class="level__body">' +
+            '<div class="chips">' + chips + '</div>' +
+            '<h3>' + esc(p.title) + '</h3>' +
+            '<p>' + esc(p.tagline) + '</p>' +
+            '<span class="level__go">Play it</span>' +
+          '</div>' +
+        '</a>';
+    }).join('');
+    var count = $('[data-level-count]');
+    var words = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+    if (count) count.textContent = (words[shown.length] || shown.length) + (shown.length === 1 ? ' simulation.' : ' simulations.');
+  }
+
+  /* ---------- proof: client names, testimonials, outcomes ---------- */
+  function clients(list) {
+    var sec = $('[data-clients]');
+    if (!sec || !list.length) return;
+    sec.querySelector('ul').innerHTML = list.map(function (x) { return '<li>' + esc(x.name) + '</li>'; }).join('');
+    sec.hidden = false;
+  }
+  function testimonials(list) {
+    var sec = $('[data-testimonials]');
+    if (!sec || !list.length) return;
+    sec.querySelector('.quotes').innerHTML = list.map(function (t) {
+      return '<figure class="quote"><blockquote>' + esc(t.quote) + '</blockquote>' +
+        '<figcaption><b>' + esc(t.name) + '</b><span>' + esc([t.role, t.org].filter(Boolean).join(', ')) + '</span></figcaption></figure>';
+    }).join('');
+    sec.hidden = false;
+  }
+  function outcomes(map) {
+    $$('[data-outcome]').forEach(function (el) {
+      var o = map[el.getAttribute('data-outcome')];
+      if (!o || !o.on) return;
+      el.querySelector('.outcome').innerHTML =
+        '<div class="stats">' + (o.stats || []).map(function (s) {
+          return '<div class="stat"><b>' + esc(s.value) + '</b><span>' + esc(s.label) + '</span></div>';
+        }).join('') + '</div>' +
+        (o.text ? '<p class="outcome__text">' + esc(o.text) + '</p>' : '');
+      el.hidden = false;
+    });
+  }
+
+  /* ---------- contact form: emails you through Web3Forms ---------- */
+  function form(c) {
+    var f = $('[data-contact-form]');
+    if (!f) return;
+    var status = f.querySelector('.form__status');
+    var btn = f.querySelector('button[type=submit]');
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!f.reportValidity()) return;
+      var data = {};
+      new FormData(f).forEach(function (v, k) { data[k] = v; });
+      if (data.botcheck) return; // honeypot
+
+      if (!c.web3formsKey) {
+        // No form key yet: fall back to the visitor's own email app.
+        var body = Object.keys(data).filter(function (k) { return k !== 'botcheck' && data[k]; })
+          .map(function (k) { return k.charAt(0).toUpperCase() + k.slice(1) + ': ' + data[k]; }).join('\n\n');
+        location.href = 'mailto:' + (c.email || '') + '?subject=' + encodeURIComponent('Project enquiry from ' + data.name) + '&body=' + encodeURIComponent(body);
+        return;
+      }
+
+      data.access_key = c.web3formsKey;
+      data.subject = 'New project enquiry: ' + (data.name || '') + (data.organisation ? ' (' + data.organisation + ')' : '');
+      data.from_name = 'Portfolio contact form';
+      btn.disabled = true; btn.textContent = 'Sending…';
+      status.className = 'form__status';
+      status.textContent = '';
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function (r) { return r.json(); }).then(function (r) {
+        if (!r.success) throw new Error(r.message || 'Failed');
+        f.reset();
+        status.className = 'form__status is-ok';
+        status.textContent = 'Thanks! Your message is on its way. I reply within one working day.';
+      }).catch(function () {
+        status.className = 'form__status is-err';
+        status.innerHTML = 'That didn\'t send. Please email me directly at <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a>.';
+      }).then(function () { btn.disabled = false; btn.textContent = 'Send'; });
+    });
   }
 })();
+
+/* Package buttons preselect the package in the contact form. */
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('[data-package]');
+  var sel = document.querySelector('[data-contact-form] select[name=package]');
+  if (!a || !sel) return;
+  Array.prototype.forEach.call(sel.options, function (o) {
+    if (o.text.indexOf(a.getAttribute('data-package')) === 0) sel.value = o.value;
+  });
+});
 
 /* Respect reduced motion: freeze each animated illustration on its key frame. */
 (function () {

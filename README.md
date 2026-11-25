@@ -2,32 +2,41 @@
 
 Static site for GitHub Pages. Plain HTML, CSS and JavaScript, no build step.
 
-## Before you publish
+## Admin panel
 
-1. **Add your contact details** in `js/site.js` (`email`, `linkedin`, optional `calendar`). Until you do, the contact section has no buttons.
-2. **Check the case study text** in `work/*.html`. The "Where it started" and audience details were written from what the simulations themselves show. Correct anything that doesn't match how each project actually came about.
+Open `/admin/` on the live site (https://alrazination.github.io/portfolio/admin/). It is not linked from the site and is hidden from search engines.
+
+- **Sign in** with a GitHub fine-grained access key: Settings → Developer settings → Fine-grained tokens → Generate. Give it access to this repository only, with **Contents: Read and write**. The sign-in screen has the same steps.
+- **Projects:** show or hide, feature, reorder, edit card text, delete, and add new projects (start image, optional "mistake" image, and an HTML file, a folder with `index.html`, or a link).
+- **Testimonials & results:** testimonials, "Trusted by" client names, and an Outcome section per case study. The sample entries are placeholders and are off; replace them with real ones before switching them on.
+- **Contact & settings:** email, LinkedIn, booking link, Web3Forms key (makes the contact form email you; get one free at web3forms.com), GoatCounter code (optional visitor stats).
+- **Publish changes** makes one commit to `main`; GitHub Pages updates about a minute later.
+
+Everything the admin edits lives in `data/site.json`.
 
 ## Structure
 
 ```
-index.html            Home: player card, the five simulations, process, services, about, contact
-work/<slug>.html      One case study per simulation, with the sim embedded
-sims/<slug>/index.html  The simulations themselves, unchanged
-img/razin.webp        Profile photo (cut to a circle)
-img/thumbs/           <slug>-start.webp = opening screen, <slug>.webp = the "consequence" moment
-css/style.css         All styles
-js/play.js            Loads a sim when the visitor presses start, and scales it to fit
-js/site.js            Contact details
-fonts/                Self-hosted Unbounded and Figtree (SIL OFL)
+index.html              Home: hero, projects, testimonials, approach, services, packages, delivery, process, about, FAQ, contact form
+work/<slug>.html        Hand-written case study per simulation, with the sim embedded
+work/project.html       Case study page for projects added in the admin (?p=<slug>)
+sims/<slug>/            The simulations; tw.css is their compiled Tailwind
+data/site.json          Content edited by the admin panel
+admin/                  The admin panel
+img/thumbs/             <slug>-start = opening screen, <slug> = the "consequence" moment
+img/og/                 1200x630 link-preview images
+css/style.css           All site styles
+js/site.js              Renders data/site.json: project grid, proof, contact, form
+js/play.js              Loads a sim on "Press start" and scales it; phone preview
+js/project.js           Fills work/project.html
+vendor/                 three.js and the sims' fonts, served locally (no CDNs)
+fonts/                  Unbounded and Figtree (SIL OFL)
 ```
 
-## Adding a simulation
+A sim with a fixed 1280×720 stage gets `data-fixed` on its `.sim` frame so it scales to fit.
 
-1. Put it in `sims/<slug>/index.html`.
-2. Add a 1280×720 screenshot of the start screen as `img/thumbs/<slug>-start.webp` and one of its most interesting mistake as `img/thumbs/<slug>.webp`.
-3. Copy one of the pages in `work/`, then add a card for it to the grid in `index.html`.
-
-A sim with a fixed 1280×720 stage gets `data-fixed` on its `.sim` frame so it scales to fit. A sim that fills the window (like the 3D kitchen) doesn't need it.
+If you change a simulation's Tailwind classes, rebuild its `tw.css`:
+`npx tailwindcss@3.4.17 --content sims/<slug>/index.html -o sims/<slug>/tw.css --minify`
 
 ## Brand
 
@@ -37,8 +46,6 @@ A sim with a fixed 1280×720 stage gets `data-fixed` on its `.sim` frame so it s
 - Coral marks consequences (what happens when you get it wrong). Lime marks success and the main action.
 - Unbounded for headings, Figtree for text.
 - Chunky panels with hard drop-shadows; buttons press down when clicked.
-
-The simulations still load their own libraries (Tailwind, three.js, Google Fonts) from CDNs, as they did before.
 
 ## Run locally
 

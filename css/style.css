@@ -356,3 +356,16 @@ p { margin: 0 0 1em; }
 .moment { max-width: 44rem; }
 .moment svg.anim { display: block; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 0 0 4px var(--panel), 0 10px 0 4px #0B0418; }
 .moment figcaption { margin-top: 22px; }
+
+/* ---------- Process illustrations (theme colours) ---------- */
+.ill .bg { fill: var(--deep); }
+.ill .f-bg { fill: var(--panel); }
+.ill .f-ink { fill: var(--cream); }
+.ill .f-mut { fill: var(--muted); }
+.ill .f-line { fill: var(--line); }
+.ill .f-acc { fill: var(--sky); }
+.ill .s-ink { stroke: var(--cream); }
+.ill .s-mut { stroke: var(--muted); }
+.ill .s-line2 { stroke: #4B3290; }
+.ill .s-acc { stroke: var(--sky); }
+.step > svg { width: 100%; height: auto; display: block; border-radius: 16px; }

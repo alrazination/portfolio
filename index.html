@@ -218,42 +218,117 @@
     <div class="wrap">
       <div class="section__head">
         <h2>How I design a simulation</h2>
-        <p>Five steps, shown with moments from the projects above.</p>
+        <p>Five steps, from the first question to a finished simulation.</p>
       </div>
       <ol class="steps">
         <li class="step">
-          <img class="pos-top" src="img/process/find.webp" alt="The cleanroom technician standing at the clean line under a particle counter" loading="lazy">
+          <svg class="anim ill" data-still="4.5" viewBox="0 0 640 360" role="img" aria-label="A magnifying glass scans the steps of a task and stops on the one step where people go wrong.">
+<rect class="bg" width="640" height="360"/>
+<text x="60" y="110" class="f-mut" font-size="16">The task, step by step</text>
+<line x1="60" y1="180" x2="580" y2="180" class="s-mut" stroke-width="2"/>
+<rect x="69" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/><rect x="149" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/><rect x="229" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/><rect x="309" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/><rect x="389" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/><rect x="469" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/><rect x="549" y="169" width="22" height="22" class="f-bg s-mut" stroke-width="2"/>
+<rect x="386" y="166" width="28" height="28" fill="#FF4F6D" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.55;.6;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.58;.63;.95;1" dur="6s" repeatCount="indefinite"/>
+  <line x1="400" y1="196" x2="400" y2="236" stroke="#FF4F6D" stroke-width="2"/>
+  <text x="400" y="262" text-anchor="middle" class="f-ink" font-size="19" font-weight="650">Where people go wrong</text>
+</g>
+<g><animateTransform attributeName="transform" type="translate" values="80 180;560 180;400 180;400 180;80 180" keyTimes="0;.4;.55;.95;1" dur="6s" repeatCount="indefinite"/>
+  <circle r="34" fill="none" class="s-ink" stroke-width="4"/><line x1="24" y1="24" x2="50" y2="50" class="s-ink" stroke-width="7"/>
+</g>
+</svg>
           <div>
             <h3>Find the moment that matters</h3>
             <p>Not the topic. The decision where people go wrong.</p>
           </div>
         </li>
         <li class="step">
-          <img src="img/process/visible.webp" alt="A balance scale tipping toward planet waste" loading="lazy">
+          <svg class="anim ill" data-still="3.5" viewBox="0 0 640 360" role="img" aria-label="Choosing option A sends a signal into the scene: safety drops into the red while speed rises.">
+<rect class="bg" width="640" height="360"/>
+<text x="60" y="80" class="f-mut" font-size="16">Choice</text><text x="330" y="80" class="f-mut" font-size="16">Effect</text>
+<rect x="60" y="100" width="170" height="50" class="f-bg s-line2" stroke-width="2"/><text x="145" y="131" text-anchor="middle" class="f-ink" font-size="17" font-weight="600">Option A</text>
+<rect x="60" y="170" width="170" height="50" class="f-bg s-line2" stroke-width="2"/><text x="145" y="201" text-anchor="middle" class="f-ink" font-size="17" font-weight="600">Option B</text>
+<rect x="60" y="100" width="170" height="50" fill="none" class="s-acc" stroke-width="3" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.06;.1;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<line x1="230" y1="125" x2="330" y2="125" class="s-line2" stroke-width="2" stroke-dasharray="6 6"/>
+<circle r="7" class="f-acc" opacity="0"><animateMotion path="M230 125 H330" keyPoints="0;0;1;1" keyTimes="0;.12;.25;1" calcMode="linear" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.11;.12;.25;.27;1" dur="6s" repeatCount="indefinite"/></circle>
+<rect x="330" y="96" width="250" height="180" class="f-bg s-line2" stroke-width="2"/>
+<circle cx="330" cy="125" r="0" fill="none" class="s-acc" stroke-width="3"><animate attributeName="r" values="0;0;46;46" keyTimes="0;.25;.38;1" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.24;.25;.38;1" dur="6s" repeatCount="indefinite"/></circle>
+<text x="352" y="138" class="f-ink" font-size="16" font-weight="600">Safety</text>
+<rect x="352" y="150" width="206" height="14" class="f-line"/>
+<rect x="352" y="150" height="14" width="206" fill="#C6FF3D"><animate attributeName="width" values="206;206;46;46;206" keyTimes="0;.27;.42;.95;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill" values="#C6FF3D;#C6FF3D;#FF4F6D;#FF4F6D;#C6FF3D" keyTimes="0;.3;.38;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<text x="352" y="210" class="f-ink" font-size="16" font-weight="600">Speed</text>
+<rect x="352" y="222" width="206" height="14" class="f-line"/>
+<rect x="352" y="222" height="14" width="80" fill="#C6FF3D"><animate attributeName="width" values="80;80;190;190;80" keyTimes="0;.27;.42;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+</svg>
           <div>
             <h3>Make the consequence visible</h3>
             <p>A mechanic that shows the effect, the way the real world would.</p>
           </div>
         </li>
         <li class="step">
-          <img src="img/process/mistakes.webp" alt="A car sliding off a toppled jack" loading="lazy">
+          <svg class="anim ill" data-still="2.4" viewBox="0 0 640 360" role="img" aria-label="A learner takes the wrong path, a feedback card explains why, they go back and take the right path.">
+<rect class="bg" width="640" height="360"/>
+<path d="M112 170 C 180 170, 200 90, 260 90" fill="none" class="s-line2" stroke-width="3"/><path d="M112 190 C 180 190, 200 270, 260 270" fill="none" class="s-line2" stroke-width="3"/>
+<rect x="68" y="158" width="44" height="44" class="f-ink"/><text x="90" y="188" text-anchor="middle" class="f-bg" font-size="22" font-weight="700">?</text>
+<rect x="260" y="68" width="44" height="44" class="f-bg s-mut" stroke-width="2"/>
+<rect x="260" y="68" width="44" height="44" fill="#FF4F6D" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.22;.24;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<path d="M272 80 L292 100 M292 80 L272 100" stroke="#fff" stroke-width="4" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.22;.24;.95;1" dur="6s" repeatCount="indefinite"/></path>
+<rect x="260" y="248" width="44" height="44" class="f-bg s-mut" stroke-width="2"/>
+<rect x="260" y="248" width="44" height="44" fill="#C6FF3D" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.78;.8;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<path d="M270 270 L279 279 L295 262" stroke="#14082B" stroke-width="4" fill="none" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.78;.8;.95;1" dur="6s" repeatCount="indefinite"/></path>
+<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.26;.31;.95;1" dur="6s" repeatCount="indefinite"/>
+  <line x1="304" y1="90" x2="350" y2="90" stroke="#FF4F6D" stroke-width="2" stroke-dasharray="4 4"/>
+  <rect x="350" y="40" width="240" height="118" class="f-bg s-line2" stroke-width="2"/>
+  <rect x="350" y="40" width="6" height="118" fill="#FF4F6D"/>
+  <text x="372" y="74" class="f-ink" font-size="17" font-weight="650">Why it went wrong</text>
+  <rect x="372" y="92" width="196" height="8" class="f-line"/><rect x="372" y="110" width="176" height="8" class="f-line"/><rect x="372" y="128" width="128" height="8" class="f-line"/>
+</g>
+<path d="M282 112 C 282 150, 170 140, 112 180" fill="none" class="s-acc" stroke-width="3" stroke-dasharray="220" stroke-dashoffset="220"><animate attributeName="stroke-dashoffset" values="220;220;0;0;220" keyTimes="0;.45;.58;.95;1" dur="6s" repeatCount="indefinite"/></path>
+<text x="196" y="164" class="f-acc" font-size="15" font-weight="650" opacity="0">Try again<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.52;.56;.95;1" dur="6s" repeatCount="indefinite"/></text>
+<circle r="8" class="f-acc"><animateMotion path="M112 170 C 180 170, 200 90, 260 90" keyPoints="0;0;1;1" keyTimes="0;.05;.22;1" calcMode="linear" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;1;0;0" keyTimes="0;.22;.23;1" dur="6s" repeatCount="indefinite"/></circle>
+<circle r="8" class="f-acc" opacity="0"><animateMotion path="M112 190 C 180 190, 200 270, 260 270" keyPoints="0;0;1;1" keyTimes="0;.6;.78;1" calcMode="linear" dur="6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.59;.6;.78;.8;1" dur="6s" repeatCount="indefinite"/></circle>
+<text x="320" y="276" class="f-ink" font-size="17" font-weight="650" opacity="0">Right, and knows why<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.8;.83;.95;1" dur="6s" repeatCount="indefinite"/></text>
+</svg>
           <div>
             <h3>Design the mistakes</h3>
             <p>Every wrong move plays out, and comes with a reason.</p>
           </div>
         </li>
         <li class="step">
-          <div class="devices" aria-hidden="true">
-            <div class="devices__laptop"><img src="img/thumbs/flat-tire-start.webp" alt="" loading="lazy"></div>
-            <div class="devices__tablet"><img src="img/thumbs/eco-party-start.webp" alt="" loading="lazy"></div>
-          </div>
+          <svg class="anim ill" data-still="0" viewBox="0 0 640 360" role="img" aria-label="The same simulation moves from a desktop screen to a tablet to a phone, fitting each one.">
+<rect class="bg" width="640" height="360"/>
+<g opacity="1"><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;.27;.3;.94;1" dur="6s" repeatCount="indefinite"/>
+  <rect x="300" y="290" width="40" height="26" fill="#5B3FA8"/><rect x="250" y="314" width="140" height="8" fill="#5B3FA8"/>
+</g>
+<rect fill="#5B3FA8" x="110" y="40" width="420" height="250"><animate attributeName="x" values="110;110;170;170;230;230;110" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/><animate attributeName="y" values="40;40;70;70;115;115;40" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/><animate attributeName="width" values="420;420;300;300;180;180;420" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/><animate attributeName="height" values="250;250;210;210;110;110;250" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/></rect>
+<svg x="120" y="50" width="400" height="230" viewBox="0 0 160 92" preserveAspectRatio="xMidYMid meet"><animate attributeName="x" values="120;120;180;180;240;240;120" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/><animate attributeName="y" values="50;50;80;80;125;125;50" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/><animate attributeName="width" values="400;400;280;280;160;160;400" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/><animate attributeName="height" values="230;230;190;190;90;90;230" keyTimes="0;.25;.33;.58;.66;.92;1" calcMode="spline" keySplines=".5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1;.5 0 .5 1" dur="6s" repeatCount="indefinite"/>
+  <rect width="160" height="92" fill="#14082B"/><rect width="160" height="10" fill="#22114A"/>
+  <rect x="12" y="22" width="60" height="14" fill="#66D9FF"/><rect x="12" y="42" width="60" height="14" fill="#4B3290"/>
+  <rect x="88" y="22" width="60" height="5" fill="#4B3290"/><rect x="88" y="22" width="44" height="5" fill="#C6FF3D"/>
+  <rect x="88" y="34" width="60" height="5" fill="#4B3290"/><rect x="88" y="34" width="16" height="5" fill="#FF4F6D"/>
+  <rect y="72" width="160" height="20" fill="#2A1757"/><rect x="96" y="56" width="28" height="16" fill="#FF4F6D"/>
+</svg>
+<text x="320" y="350" text-anchor="middle" class="f-mut" font-size="16" opacity="1">Desktop<animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;.27;.3;.94;1" dur="6s" repeatCount="indefinite"/></text>
+<text x="320" y="320" text-anchor="middle" class="f-mut" font-size="16" opacity="0">Tablet<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.31;.34;.58;.61;1" dur="6s" repeatCount="indefinite"/></text>
+<text x="320" y="270" text-anchor="middle" class="f-mut" font-size="16" opacity="0">Phone<animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;.64;.67;.92;.95;1" dur="6s" repeatCount="indefinite"/></text>
+</svg>
           <div>
             <h3>Build it to run anywhere</h3>
             <p>Light HTML5 for the browser, Articulate Storyline or your LMS.</p>
           </div>
         </li>
         <li class="step">
-          <img class="pos-left" src="img/process/tune.webp" alt="A hint card reading Tipp 3 of 3, with the word der Teller" loading="lazy">
+          <svg class="anim ill" data-still="5" viewBox="0 0 640 360" role="img" aria-label="Sliders for hints, difficulty and feedback are adjusted until learner success moves into the fair-challenge band.">
+<rect class="bg" width="640" height="360"/>
+<text x="60" y="92" class="f-ink" font-size="16" font-weight="600">Hints</text><line x1="60" y1="110" x2="280" y2="110" class="s-line2" stroke-width="4"/><rect y="100" width="20" height="20" class="f-acc"><animate attributeName="x" values="90;90;90;190;190;150;150;90" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<text x="60" y="172" class="f-ink" font-size="16" font-weight="600">Difficulty</text><line x1="60" y1="190" x2="280" y2="190" class="s-line2" stroke-width="4"/><rect y="180" width="20" height="20" class="f-acc"><animate attributeName="x" values="230;230;230;100;100;160;160;230" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<text x="60" y="252" class="f-ink" font-size="16" font-weight="600">Feedback</text><line x1="60" y1="270" x2="280" y2="270" class="s-line2" stroke-width="4"/><rect y="260" width="20" height="20" class="f-acc"><animate attributeName="x" values="100;100;100;220;220;190;190;100" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></rect>
+<rect x="340" y="60" width="240" height="240" class="f-bg s-line2" stroke-width="2"/>
+<text x="356" y="88" class="f-mut" font-size="14">Learner success</text>
+<rect x="341" y="150" width="238" height="56" fill="#C6FF3D" opacity=".14"/>
+<text x="356" y="142" fill="#C6FF3D" font-size="15" font-weight="650">Fair challenge</text>
+<polyline points="390,270 470,100 550,178" fill="none" class="s-mut" stroke-width="2" stroke-dasharray="4 5" opacity="0"><animate attributeName="opacity" values="0;0;.6;.6;0" keyTimes="0;.45;.5;.95;1" dur="6s" repeatCount="indefinite"/></polyline>
+<circle r="11"><animate attributeName="cx" values="390;390;390;470;470;550;550;390" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/><animate attributeName="cy" values="270;270;270;100;100;178;178;270" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/><animate attributeName="fill" values="#FF4F6D;#FF4F6D;#FF4F6D;#FF4F6D;#FF4F6D;#C6FF3D;#C6FF3D;#FF4F6D" keyTimes="0;.1;.35;.45;.65;.75;.95;1" dur="6s" repeatCount="indefinite"/></circle>
+</svg>
           <div>
             <h3>Play-test and tune</h3>
             <p>Hints, difficulty and feedback, adjusted until it feels fair.</p>

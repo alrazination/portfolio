@@ -29,3 +29,11 @@ const CONTACT = {
     console.warn('[site] No contact details set. Fill in CONTACT in js/site.js before publishing.');
   }
 })();
+
+/* Respect reduced motion: freeze each animated illustration on its key frame. */
+(function () {
+  if (!window.matchMedia || !matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('svg.anim').forEach(function (s) {
+    try { s.pauseAnimations(); s.setCurrentTime(parseFloat(s.dataset.still || '0')); } catch (e) {}
+  });
+})();

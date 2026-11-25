@@ -37,3 +37,22 @@
     try { s.pauseAnimations(); s.setCurrentTime(parseFloat(s.dataset.still || '0')); } catch (e) {}
   });
 })();
+
+/* On phones, show the key "mistake" moment above the simulation, since
+   the sims are built for laptop-sized screens. */
+(function () {
+  var sim = document.querySelector('.play .sim');
+  var moment = document.querySelector('.moment svg');
+  if (!sim || !moment) return;
+  var fig = document.createElement('figure');
+  fig.className = 'play__preview';
+  fig.setAttribute('aria-hidden', 'true');
+  var svg = moment.cloneNode(true);
+  // Avoid duplicate ids from the clone.
+  svg.querySelectorAll('[id]').forEach(function (el) { el.removeAttribute('id'); });
+  fig.appendChild(svg);
+  var cap = document.createElement('figcaption');
+  cap.textContent = 'On a phone? This is the moment it\'s built around. For the full simulation, tap "Open full screen" and turn your phone sideways.';
+  fig.appendChild(cap);
+  sim.parentNode.insertBefore(fig, sim);
+})();
